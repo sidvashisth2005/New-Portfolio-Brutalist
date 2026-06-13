@@ -458,4 +458,89 @@
   .has-custom-cursor .gallery-card {
     cursor: none !important;
   }
+
+  /* ─── PREMIUM BRUTALIST SECTION LABELS ─── */
+  .section-label {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    border: 1px solid rgba(232, 255, 0, 0.25);
+    padding: 4px 8px 4px 4px;
+    background: rgba(232, 255, 0, 0.05);
+    transition: all 0.3s ease;
+  }
+  .section-label:hover {
+    border-color: var(--accent);
+    background: rgba(232, 255, 0, 0.1);
+    box-shadow: 0 0 10px rgba(232, 255, 0, 0.15);
+  }
+  .section-label-index {
+    background-color: var(--accent);
+    color: #000000;
+    font-weight: 800;
+    padding: 3px 6px;
+    line-height: 1;
+    font-size: 10px;
+  }
+  .section-label-text {
+    color: #ffffff;
+    padding-left: 4px;
+  }
+
+  /* Cyber CRT scanlines & terminal utilities */
+  .bg-scanlines {
+    background: linear-gradient(
+      rgba(18, 16, 16, 0) 50%,
+      rgba(0, 0, 0, 0.25) 50%
+    );
+    background-size: 100% 4px;
+  }
+
+  @keyframes scanline {
+    0% {
+      transform: translateY(-100%);
+    }
+    100% {
+      transform: translateY(100%);
+    }
+  }
+  
+  .animate-scan {
+    animation: scanline 8s linear infinite;
+  }
+
+  @keyframes skillReveal {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-skill-reveal {
+    animation: skillReveal 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes swirlIn {
+    0% {
+      transform: scale(0.85) rotate(-10deg);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1) rotate(0deg);
+      opacity: 1;
+    }
+  }
+
+  .animate-swirl-in {
+    animation: swirlIn 0.45s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  }
 }

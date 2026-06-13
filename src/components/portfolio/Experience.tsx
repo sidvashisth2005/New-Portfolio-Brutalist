@@ -17,7 +17,7 @@ export function Experience() {
       />
 
       <SliceHeading index="(02)" label="CHRONICLE / EXPERIENCE">
-        WORK <span className="text-outline">EXPERIENCE</span>
+        WORK <br /> <span className="text-outline">EXPERIENCE</span>
       </SliceHeading>
 
       <div className="grid grid-cols-12 gap-5">

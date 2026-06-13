@@ -56,11 +56,11 @@ export function Contact() {
         <div className="col-span-12 md:col-span-3">
           <div className="overflow-hidden md:sticky md:top-20">
             <div
-              className="section-label font-mono text-[10px] uppercase tracking-[0.2em] text-[#E8FF00]"
+              className="section-label"
               style={{ transform: isReduced ? "none" : "translateY(100%)" }}
             >
-              <span>(08) </span>
-              <span>COMMS / CONTACT</span>
+              <span className="section-label-index">(08)</span>
+              <span className="section-label-text">COMMS / CONTACT</span>
             </div>
           </div>
         </div>
@@ -69,8 +69,9 @@ export function Contact() {
         <div className="col-span-12 md:col-span-9">
           {/* Heading with per-word overflow clip */}
           <div className="overflow-hidden">
-            <h2 className="section-title font-display font-black tracking-[-0.06em] leading-none text-[clamp(3rem,8vw,7rem)] uppercase text-white">
-              LET&rsquo;S <span className="text-outline-yellow">BUILD.</span>
+            <h2 className="section-title font-display font-black text-[9vw] sm:text-[8vw] md:text-[7vw] tracking-[-0.05em] leading-[0.9] uppercase text-white">
+              LET&rsquo;S <br />
+              <span className="text-outline">BUILD.</span>
             </h2>
           </div>
 

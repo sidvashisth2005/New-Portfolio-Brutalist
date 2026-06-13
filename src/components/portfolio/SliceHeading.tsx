@@ -18,12 +18,11 @@ export function SliceHeading({
         {/* Step 2 — Section number + label wrapper */}
         <div className="overflow-hidden">
           <div
-            className="section-label font-mono text-[10px] uppercase tracking-[0.2em] text-[#E8FF00] flex md:block items-center gap-3"
+            className="section-label"
             style={{ transform: isReduced ? "none" : "translateY(100%)" }}
           >
-            <span>{index}</span>
-            <span className="h-px w-12 md:w-full md:mt-2 bg-[#E8FF00]/30 inline-block" />
-            <span className="md:block md:mt-2 text-white">{label}</span>
+            <span className="section-label-index">{index}</span>
+            <span className="section-label-text">{label}</span>
           </div>
         </div>
       </div>

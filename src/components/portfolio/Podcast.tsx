@@ -187,14 +187,15 @@ export function Podcast() {
         {/* Section Header */}
         <div className="col-span-12 flex flex-col gap-1 text-left mb-4">
           <div className="overflow-hidden">
-            <div className="section-label font-mono text-[10px] uppercase tracking-[0.2em] text-[#E8FF00]">
-              <span>(04) </span>
-              <span>TRANSMISSIONS / PODCAST</span>
+            <div className="section-label">
+              <span className="section-label-index">(04)</span>
+              <span className="section-label-text">TRANSMISSIONS / PODCAST</span>
             </div>
           </div>
           <div className="overflow-hidden mt-4">
-            <h2 className="section-title font-display font-black text-5xl md:text-6xl tracking-[-0.06em] text-white uppercase leading-none">
-              PITCHED.
+            <h2 className="section-title font-display font-black text-[9vw] sm:text-[8vw] md:text-[7vw] tracking-[-0.05em] leading-[0.9] uppercase text-white">
+              PITCHED <br />
+              <span className="text-outline">PODCAST</span>
             </h2>
           </div>
           <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/40 mt-2">
@@ -216,12 +217,12 @@ export function Podcast() {
               Communication &middot; Hackathon Strategy
             </span>
             <a
-              href="https://youtube.com/@ThePeopleDecoder"
+              href="https://youtube.com/@ThePeopleDecoderr"
               target="_blank"
               rel="noopener noreferrer"
               className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/40 hover:text-[#E8FF00] transition-colors mt-1"
             >
-              youtube.com/@ThePeopleDecoder &rarr;
+              youtube.com/@ThePeopleDecoderr &rarr;
             </a>
           </div>
 

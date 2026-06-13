@@ -8,7 +8,7 @@ export function About() {
   return (
     <section
       id="about"
-      className="relative px-5 py-32 bg-black overflow-hidden"
+      className="relative px-5 py-32 bg-black"
     >
       {/* Step 1 — Section divider line sweep */}
       <div
@@ -22,11 +22,11 @@ export function About() {
           {/* Step 2 — Section number + label (overflow: hidden parent) */}
           <div className="overflow-hidden md:sticky md:top-20">
             <div
-              className="section-label font-mono text-[10px] uppercase tracking-[0.2em] text-[#E8FF00]"
+              className="section-label"
               style={{ transform: isReduced ? "none" : "translateY(100%)" }}
             >
-              <span>(01) </span>
-              <span>IDENTITY / MANIFESTO</span>
+              <span className="section-label-index">(01)</span>
+              <span className="section-label-text">IDENTITY / MANIFESTO</span>
             </div>
           </div>
         </div>
@@ -37,9 +37,9 @@ export function About() {
           <div className="space-y-6 max-w-3xl">
             {/* Step 3 — Section heading */}
             <div className="overflow-hidden">
-              <h2 className="section-title font-display font-black text-[9vw] sm:text-[8vw] md:text-[4vw] tracking-[-0.06em] uppercase leading-none text-white">
-                PITCHER'S MIND. <br />
-                <span className="text-outline">BUILDER'S HANDS.</span>
+              <h2 className="section-title font-display font-black text-[8vw] sm:text-[7vw] md:text-[5.5vw] tracking-[-0.05em] leading-[0.9] uppercase text-white">
+                <span className="inline-block whitespace-nowrap">PITCHER'S MIND.</span> <br />
+                <span className="text-outline inline-block whitespace-nowrap">BUILDER'S HANDS.</span>
               </h2>
             </div>
 

@@ -21,7 +21,7 @@ export function Awards() {
   };
 
   return (
-    <section id="awards" className="relative px-5 py-32 bg-black overflow-hidden">
+    <section id="awards" className="relative px-5 py-32 bg-black">
       {/* Step 1 — Section divider line sweep */}
       <div
         className="section-border-line absolute top-0 left-0 right-0 h-[1px] bg-[#E8FF00] origin-left"
@@ -33,18 +33,25 @@ export function Awards() {
         <div className="col-span-12 md:col-span-3">
           <div className="overflow-hidden md:sticky md:top-20">
             <div
-              className="section-label font-mono text-[10px] uppercase tracking-[0.2em] text-[#E8FF00]"
+              className="section-label"
               style={{ transform: isReduced ? "none" : "translateY(100%)" }}
             >
-              <span>(07) </span>
-              <span>RECOGNITIONS / AWARDS</span>
+              <span className="section-label-index">(07)</span>
+              <span className="section-label-text">RECOGNITIONS / AWARDS</span>
             </div>
           </div>
         </div>
 
         {/* Right Column */}
-        <div className="col-span-12 md:col-span-9 space-y-0 border-t-2 border-white">
-          {awards.map((award) => {
+        <div className="col-span-12 md:col-span-9 space-y-8">
+          <div className="overflow-hidden">
+            <h2 className="section-title font-display font-black text-[9vw] sm:text-[8vw] md:text-[7vw] tracking-[-0.05em] leading-[0.9] uppercase text-white">
+              LAURELS & <br />
+              <span className="text-outline">RECOGNITIONS</span>
+            </h2>
+          </div>
+          <div className="space-y-0 border-t-2 border-white">
+            {awards.map((award) => {
             const rowId = `award-${award.index}`;
             const formattedIndex = `(${award.index})`;
             const isHackNITR = award.index === "01";
@@ -104,6 +111,7 @@ export function Awards() {
               </div>
             );
           })}
+          </div>
         </div>
       </div>
     </section>

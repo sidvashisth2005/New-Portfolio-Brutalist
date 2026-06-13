@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 
 const links = [
-  { label: "Identity", href: "#about", n: "01" },
-  { label: "Chronicle", href: "#experience", n: "02" },
+  { label: "About", href: "#about", n: "01" },
+  { label: "Experience", href: "#experience", n: "02" },
   { label: "Projects", href: "#projects", n: "03" },
-  { label: "Transmissions", href: "#podcast", n: "04" },
-  { label: "Archives", href: "#gallery", n: "05" },
-  { label: "Stack", href: "#skills", n: "06" },
-  { label: "Recognitions", href: "#awards", n: "07" },
-  { label: "Comms", href: "#contact", n: "08" },
+  { label: "Podcast", href: "#podcast", n: "04" },
+  { label: "Gallery", href: "#gallery", n: "05" },
+  { label: "Skills", href: "#skills", n: "06" },
+  { label: "Awards", href: "#awards", n: "07" },
+  { label: "Contact", href: "#contact", n: "08" },
 ];
 
 export function Nav() {
