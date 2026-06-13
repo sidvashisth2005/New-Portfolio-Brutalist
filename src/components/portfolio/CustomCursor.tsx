@@ -3,64 +3,110 @@ import { useReducedMotion } from "@/lib/anime-utils";
 import gsapCore from "gsap/dist/gsap";
 
 export function CustomCursor() {
-  const cursorRef = useRef<HTMLDivElement>(null);
+  const dotRef = useRef<HTMLDivElement>(null);
+  const ringRef = useRef<HTMLDivElement>(null);
   const isReduced = useReducedMotion();
 
   useEffect(() => {
     if (typeof window === "undefined" || isReduced) return;
 
-    // Dynamically add class to hide default cursor when custom cursor is active
+    // Add class to hide default cursor globally
     document.body.classList.add("has-custom-cursor");
 
-    // Center the cursor initially using GSAP percent translations
-    gsapCore.set("#cursor", { xPercent: -50, yPercent: -50 });
+    // Center the cursor elements initially
+    gsapCore.set("#cursor-dot", { xPercent: -50, yPercent: -50 });
+    gsapCore.set("#cursor-ring", { xPercent: -50, yPercent: -50 });
 
-    // Setup high-performance mouse tracking using quickTo
-    const xTo = gsapCore.quickTo("#cursor", "x", { duration: 0.35, ease: "power3" });
-    const yTo = gsapCore.quickTo("#cursor", "y", { duration: 0.35, ease: "power3" });
+    // QuickTo for high-performance translation
+    // Dot: fast tracking
+    const dotXTo = gsapCore.quickTo("#cursor-dot", "x", { duration: 0.08, ease: "power3.out" });
+    const dotYTo = gsapCore.quickTo("#cursor-dot", "y", { duration: 0.08, ease: "power3.out" });
+
+    // Ring: smooth lagging follow
+    const ringXTo = gsapCore.quickTo("#cursor-ring", "x", { duration: 0.3, ease: "power3.out" });
+    const ringYTo = gsapCore.quickTo("#cursor-ring", "y", { duration: 0.3, ease: "power3.out" });
 
     const handleMouseMove = (e: MouseEvent) => {
-      xTo(e.clientX);
-      yTo(e.clientY);
+      dotXTo(e.clientX);
+      dotYTo(e.clientY);
+      ringXTo(e.clientX);
+      ringYTo(e.clientY);
     };
 
     window.addEventListener("mousemove", handleMouseMove);
 
-    // MouseDown / MouseUp scale animations
+    // Mouse click compression scaling
     const handleMouseDown = () => {
-      gsapCore.to("#cursor", { scale: 0.8, duration: 0.1 });
+      gsapCore.to("#cursor-ring", { scale: 0.5, duration: 0.15, ease: "power2.out" });
+      gsapCore.to("#cursor-dot", { scale: 2.0, duration: 0.15, ease: "power2.out" });
     };
 
     const handleMouseUp = () => {
-      gsapCore.to("#cursor", { scale: 1, duration: 0.1 });
+      gsapCore.to("#cursor-ring", { scale: 1, duration: 0.2, ease: "power2.out" });
+      gsapCore.to("#cursor-dot", { scale: 1, duration: 0.2, ease: "power2.out" });
     };
 
     window.addEventListener("mousedown", handleMouseDown);
     window.addEventListener("mouseup", handleMouseUp);
 
-    // Event delegation for hover states (links, buttons, project-cards)
+    // Hover detection using event delegation
     const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       if (!target) return;
 
-      const interactiveEl = target.closest("a, button, [role='button'], .project-card");
+      const interactiveEl = target.closest("a, button, [role='button'], .project-card, .gallery-card, .ep-card, .clickable, .project-slide h3, .project-slide div");
       if (interactiveEl) {
-        const isProjectCard = interactiveEl.classList.contains("project-card");
+        // Determine hover type
+        const isProject = interactiveEl.closest("#projects");
+        const isGallery = interactiveEl.closest("#gallery");
+        const isPodcast = interactiveEl.closest("#podcast");
 
-        gsapCore.to("#cursor", {
-          width: 48,
-          height: 48,
-          duration: 0.3,
+        let labelText = "";
+        let width = 56;
+        let height = 56;
+        let ringBg = "#E8FF00";
+        let ringBorder = "none";
+        let mixBlend = "normal"; // normal blend to show yellow circle
+
+        if (isProject) {
+          labelText = "EXPLORE";
+        } else if (isGallery) {
+          labelText = "ZOOM";
+        } else if (isPodcast) {
+          labelText = "LISTEN";
+        } else {
+          // Standard interactive
+          width = 36;
+          height = 36;
+          ringBg = "transparent";
+          ringBorder = "2px solid #E8FF00";
+          mixBlend = "difference";
+        }
+
+        // Hide dot
+        gsapCore.to("#cursor-dot", { scale: 0, opacity: 0, duration: 0.2 });
+
+        // Expand and color ring
+        gsapCore.to("#cursor-ring", {
+          width,
+          height,
+          backgroundColor: ringBg,
+          border: ringBorder,
+          mixBlendMode: mixBlend as any,
+          duration: 0.25,
           ease: "power2.out",
           overwrite: "auto",
         });
 
-        if (isProjectCard) {
-          gsapCore.to("#cursor .cursor-label", {
-            opacity: 1,
-            duration: 0.3,
+        // Show label inside ring
+        const label = document.querySelector("#cursor-ring .cursor-label");
+        if (label) {
+          label.innerHTML = labelText;
+          gsapCore.to(label, {
+            opacity: labelText ? 1 : 0,
+            scale: labelText ? 1 : 0.8,
+            duration: 0.2,
             ease: "power2.out",
-            overwrite: "auto",
           });
         }
       }
@@ -71,32 +117,42 @@ export function CustomCursor() {
       if (!target) return;
 
       const relatedTarget = e.relatedTarget as HTMLElement;
-      const currentEl = target.closest("a, button, [role='button'], .project-card");
-      const nextEl = relatedTarget ? relatedTarget.closest("a, button, [role='button'], .project-card") : null;
+      const currentEl = target.closest("a, button, [role='button'], .project-card, .gallery-card, .ep-card, .clickable, .project-slide h3, .project-slide div");
+      const nextEl = relatedTarget ? relatedTarget.closest("a, button, [role='button'], .project-card, .gallery-card, .ep-card, .clickable, .project-slide h3, .project-slide div") : null;
 
-      // Only shrink if we are moving out of the interactive element bounds entirely
       if (currentEl && currentEl !== nextEl) {
-        gsapCore.to("#cursor", {
-          width: 10,
-          height: 10,
-          duration: 0.3,
+        // Restore dot
+        gsapCore.to("#cursor-dot", { scale: 1, opacity: 1, duration: 0.2 });
+
+        // Restore ring
+        gsapCore.to("#cursor-ring", {
+          width: 24,
+          height: 24,
+          backgroundColor: "transparent",
+          border: "1.5px solid #E8FF00",
+          mixBlendMode: "difference" as any,
+          duration: 0.25,
           ease: "power2.out",
           overwrite: "auto",
         });
 
-        gsapCore.to("#cursor .cursor-label", {
-          opacity: 0,
-          duration: 0.2,
-          ease: "power2.out",
-          overwrite: "auto",
-        });
+        // Hide label
+        const label = document.querySelector("#cursor-ring .cursor-label");
+        if (label) {
+          gsapCore.to(label, {
+            opacity: 0,
+            scale: 0.8,
+            duration: 0.15,
+            ease: "power2.out",
+          });
+        }
       }
     };
 
     document.addEventListener("mouseover", handleMouseOver);
     document.addEventListener("mouseout", handleMouseOut);
 
-    // Magnetic button effects on elements matching .magnetic-btn class
+    // Magnetic buttons logic (.magnetic-btn)
     const onMagneticMouseMove = (e: MouseEvent) => {
       const magneticBtns = document.querySelectorAll(".magnetic-btn");
       magneticBtns.forEach((btn) => {
@@ -107,10 +163,10 @@ export function CustomCursor() {
         const dy = e.clientY - btnY;
         const distance = Math.hypot(dx, dy);
 
-        if (distance < 80) {
+        if (distance < 70) {
           gsapCore.to(btn, {
-            x: dx * 0.25,
-            y: dy * 0.25,
+            x: dx * 0.2,
+            y: dy * 0.2,
             duration: 0.3,
             ease: "power2.out",
             overwrite: "auto",
@@ -121,7 +177,7 @@ export function CustomCursor() {
             x: 0,
             y: 0,
             duration: 0.5,
-            ease: "elastic.out(1, 0.5)",
+            ease: "elastic.out(1, 0.4)",
             overwrite: "auto",
           });
           (btn as any)._isMagnetized = false;
@@ -139,8 +195,7 @@ export function CustomCursor() {
       document.removeEventListener("mouseover", handleMouseOver);
       document.removeEventListener("mouseout", handleMouseOut);
       window.removeEventListener("mousemove", onMagneticMouseMove);
-      
-      // Reset any active magnetic buttons
+
       const magneticBtns = document.querySelectorAll(".magnetic-btn");
       magneticBtns.forEach((btn) => {
         gsapCore.killTweensOf(btn);
@@ -152,14 +207,24 @@ export function CustomCursor() {
   if (isReduced) return null;
 
   return (
-    <div
-      id="cursor"
-      ref={cursorRef}
-      className="fixed top-0 left-0 w-2.5 h-2.5 bg-[#E8FF00] rounded-full pointer-events-none z-[9999] mix-blend-exclusion flex items-center justify-center overflow-hidden"
-    >
-      <span className="cursor-label opacity-0 font-mono text-[9px] font-semibold text-[#0A0A0A] select-none whitespace-nowrap">
-        VIEW &rarr;
-      </span>
-    </div>
+    <>
+      {/* Outer lagging ring */}
+      <div
+        id="cursor-ring"
+        ref={ringRef}
+        className="fixed top-0 left-0 w-6 h-6 border-[1.5px] border-[#E8FF00] rounded-full pointer-events-none z-[99999] mix-blend-difference flex items-center justify-center overflow-hidden"
+      >
+        <span className="cursor-label opacity-0 font-mono text-[8px] font-bold text-black select-none tracking-widest whitespace-nowrap">
+          VIEW
+        </span>
+      </div>
+
+      {/* Inner precise dot */}
+      <div
+        id="cursor-dot"
+        ref={dotRef}
+        className="fixed top-0 left-0 w-1.5 h-1.5 bg-[#E8FF00] rounded-full pointer-events-none z-[99999] mix-blend-difference"
+      />
+    </>
   );
 }

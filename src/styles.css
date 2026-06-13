@@ -446,16 +446,9 @@
     }
   }
 
-  /* Custom Cursor Styles - Disable default cursor for interactive elements */
-  .has-custom-cursor,
-  .has-custom-cursor a,
-  .has-custom-cursor button,
-  .has-custom-cursor input,
-  .has-custom-cursor textarea,
-  .has-custom-cursor select,
-  .has-custom-cursor [role="button"],
-  .has-custom-cursor .project-card,
-  .has-custom-cursor .gallery-card {
+  /* Custom Cursor Styles - Disable default cursor globally */
+  body.has-custom-cursor,
+  body.has-custom-cursor * {
     cursor: none !important;
   }
 
