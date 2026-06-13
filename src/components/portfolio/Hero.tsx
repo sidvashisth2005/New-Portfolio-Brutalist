@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import gsap from "gsap";
+import gsap from "gsap/dist/gsap";
 import { useReducedMotion } from "@/lib/anime-utils";
 import { profile } from "@/lib/content";
 import { SigilModel } from "./SigilModel";
