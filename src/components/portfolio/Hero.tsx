@@ -152,15 +152,17 @@ export function Hero({ start }: { start: boolean }) {
           <StarField />
         </div>
 
-        {/* 3D Model Container */}
-        <div
-          className="hero-model-container absolute right-5 md:right-10 top-[calc(50%+27px)] -translate-y-1/2 w-[280px] h-[280px] md:w-[450px] md:h-[450px] z-20 pointer-events-auto"
-          style={{
-            opacity: isReduced ? 1 : 0,
-            transform: isReduced ? "none" : "translateY(-50%) scale(0.85)",
-          }}
-        >
-          <SigilModel coordsRef={coordsRef} />
+        {/* 3D Model Container - separated into outer positioning and inner animation to prevent GSAP overrides */}
+        <div className="absolute right-5 md:right-10 top-[calc(50%+27px)] -translate-y-1/2 w-[280px] h-[280px] md:w-[450px] md:h-[450px] z-20 pointer-events-auto">
+          <div
+            className="hero-model-container w-full h-full"
+            style={{
+              opacity: isReduced ? 1 : 0,
+              transform: isReduced ? "none" : "scale(0.85)",
+            }}
+          >
+            <SigilModel coordsRef={coordsRef} />
+          </div>
         </div>
 
         {/* Top crosshair info */}
