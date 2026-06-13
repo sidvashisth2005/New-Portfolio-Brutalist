@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import anime from "animejs";
-import { GUILLOTINE, glitchText, useReducedMotion } from "@/lib/anime-utils";
+import { GUILLOTINE, useReducedMotion } from "@/lib/anime-utils";
 import { profile } from "@/lib/content";
 import { SigilModel } from "./SigilModel";
 import { StarField } from "./StarField";
@@ -56,18 +56,7 @@ export function Hero() {
       easing: GUILLOTINE,
     });
 
-    // --- PHASE 4: Glitch flicker on name AFTER it lands ---
-    setTimeout(() => {
-      if (nameRef.current) {
-        const spans = nameRef.current.querySelectorAll<HTMLElement>(".hero-letter");
-        spans.forEach((el) => {
-          const final = el.textContent || "";
-          if (final.trim()) glitchText(el, final, 350);
-        });
-      }
-    }, 1800);
-
-    // --- PHASE 5: Tagline clip-path wipe from left ---
+    // --- PHASE 4: Tagline clip-path wipe from left ---
     anime({
       targets: ".hero-tagline",
       clipPath: ["inset(0 100% 0 0)", "inset(0 0% 0 0)"],
