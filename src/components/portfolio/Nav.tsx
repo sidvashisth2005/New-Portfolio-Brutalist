@@ -31,11 +31,11 @@ export function Nav() {
       className="portfolio-nav fixed top-0 left-0 right-0 z-50 bg-black/80 border-b-2 border-white"
       style={{ transform: "translateY(-100%)" }}
     >
-      <div className="flex items-center justify-between px-5 py-5">
-        <a href="#top" className="font-mono text-[10px] uppercase tracking-[0.2em] text-white hover:text-[#ffff00] transition-colors">
+      <div className="flex items-center justify-between px-5 py-4">
+        <a href="#top" className="font-mono text-xs uppercase tracking-[0.15em] text-white hover:text-[#ffff00] transition-colors">
           SIDDHANT.V
         </a>
-        <nav className="hidden md:flex items-center gap-6 font-mono text-[10px] uppercase tracking-[0.2em] text-white">
+        <nav className="hidden md:flex items-center gap-5 font-mono text-xs uppercase tracking-[0.15em] text-white">
           {links.map((l) => (
             <a key={l.href} href={l.href} className="group flex items-baseline gap-1">
               <span className="text-white/30 group-hover:text-[#ffff00] transition-colors">{l.n}</span>
@@ -43,7 +43,7 @@ export function Nav() {
             </a>
           ))}
         </nav>
-        <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-white tabular-nums" suppressHydrationWarning>
+        <div className="font-mono text-xs uppercase tracking-[0.15em] text-white tabular-nums" suppressHydrationWarning>
           IST {time}
         </div>
       </div>
