@@ -328,6 +328,125 @@
     clip-path: polygon(0 8vw, 100% 0, 100% 100%, 0 100%);
   }
 
+  /* ─── HERO INTRO ANIMATIONS (COMPOSITOR-SAFE) ─── */
+  @keyframes scanline-sweep {
+    0% {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    10% {
+      opacity: 0.7;
+    }
+    90% {
+      opacity: 0.7;
+    }
+    100% {
+      transform: translateY(120vh);
+      opacity: 0;
+    }
+  }
+  .animate-scanline-sweep {
+    animation: scanline-sweep 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    animation-delay: 0.15s;
+  }
+
+  @keyframes slam-yellow {
+    0% {
+      transform: translateY(0%);
+    }
+    100% {
+      transform: translateY(-110%);
+    }
+  }
+  .animate-slam-yellow {
+    animation: slam-yellow 1.1s cubic-bezier(0.85, 0, 0.15, 1) forwards;
+    animation-delay: 0.2s;
+  }
+
+  @keyframes slam-white {
+    0% {
+      transform: translateY(0%);
+    }
+    100% {
+      transform: translateY(110%);
+    }
+  }
+  .animate-slam-white {
+    animation: slam-white 1.1s cubic-bezier(0.85, 0, 0.15, 1) forwards;
+    animation-delay: 0.35s;
+  }
+
+  @keyframes letter-throw {
+    0% {
+      transform: translateY(200%) rotate(-8deg) scaleY(1.4);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0%) rotate(0deg) scaleY(1);
+      opacity: 1;
+    }
+  }
+  .animate-letter {
+    animation: letter-throw 0.9s cubic-bezier(0.85, 0, 0.15, 1) forwards;
+  }
+
+  @keyframes tagline-wipe {
+    0% {
+      clip-path: inset(0 100% 0 0);
+      opacity: 0;
+    }
+    100% {
+      clip-path: inset(0 0% 0 0);
+      opacity: 1;
+    }
+  }
+  .animate-tagline {
+    animation: tagline-wipe 1.0s cubic-bezier(0.85, 0, 0.15, 1) forwards;
+    animation-delay: 1.4s;
+  }
+
+  @keyframes meta-slam {
+    0% {
+      transform: translateY(80px) scaleX(0.8) skewX(10deg);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0px) scaleX(1) skewX(0deg);
+      opacity: 1;
+    }
+  }
+  .animate-meta {
+    animation: meta-slam 0.7s cubic-bezier(0.85, 0, 0.15, 1) forwards;
+  }
+
+  @keyframes divider-grow {
+    0% {
+      transform: scaleX(0);
+    }
+    100% {
+      transform: scaleX(1);
+    }
+  }
+  .animate-divider {
+    animation: divider-grow 1.2s cubic-bezier(0.85, 0, 0.15, 1) forwards;
+    animation-delay: 1.6s;
+  }
+
+  @keyframes info-row-fade {
+    0% {
+      opacity: 0;
+      transform: translateY(-15px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .animate-info-row {
+    animation: info-row-fade 0.6s cubic-bezier(0.85, 0, 0.15, 1) forwards;
+  }
+
+
   @media (prefers-reduced-motion: reduce) {
     .animate-marquee {
       animation-duration: 0.01ms !important;

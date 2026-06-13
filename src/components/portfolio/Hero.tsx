@@ -1,6 +1,5 @@
-import { useEffect, useRef } from "react";
-import anime from "animejs";
-import { GUILLOTINE, useReducedMotion } from "@/lib/anime-utils";
+import { useRef } from "react";
+import { useReducedMotion } from "@/lib/anime-utils";
 import { profile } from "@/lib/content";
 import { SigilModel } from "./SigilModel";
 import { StarField } from "./StarField";
@@ -9,89 +8,8 @@ export function Hero() {
   const coordsRef = useRef<HTMLDivElement>(null);
   const isReduced = useReducedMotion();
 
-  useEffect(() => {
-    if (isReduced) return;
-
-    // --- PHASE 1: Scanline sweep across the hero ---
-    anime({
-      targets: ".hero-scanline",
-      translateY: ["-100%", "120%"],
-      opacity: [0, 0.7, 0],
-      duration: 800,
-      delay: 150,
-      easing: "easeInOutQuart",
-    });
-
-    // --- PHASE 2: Overlay SLAM wipes (yellow from top, white from bottom) ---
-    anime({
-      targets: ".hero-overlay-yellow",
-      translateY: ["0%", "-110%"],
-      duration: 1100,
-      delay: 200,
-      easing: GUILLOTINE,
-    });
-    anime({
-      targets: ".hero-overlay-white",
-      translateY: ["0%", "110%"],
-      duration: 1100,
-      delay: 350,
-      easing: GUILLOTINE,
-    });
-
-    // --- PHASE 3: NAME — massive letter throw from below + skew ---
-    anime({
-      targets: ".hero-letter",
-      translateY: ["200%", "0%"],
-      rotateZ: [-8, 0],
-      scaleY: [1.4, 1],
-      opacity: [0, 1],
-      duration: 900,
-      delay: anime.stagger(40, { start: 700 }),
-      easing: GUILLOTINE,
-    });
-
-    // --- PHASE 4: Tagline clip-path wipe from left ---
-    anime({
-      targets: ".hero-tagline",
-      clipPath: ["inset(0 100% 0 0)", "inset(0 0% 0 0)"],
-      opacity: [0, 1],
-      duration: 1000,
-      delay: 1400,
-      easing: GUILLOTINE,
-    });
-
-    // --- PHASE 6: Meta cards slam up with stagger ---
-    anime({
-      targets: ".hero-meta",
-      translateY: ["80px", "0px"],
-      scaleX: [0.8, 1],
-      skewX: [10, 0],
-      opacity: [0, 1],
-      duration: 700,
-      delay: anime.stagger(100, { start: 1500 }),
-      easing: GUILLOTINE,
-    });
-
-    // --- PHASE 7: Divider line grows from left ---
-    anime({
-      targets: ".hero-divider",
-      scaleX: [0, 1],
-      duration: 1200,
-      delay: 1600,
-      easing: GUILLOTINE,
-      transformOrigin: "left center",
-    });
-
-    // --- PHASE 8: Top info row fades in ---
-    anime({
-      targets: ".hero-info-row",
-      opacity: [0, 1],
-      translateY: [-15, 0],
-      duration: 600,
-      delay: anime.stagger(80, { start: 800 }),
-      easing: GUILLOTINE,
-    });
-  }, [isReduced]);
+  // We need to calculate letter index offsets globally for staggered CSS delays
+  let letterOffset = 0;
 
   return (
     <section id="top" className="relative min-h-screen flex flex-col overflow-hidden bg-black">
@@ -99,7 +17,7 @@ export function Hero() {
       {/* Scanline sweep — dramatic cinematic flash */}
       {!isReduced && (
         <div
-          className="hero-scanline absolute inset-x-0 h-[3px] bg-[#ffff00] z-50 pointer-events-none opacity-0"
+          className="hero-scanline absolute inset-x-0 h-[3px] bg-[#ffff00] z-50 pointer-events-none animate-scanline-sweep"
           style={{ top: 0 }}
         />
       )}
@@ -108,13 +26,13 @@ export function Hero() {
       {!isReduced && (
         <>
           <div
-            className="hero-overlay-yellow absolute inset-0 z-40 bg-[#ffff00]"
+            className="hero-overlay-yellow absolute inset-0 z-40 bg-[#ffff00] animate-slam-yellow"
             style={{
               clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 15vw))",
             }}
           />
           <div
-            className="hero-overlay-white absolute inset-0 z-30 bg-white"
+            className="hero-overlay-white absolute inset-0 z-30 bg-white animate-slam-white"
             style={{
               clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 15vw))",
             }}
@@ -138,20 +56,38 @@ export function Hero() {
 
         {/* Top crosshair info */}
         <div className="absolute top-20 left-5 right-5 grid grid-cols-12 gap-5 font-mono text-[10px] uppercase tracking-[0.2em] text-white/60 z-10">
-          <div className="hero-info-row col-span-3 flex items-center gap-2" style={{ opacity: isReduced ? 1 : 0 }}>
+          <div
+            className={`hero-info-row col-span-3 flex items-center gap-2 ${isReduced ? "" : "animate-info-row"}`}
+            style={{
+              opacity: isReduced ? 1 : 0,
+              transform: isReduced ? "none" : "translateY(-15px)",
+              animationDelay: isReduced ? "0ms" : "800ms",
+              animationFillMode: "forwards",
+            }}
+          >
             <span className="h-1.5 w-1.5 bg-[#ffff00] animate-blink" />
             STATUS / ONLINE
           </div>
           <div
             ref={coordsRef}
-            className="hero-info-row col-span-3 col-start-7 select-none"
-            style={{ opacity: isReduced ? 1 : 0 }}
+            className={`hero-info-row col-span-3 col-start-7 select-none ${isReduced ? "" : "animate-info-row"}`}
+            style={{
+              opacity: isReduced ? 1 : 0,
+              transform: isReduced ? "none" : "translateY(-15px)",
+              animationDelay: isReduced ? "0ms" : "880ms",
+              animationFillMode: "forwards",
+            }}
           >
             N {profile.coords.lat}° / E {profile.coords.lng}°
           </div>
           <div
-            className="hero-info-row col-span-3 col-start-10 text-right"
-            style={{ opacity: isReduced ? 1 : 0 }}
+            className={`hero-info-row col-span-3 col-start-10 text-right ${isReduced ? "" : "animate-info-row"}`}
+            style={{
+              opacity: isReduced ? 1 : 0,
+              transform: isReduced ? "none" : "translateY(-15px)",
+              animationDelay: isReduced ? "0ms" : "960ms",
+              animationFillMode: "forwards",
+            }}
           >
             PORTFOLIO_V04 — 06.07.26
           </div>
@@ -162,28 +98,40 @@ export function Hero() {
           <h1
             className="font-display font-black leading-[0.82] tracking-[-0.06em] text-[13vw] uppercase"
           >
-            {profile.nameLines.map((line, lineIdx) => (
-              <div key={lineIdx} className="overflow-hidden block whitespace-nowrap">
-                {line.split("").map((letter, i) => (
-                  <div key={i} className="inline-block overflow-hidden">
-                    <span
-                      className="hero-letter inline-block origin-bottom"
-                      style={{
-                        fontStretch: "100%",
-                        transform: isReduced ? "none" : "translateY(200%) rotateZ(-8deg)",
-                        opacity: isReduced ? 1 : 0,
-                      }}
-                    >
-                      {letter}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            ))}
+            {profile.nameLines.map((line, lineIdx) => {
+              const currentOffset = letterOffset;
+              letterOffset += line.length;
+              return (
+                <div key={lineIdx} className="overflow-hidden block whitespace-nowrap">
+                  {line.split("").map((letter, i) => {
+                    const globalIdx = currentOffset + i;
+                    return (
+                      <div key={i} className="inline-block overflow-hidden">
+                        <span
+                          className={`hero-letter inline-block origin-bottom ${isReduced ? "" : "animate-letter"}`}
+                          style={{
+                            fontStretch: "100%",
+                            transform: isReduced ? "none" : "translateY(200%) rotateZ(-8deg) scaleY(1.4)",
+                            opacity: isReduced ? 1 : 0,
+                            animationDelay: isReduced ? "0ms" : `${700 + globalIdx * 40}ms`,
+                            animationFillMode: "forwards",
+                          }}
+                        >
+                          {letter}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })}
           </h1>
           <div
-            className="hero-divider origin-left h-[2px] bg-white mt-4 w-full"
-            style={{ transform: isReduced ? "none" : "scaleX(0)" }}
+            className={`hero-divider origin-left h-[2px] bg-white mt-4 w-full ${isReduced ? "" : "animate-divider"}`}
+            style={{
+              transform: isReduced ? "none" : "scaleX(0)",
+              animationFillMode: "forwards",
+            }}
           />
         </div>
       </div>
@@ -192,10 +140,11 @@ export function Hero() {
       <div className="relative z-10 px-5 pb-20 pt-6 grid grid-cols-12 gap-5 bg-black">
         <div className="col-span-12 md:col-span-5">
           <p
-            className="hero-tagline font-display text-base md:text-lg font-bold leading-tight uppercase text-white"
+            className={`hero-tagline font-display text-base md:text-lg font-bold leading-tight uppercase text-white ${isReduced ? "" : "animate-tagline"}`}
             style={{
               clipPath: isReduced ? "none" : "inset(0 100% 0 0)",
               opacity: isReduced ? 1 : 0,
+              animationFillMode: "forwards",
             }}
           >
             {profile.name} — {profile.tagline}{" "}
@@ -209,13 +158,15 @@ export function Hero() {
             ["INST", "JUET Guna"],
             ["YEAR", "3rd / B.Tech"],
             ["RANK", "01 / 6,200+"],
-          ].map(([k, v]) => (
+          ].map(([k, v], idx) => (
             <div
               key={k}
-              className="hero-meta border-l-2 border-white pl-3"
+              className={`hero-meta border-l-2 border-white pl-3 ${isReduced ? "" : "animate-meta"}`}
               style={{
                 transform: isReduced ? "none" : "translateY(80px) scaleX(0.8) skewX(10deg)",
                 opacity: isReduced ? 1 : 0,
+                animationDelay: isReduced ? "0ms" : `${1500 + idx * 100}ms`,
+                animationFillMode: "forwards",
               }}
             >
               <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/50">{k}</div>
