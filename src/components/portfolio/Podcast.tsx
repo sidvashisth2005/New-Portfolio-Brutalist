@@ -241,11 +241,11 @@ export function Podcast() {
                 />
                 <div
                   id="thumb-1"
-                  onClick={() => loadYT("w7ejDZ8SWv8", "thumb-1", "frame-1")}
+                  onClick={() => loadYT("Im-LBScZpDY", "thumb-1", "frame-1")}
                   className="absolute inset-0 cursor-pointer"
                 >
                   <img
-                    src="https://img.youtube.com/vi/w7ejDZ8SWv8/hqdefault.jpg"
+                    src="https://img.youtube.com/vi/Im-LBScZpDY/hqdefault.jpg"
                     alt="Video Thumbnail"
                     className="w-full h-full object-cover transition-transform duration-300 ease-out group-hover/yt:scale-103"
                   />
@@ -259,10 +259,10 @@ export function Podcast() {
               </div>
               <div>
                 <h4 className="font-display font-medium text-[13px] text-white uppercase tracking-wide">
-                  How to Pitch a Hackathon Project
+                  The Invisible Enemy 🤫 | DAY 4 of 7
                 </h4>
                 <span className="font-mono text-[11px] text-[#555555] uppercase mt-1 block">
-                  OCT 12, 2023
+                  JUN 08, 2024
                 </span>
               </div>
             </div>
@@ -280,11 +280,11 @@ export function Podcast() {
                 />
                 <div
                   id="thumb-2"
-                  onClick={() => loadYT("ysz5S6PUM-U", "thumb-2", "frame-2")}
+                  onClick={() => loadYT("wTi09XnQlsw", "thumb-2", "frame-2")}
                   className="absolute inset-0 cursor-pointer"
                 >
                   <img
-                    src="https://img.youtube.com/vi/ysz5S6PUM-U/hqdefault.jpg"
+                    src="https://img.youtube.com/vi/wTi09XnQlsw/hqdefault.jpg"
                     alt="Video Thumbnail"
                     className="w-full h-full object-cover transition-transform duration-300 ease-out group-hover/yt:scale-103"
                   />
@@ -298,10 +298,10 @@ export function Podcast() {
               </div>
               <div>
                 <h4 className="font-display font-medium text-[13px] text-white uppercase tracking-wide">
-                  Mastering the Tech Presentation
+                  What is Communication?? | DAY 1 of 7
                 </h4>
                 <span className="font-mono text-[11px] text-[#555555] uppercase mt-1 block">
-                  JAN 18, 2024
+                  JUN 05, 2024
                 </span>
               </div>
             </div>
