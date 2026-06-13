@@ -31,15 +31,15 @@ export function Hero() {
     anime({
       targets: ".hero-overlay-yellow",
       translateY: ["0%", "-110%"],
-      duration: 1000,
-      delay: 400,
+      duration: 1100,
+      delay: 200,
       easing: GUILLOTINE,
     });
     anime({
       targets: ".hero-overlay-white",
       translateY: ["0%", "110%"],
-      duration: 1000,
-      delay: 600,
+      duration: 1100,
+      delay: 350,
       easing: GUILLOTINE,
       complete: () => setLoaded(true),
     });
@@ -127,13 +127,13 @@ export function Hero() {
           <div
             className="hero-overlay-yellow absolute inset-0 z-40 bg-[#ffff00]"
             style={{
-              clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 12vw))",
+              clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 15vw))",
             }}
           />
           <div
             className="hero-overlay-white absolute inset-0 z-30 bg-white"
             style={{
-              clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 12vw))",
+              clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 15vw))",
             }}
           />
         </>

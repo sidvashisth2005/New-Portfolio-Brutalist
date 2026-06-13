@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
 import { Nav } from "@/components/portfolio/Nav";
 import { Hero } from "@/components/portfolio/Hero";
 import { Marquee } from "@/components/portfolio/Marquee";
@@ -14,7 +13,7 @@ import { Contact } from "@/components/portfolio/Contact";
 import { Divider } from "@/components/portfolio/Divider";
 import { StickyTicker } from "@/components/portfolio/StickyTicker";
 import { ScrollProgress } from "@/components/portfolio/ScrollProgress";
-import { PageLoader } from "@/components/portfolio/PageLoader";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -29,13 +28,8 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const [_loaderDone, setLoaderDone] = useState(false);
-
   return (
     <main className="bg-black text-white">
-      {/* Page loader — split panel countdown */}
-      <PageLoader onComplete={() => setLoaderDone(true)} />
-
       <ScrollProgress />
       <Nav />
       <Hero />
