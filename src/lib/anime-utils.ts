@@ -1,0 +1,31 @@
+export const GUILLOTINE = "cubicBezier(0.85, 0, 0.15, 1)";
+
+export const GLYPHS = "█▓▒░│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌";
+
+export function glitchText(
+  element: HTMLElement,
+  finalText: string,
+  duration = 300
+): void {
+  const chars = finalText.split("");
+  const startTime = performance.now();
+  const interval = setInterval(() => {
+    const elapsed = performance.now() - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const resolvedCount = Math.floor(progress * chars.length);
+    const display = chars
+      .map((char, i) => {
+        if (i < resolvedCount) return char;
+        if (char === " ") return " ";
+        return GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+      })
+      .join("");
+    element.textContent = display;
+    if (progress >= 1) clearInterval(interval);
+  }, 40);
+}
+
+export function useReducedMotion(): boolean {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}

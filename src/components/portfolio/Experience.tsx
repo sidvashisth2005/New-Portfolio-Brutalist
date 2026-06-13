@@ -1,81 +1,108 @@
-import { motion } from "framer-motion";
-import { SliceHeading } from "./SliceHeading";
-
-const EASE = [0.85, 0, 0.15, 1] as const;
-
-const rows = [
-  {
-    year: "JUNE 2025 - AUG 2025",
-    role: "TALENT ACQUISITION & BD INTERN",
-    company: "Trustique Assists Pvt. Ltd.",
-    location: "Lucknow, UP",
-    outcomes: [
-      "Sourced, screened, and onboarded 20+ interns across multiple colleges; evaluated candidates on technical aptitude and behavioural fit.",
-      "Promoted to Team Lead; directed 3 cross-functional teams (15–18 members), achieving 100% on-time delivery.",
-      "Ran discovery sessions to define a B2B marketplace app; drove 30% platform user growth by applying market intelligence."
-    ]
-  },
-  {
-    year: "DEC 2024 - JAN 2025",
-    role: "DATA ANALYTICS & ML INTERN",
-    company: "Skill Dzire",
-    location: "Remote",
-    outcomes: [
-      "Improved ML classification model accuracy by 15% through data cleaning and EDA in Python and MS Excel.",
-      "Delivered all tasks with 100% on-time completion rate."
-    ]
-  },
-  {
-    year: "JUNE 2024 - JULY 2024",
-    role: "SOFTWARE DEVELOPMENT INTERN",
-    company: "Codesoft",
-    location: "Remote",
-    outcomes: [
-      "Reduced code review cycles by 20% by shipping 3 modular components using Agile methodology.",
-      "Improved overall team delivery speed through structured optimisation."
-    ]
-  }
-];
+import { useEffect, useRef } from "react";
+import anime from "animejs";
+import { GUILLOTINE, useReducedMotion } from "@/lib/anime-utils";
+import { experience } from "@/lib/content";
 
 export function Experience() {
-  return (
-    <section id="experience" className="relative px-5 py-32 border-t-2 border-white">
-      <SliceHeading index="(02)" label="EXPERIENCE">
-        WORK <span className="text-outline">EXPERIENCE</span>
-      </SliceHeading>
+  const isReduced = useReducedMotion();
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
-      <ul className="border-t-2 border-white">
-        {rows.map((r, i) => (
-          <motion.li
-            key={r.role + r.company}
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: i * 0.05, ease: EASE }}
-            className="grid grid-cols-12 gap-5 border-b-2 border-white py-8"
-          >
-            <span className="col-span-12 md:col-span-2 font-mono text-xs uppercase tracking-[0.2em] text-white/70">
-              {r.year}
-            </span>
-            <div className="col-span-12 md:col-span-6">
-              <h3 className="font-display font-black text-2xl md:text-3xl tracking-tight uppercase">
-                {r.role}
-              </h3>
-              <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#ffff00] mt-2">
-                @ {r.company} <span className="text-white/50">({r.location})</span>
+  useEffect(() => {
+    const section = wrapperRef.current;
+    if (!section || isReduced) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            anime({
+              targets: ".experience-entry",
+              clipPath: ["inset(0 0 100% 0)", "inset(0 0 0% 0)"],
+              opacity: [0, 1],
+              duration: 600,
+              delay: anime.stagger(150),
+              easing: GUILLOTINE,
+            });
+            observer.disconnect();
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
+
+    observer.observe(section);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [isReduced]);
+
+  return (
+    <section id="experience" ref={wrapperRef} className="relative px-5 py-32 border-t-2 border-white">
+      <div className="grid grid-cols-12 gap-5">
+        {/* Left column */}
+        <div className="col-span-12 md:col-span-3">
+          <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#ffff00] md:sticky md:top-20">
+            (02) EXPERIENCE / TRAIL
+          </div>
+        </div>
+
+        {/* Right column */}
+        <div className="col-span-12 md:col-span-9 space-y-0">
+          {experience.map((exp, i) => {
+            const isTrustique = exp.company.includes("Trustique");
+            return (
+              <div
+                key={exp.company + exp.role}
+                className="experience-entry border-t border-white/20 pt-12 pb-12 first:border-t-2 first:border-white"
+                style={{
+                  clipPath: isReduced ? "none" : "inset(0 0 100% 0)",
+                  opacity: isReduced ? 1 : 0,
+                }}
+              >
+                {/* Period */}
+                <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#ffff00]">
+                  {exp.period}
+                </div>
+
+                {/* Company Name */}
+                <h3 className="font-display font-black text-3xl md:text-5xl tracking-[-0.06em] uppercase text-white mt-2 leading-none">
+                  {exp.company}
+                </h3>
+
+                {/* Role & Location */}
+                <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/50 mt-1">
+                  {exp.role} &middot; {exp.location}
+                </div>
+
+                {/* Bullets & Promo Callout */}
+                <ul className="mt-6 space-y-4">
+                  {exp.bullets.map((bullet, idx) => (
+                    <div key={idx}>
+                      <li className="flex items-start">
+                        {/* 2px yellow square */}
+                        <span className="w-1.5 h-1.5 bg-[#ffff00] mt-[6px] flex-shrink-0" />
+                        <span className="font-display text-[14px] text-white/70 leading-relaxed ml-4 uppercase">
+                          {bullet}
+                        </span>
+                      </li>
+
+                      {/* Standalone promo callout for Trustique after bullet index 1 */}
+                      {isTrustique && idx === 1 && (
+                        <div className="my-5 ml-5.5 pl-4 border-l border-[#ffff00]/30 py-1">
+                          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#ffff00]">
+                            &uarr; PROMOTED TO TEAM LEAD &mdash; MID INTERNSHIP
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </ul>
               </div>
-            </div>
-            <ul className="col-span-12 md:col-span-4 space-y-2">
-              {r.outcomes.map((o, idx) => (
-                <li key={idx} className="font-mono text-xs uppercase tracking-wide text-white/80 flex gap-2 leading-relaxed">
-                  <span className="text-[#ffff00] flex-shrink-0">▸</span> 
-                  <span>{o}</span>
-                </li>
-              ))}
-            </ul>
-          </motion.li>
-        ))}
-      </ul>
+            );
+          })}
+        </div>
+      </div>
     </section>
   );
 }

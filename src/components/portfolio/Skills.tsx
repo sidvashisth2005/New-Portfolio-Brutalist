@@ -1,197 +1,160 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
+import anime from "animejs";
+import { GUILLOTINE, useReducedMotion } from "@/lib/anime-utils";
+import { skills, skillContributions } from "@/lib/content";
 import { SliceHeading } from "./SliceHeading";
-import { Briefcase, Code, Database } from "lucide-react";
-
-const EASE = [0.85, 0, 0.15, 1] as const;
-
-interface SkillItem {
-  name: string;
-  desc: string;
-}
-
-interface SkillCategory {
-  title: string;
-  icon: React.ReactNode;
-  skills: SkillItem[];
-}
-
-const skillCategories: SkillCategory[] = [
-  {
-    title: "Business & Strategy",
-    icon: <Briefcase size={20} />,
-    skills: [
-      {
-        name: "Business Development",
-        desc: "Pitched commercialisation strategies at 6+ hackathons & drove 30% user growth for Trustique's B2B marketplace app."
-      },
-      {
-        name: "Market Research",
-        desc: "Benchmarked global competitors for Livestock Monitoring System & diagnosed local superstore footfall patterns."
-      },
-      {
-        name: "ROI Analysis",
-        desc: "Designed product launch strategy and ROI case for farmer and insurer segments at HackNITR 7.0."
-      },
-      {
-        name: "Go-to-Market Strategy",
-        desc: "Devised 3 actionable growth recommendations for a local superstore, achieving 25%+ increase in customer footfall."
-      },
-      {
-        name: "Lead Generation",
-        desc: "Sourced, screened, and onboarded 20+ interns across multiple colleges for Trustique assists."
-      },
-      {
-        name: "Agile Methodology",
-        desc: "Reduced code review cycles by 20% by shipping 3 modular components at Codesoft using Agile methodology."
-      }
-    ]
-  },
-  {
-    title: "Technical",
-    icon: <Code size={20} />,
-    skills: [
-      {
-        name: "Flutter",
-        desc: "Developed the ARound You app integrating Map Tiles API and Firebase database."
-      },
-      {
-        name: "Python",
-        desc: "Improved ML classification model accuracy by 15% through data cleaning and EDA in Jupyter notebooks."
-      },
-      {
-        name: "IoT",
-        desc: "Built dual-component hardware/software solution (microcontrollers + sensors) for real-time livestock health monitoring."
-      },
-      {
-        name: "Git/GitHub",
-        desc: "Maintained version control and repository architecture across all projects including full-stack TravelGo platform."
-      },
-      {
-        name: "Android Studio",
-        desc: "Primary IDE utilized for cross-platform Flutter and Android development."
-      }
-    ]
-  },
-  {
-    title: "Data & Tools",
-    icon: <Database size={20} />,
-    skills: [
-      {
-        name: "SQL",
-        desc: "Managed relational databases, schemas, and query optimization for university projects and coursework."
-      },
-      {
-        name: "MS Excel",
-        desc: "Used extensively for data cleaning, Exploratory Data Analysis (EDA), and financial viability analysis."
-      },
-      {
-        name: "MS PowerPoint",
-        desc: "Created award-winning pitch decks and slide presentations for national and international hackathons."
-      },
-      {
-        name: "Machine Learning (EDA)",
-        desc: "Certified by Skill Dzire; delivered 15% model classification accuracy improvement."
-      },
-      {
-        name: "Google Cloud Platform",
-        desc: "Certified in GCP; utilized cloud services for scalable app deployment and storage."
-      }
-    ]
-  }
-];
 
 export function Skills() {
-  const [activeSkill, setActiveSkill] = useState<SkillItem | null>(null);
+  const isReduced = useReducedMotion();
+
+  // Start with the first skill of the first category
+  const defaultCategory = skills[0].category;
+  const defaultSkill = skills[0].items[0];
+
+  const [activeSkillName, setActiveSkillName] = useState(defaultSkill);
+  const [activeCategory, setActiveCategory] = useState(defaultCategory);
+
+  // Animate initial entry of detail content
+  useEffect(() => {
+    if (isReduced) return;
+    anime({
+      targets: ".skill-detail-content",
+      clipPath: ["inset(0 100% 0 0)", "inset(0 0% 0 0)"],
+      duration: 300,
+      easing: GUILLOTINE,
+    });
+  }, [isReduced]);
+
+  const changeSkill = (newSkill: string, categoryName: string) => {
+    if (newSkill === activeSkillName) return;
+
+    if (isReduced) {
+      setActiveSkillName(newSkill);
+      setActiveCategory(categoryName);
+      return;
+    }
+
+    anime({
+      targets: ".skill-detail-content",
+      clipPath: ["inset(0 0% 0 0)", "inset(0 100% 0 0)"],
+      duration: 180,
+      easing: GUILLOTINE,
+      complete: () => {
+        setActiveSkillName(newSkill);
+        setActiveCategory(categoryName);
+        anime({
+          targets: ".skill-detail-content",
+          clipPath: ["inset(0 100% 0 0)", "inset(0 0% 0 0)"],
+          duration: 200,
+          easing: GUILLOTINE,
+        });
+      },
+    });
+  };
+
+  const activeContribution = skillContributions[activeSkillName] || "";
 
   return (
     <section id="skills" className="relative px-5 py-32 border-t-2 border-white bg-black">
       <SliceHeading index="(06)" label="SKILLS">
-        TECHNICAL & <span className="text-outline">BUSINESS SKILLS</span>
+        TECHNICAL & <span className="text-outline">BUSINESS CORE</span>
       </SliceHeading>
 
-      <div className="grid grid-cols-12 gap-8 mt-10">
-        {/* Left: Skill Categories and Items */}
-        <div className="col-span-12 md:col-span-7 space-y-8">
-          {skillCategories.map((cat, catIdx) => (
-            <motion.div
-              key={cat.title}
-              initial={{ opacity: 0, x: -15 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: catIdx * 0.1, ease: EASE }}
-              className="border-2 border-white p-6 bg-black"
-            >
-              <h3 className="font-display font-black text-lg uppercase tracking-tight flex items-center gap-2 border-b border-white/20 pb-4 mb-4">
-                <span className="text-[#ffff00]">{cat.icon}</span>
-                {cat.title}
-              </h3>
+      <div className="grid grid-cols-12 gap-5 mt-10 items-stretch">
+        {/* Left Panel: Category Cards */}
+        <div className="col-span-12 md:col-span-6 space-y-0">
+          {skills.map((cat) => {
+            const isCardActive = cat.category === activeCategory;
+            return (
+              <div
+                key={cat.category}
+                className={`border-2 border-white p-6 mb-0 -mt-[2px] first:mt-0 transition-colors duration-300 ${
+                  isCardActive ? "bg-[#ffff00] text-black" : "bg-black text-white"
+                }`}
+              >
+                {/* Category Number */}
+                <div
+                  className={`font-mono text-[10px] uppercase tracking-[0.2em] ${
+                    isCardActive ? "text-black/60" : "text-[#ffff00]"
+                  }`}
+                >
+                  ({cat.number})
+                </div>
 
-              <div className="flex flex-wrap gap-2">
-                {cat.skills.map((skill) => {
-                  const isHovered = activeSkill?.name === skill.name;
-                  return (
-                    <button
-                      key={skill.name}
-                      onMouseEnter={() => setActiveSkill(skill)}
-                      onMouseLeave={() => setActiveSkill(null)}
-                      className={`font-mono text-xs uppercase tracking-wider px-3 py-2 border transition-all duration-300 ${
-                        isHovered
-                          ? "bg-[#ffff00] text-black border-[#ffff00] scale-[1.03]"
-                          : "bg-black text-white/80 border-white/20 hover:border-white hover:text-white"
-                      }`}
-                    >
-                      {skill.name}
-                    </button>
-                  );
-                })}
+                {/* Category Name */}
+                <h3
+                  className={`font-display font-black text-2xl tracking-[-0.06em] uppercase mt-1 leading-none ${
+                    isCardActive ? "text-black" : "text-white"
+                  }`}
+                >
+                  {cat.category}
+                </h3>
+
+                {/* Skill Items List */}
+                <ul className="mt-6 border-t border-current/25">
+                  {cat.items.map((item) => {
+                    const isItemActive = item === activeSkillName;
+                    return (
+                      <li
+                        key={item}
+                        onMouseEnter={() => changeSkill(item, cat.category)}
+                        className={`group/skill relative flex items-center justify-between py-3 border-b border-current/10 cursor-pointer transition-colors duration-150 ${
+                          isItemActive
+                            ? isCardActive
+                              ? "text-black font-bold"
+                              : "text-[#ffff00]"
+                            : isCardActive
+                            ? "text-black/70 hover:text-black"
+                            : "text-white/70 hover:text-[#ffff00]"
+                        }`}
+                      >
+                        <span className="font-display text-[14px] uppercase tracking-wide">
+                          {item}
+                        </span>
+
+                        {/* Yellow dot on right (visible on hover or active) */}
+                        <span
+                          className={`w-1.5 h-1.5 rounded-none flex-shrink-0 transition-opacity duration-150 ${
+                            isCardActive ? "bg-black" : "bg-[#ffff00]"
+                          } ${isItemActive ? "opacity-100" : "opacity-0 group-hover/skill:opacity-100"}`}
+                        />
+                      </li>
+                    );
+                  })}
+                </ul>
               </div>
-            </motion.div>
-          ))}
+            );
+          })}
         </div>
 
-        {/* Right: Sticky Detail Panel */}
-        <div className="col-span-12 md:col-span-5">
-          <div className="sticky top-28 border-2 border-white bg-black p-6 md:p-8 min-h-[300px] flex flex-col justify-between overflow-hidden relative">
-            <div className="absolute inset-0 grid-bg opacity-10 pointer-events-none" />
+        {/* Right Panel: Detail View */}
+        <div className="col-span-12 md:col-span-6 relative border-2 border-white -mt-[2px] md:-mt-0 md:ml-[-2px] bg-black">
+          <div className="sticky top-20 p-8 h-full min-h-[350px] flex flex-col justify-between overflow-hidden">
+            <div className="absolute inset-0 grid-bg opacity-15 pointer-events-none" />
 
-            <AnimatePresence mode="wait">
-              {activeSkill ? (
-                <motion.div
-                  key={activeSkill.name}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.2 }}
-                  className="relative z-10 flex flex-col justify-between h-full gap-4"
-                >
-                  <div>
-                    <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#ffff00]">
-                      // INJECTED SKILL CONTEXT
-                    </span>
-                    <h4 className="font-display font-black text-2xl uppercase tracking-tight mt-2 border-b border-white/20 pb-4">
-                      {activeSkill.name}
-                    </h4>
-                    <p className="font-mono text-sm uppercase tracking-wide leading-relaxed text-white/95 mt-6 flex gap-2">
-                      <span className="text-[#ffff00] flex-shrink-0">▸</span>
-                      <span>{activeSkill.desc}</span>
-                    </p>
-                  </div>
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="empty"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="relative z-10 flex flex-col justify-center items-center h-full text-center py-12"
-                >
-                  <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/30 animate-pulse">
-                    [ HOVER A SKILL TO INSPECT OUTCOMES ]
-                  </span>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <div
+              className="skill-detail-content relative z-10 flex flex-col justify-between h-full gap-8"
+              style={{ clipPath: isReduced ? "none" : "inset(0 100% 0 0)" }}
+            >
+              <div>
+                <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#ffff00]">
+                  // INJECTED SKILL CONTEXT
+                </span>
+                <h4 className="font-display font-black text-[clamp(2rem,4vw,3.5rem)] tracking-[-0.06em] uppercase text-white mt-4 border-b border-white/20 pb-4 leading-none">
+                  {activeSkillName}
+                </h4>
+                <p className="font-mono text-sm uppercase tracking-wider leading-relaxed text-white/90 mt-8 flex gap-2">
+                  <span className="text-[#ffff00] flex-shrink-0">▸</span>
+                  <span>{activeContribution}</span>
+                </p>
+              </div>
+
+              <div>
+                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#ffff00]">
+                  SCOPE: {activeCategory}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
