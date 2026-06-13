@@ -106,7 +106,7 @@ export function About() {
                 easing: "easeOutExpo",
                 round: 1,
                 update: function (anim) {
-                  const val = Math.round(anim.animations[0].currentValue);
+                  const val = Math.round(Number(anim.animations[0].currentValue));
                   const suffix = stat.display.includes("+")
                     ? "+"
                     : stat.display.includes("%")

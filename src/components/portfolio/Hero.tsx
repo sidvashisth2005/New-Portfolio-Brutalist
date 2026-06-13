@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import anime from "animejs";
 import { GUILLOTINE, useReducedMotion } from "@/lib/anime-utils";
 import { profile } from "@/lib/content";
@@ -7,15 +7,10 @@ import { StarField } from "./StarField";
 
 export function Hero() {
   const coordsRef = useRef<HTMLDivElement>(null);
-  const nameRef = useRef<HTMLHeadingElement>(null);
   const isReduced = useReducedMotion();
-  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    if (isReduced) {
-      setLoaded(true);
-      return;
-    }
+    if (isReduced) return;
 
     // --- PHASE 1: Scanline sweep across the hero ---
     anime({
@@ -41,7 +36,6 @@ export function Hero() {
       duration: 1100,
       delay: 350,
       easing: GUILLOTINE,
-      complete: () => setLoaded(true),
     });
 
     // --- PHASE 3: NAME — massive letter throw from below + skew ---
@@ -166,7 +160,6 @@ export function Hero() {
         {/* Main Name + Divider */}
         <div className="relative z-10 px-5 w-full">
           <h1
-            ref={nameRef}
             className="font-display font-black leading-[0.82] tracking-[-0.06em] text-[13vw] uppercase"
           >
             {profile.nameLines.map((line, lineIdx) => (
