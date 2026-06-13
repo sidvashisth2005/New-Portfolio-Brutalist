@@ -1,3 +1,5 @@
+import { useState, useEffect } from "react";
+
 export const GUILLOTINE = "cubicBezier(0.85, 0, 0.15, 1)";
 
 export const GLYPHS = "█▓▒░│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌";
@@ -26,6 +28,28 @@ export function glitchText(
 }
 
 export function useReducedMotion(): boolean {
-  if (typeof window === "undefined") return false;
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const [isReduced, setIsReduced] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    // Support query parameter override (?force-animate=true or ?animate=true)
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("animate") === "true" || params.get("force") === "true") {
+      setIsReduced(false);
+      return;
+    }
+
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setIsReduced(mediaQuery.matches);
+
+    const handler = (event: MediaQueryListEvent) => {
+      setIsReduced(event.matches);
+    };
+
+    mediaQuery.addEventListener("change", handler);
+    return () => mediaQuery.removeEventListener("change", handler);
+  }, []);
+
+  return isReduced;
 }
