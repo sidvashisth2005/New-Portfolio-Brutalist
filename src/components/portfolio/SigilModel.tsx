@@ -1,4 +1,4 @@
-import { useRef, Suspense } from "react";
+import { useRef, Suspense, useState, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, Stars, Environment, OrbitControls, MeshTransmissionMaterial } from "@react-three/drei";
 import * as THREE from "three";
@@ -143,6 +143,18 @@ const SigilScene = ({ coordsRef }: { coordsRef?: React.RefObject<HTMLDivElement 
  * Sets up lights, environment presets, stars backdrop, floating motion, and drag controls.
  */
 export function SigilModel({ coordsRef }: { coordsRef?: React.RefObject<HTMLDivElement | null> }) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="w-full h-full bg-transparent flex items-center justify-center" />
+    );
+  }
+
   return (
     <Canvas camera={{ position: [0, 0, 3.2], fov: 45 }} dpr={[1, 2]}>
       {/* Basic WebGL Lighting */}

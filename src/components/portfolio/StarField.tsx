@@ -1,8 +1,18 @@
-import { Suspense } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stars } from "@react-three/drei";
 
 export function StarField() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return <div className="w-full h-full pointer-events-none" />;
+  }
+
   return (
     <div className="w-full h-full pointer-events-none">
       <Canvas camera={{ position: [0, 0, 5] }} dpr={[1, 1.5]}>
