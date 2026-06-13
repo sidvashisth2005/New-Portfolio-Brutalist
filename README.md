@@ -235,3 +235,5 @@ This produces optimized production assets inside the `dist/` directory.
 ---
 
 *End of blueprint. Follow these rules to maintain design integrity when modifying or extending this codebase.*
+#   N e w - P o r t f o l i o - B r u t a l i s t  
+ 
