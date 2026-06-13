@@ -189,7 +189,7 @@ export function Podcast() {
           <div className="overflow-hidden">
             <div className="section-label font-mono text-[10px] uppercase tracking-[0.2em] text-[#E8FF00]">
               <span>(04) </span>
-              <span>PODCAST / PITCHED.</span>
+              <span>TRANSMISSIONS / PODCAST</span>
             </div>
           </div>
           <div className="overflow-hidden mt-4">

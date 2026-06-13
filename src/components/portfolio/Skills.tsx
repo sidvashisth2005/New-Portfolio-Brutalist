@@ -62,7 +62,7 @@ export function Skills() {
         style={{ transform: isReduced ? "none" : "scaleX(0)" }}
       />
 
-      <SliceHeading index="(06)" label="SKILLS">
+      <SliceHeading index="(06)" label="STACK / CAPABILITIES">
         TECHNICAL & <span className="text-outline">BUSINESS CORE</span>
       </SliceHeading>
 

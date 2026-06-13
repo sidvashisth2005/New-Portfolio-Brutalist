@@ -110,7 +110,7 @@ export function Gallery() {
               style={{ transform: isReduced ? "none" : "translateY(100%)" }}
             >
               <span>(05) </span>
-              <span>GALLERY / FIELD NOTES</span>
+              <span>ARCHIVES / GALLERY</span>
             </div>
           </div>
         </div>

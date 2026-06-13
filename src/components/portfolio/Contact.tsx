@@ -60,7 +60,7 @@ export function Contact() {
               style={{ transform: isReduced ? "none" : "translateY(100%)" }}
             >
               <span>(08) </span>
-              <span>CONTACT / SIGNAL</span>
+              <span>COMMS / CONTACT</span>
             </div>
           </div>
         </div>

@@ -26,7 +26,7 @@ export function About() {
               style={{ transform: isReduced ? "none" : "translateY(100%)" }}
             >
               <span>(01) </span>
-              <span>ABOUT / MANIFESTO</span>
+              <span>IDENTITY / MANIFESTO</span>
             </div>
           </div>
         </div>

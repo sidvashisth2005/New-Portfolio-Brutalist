@@ -16,7 +16,7 @@ export function Experience() {
         style={{ transform: isReduced ? "none" : "scaleX(0)" }}
       />
 
-      <SliceHeading index="(02)" label="EXPERIENCE / TRAIL">
+      <SliceHeading index="(02)" label="CHRONICLE / EXPERIENCE">
         WORK <span className="text-outline">EXPERIENCE</span>
       </SliceHeading>
 

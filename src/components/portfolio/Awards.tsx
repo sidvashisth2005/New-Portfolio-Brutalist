@@ -37,7 +37,7 @@ export function Awards() {
               style={{ transform: isReduced ? "none" : "translateY(100%)" }}
             >
               <span>(07) </span>
-              <span>AWARDS / RECEIPTS</span>
+              <span>RECOGNITIONS / AWARDS</span>
             </div>
           </div>
         </div>
