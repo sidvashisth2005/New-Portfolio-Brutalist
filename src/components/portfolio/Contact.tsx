@@ -5,6 +5,7 @@ import { profile } from "@/lib/content";
 
 export function Contact() {
   const isReduced = useReducedMotion();
+  const sectionRef = useRef<HTMLElement>(null);
 
   const handleFocus = (fieldId: string) => {
     if (isReduced) return;
@@ -35,8 +36,73 @@ export function Contact() {
     window.location.href = `mailto:${profile.email}?subject=${subject}&body=${body}`;
   };
 
+  // Scroll-in animation
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section || isReduced) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // BIG heading: each word slams
+            anime({
+              targets: ".contact-heading-word",
+              translateY: ["120%", "0%"],
+              skewY: [-6, 0],
+              opacity: [0, 1],
+              duration: 900,
+              delay: anime.stagger(150, { start: 0 }),
+              easing: GUILLOTINE,
+            });
+
+            // Subtext
+            anime({
+              targets: ".contact-subtext",
+              clipPath: ["inset(0 100% 0 0)", "inset(0 0% 0 0)"],
+              opacity: [0, 1],
+              duration: 700,
+              delay: 400,
+              easing: GUILLOTINE,
+            });
+
+            // Form fields slam up
+            anime({
+              targets: ".contact-form-field",
+              translateY: [50, 0],
+              opacity: [0, 1],
+              duration: 600,
+              delay: anime.stagger(130, { start: 600 }),
+              easing: GUILLOTINE,
+            });
+
+            // Directory grid blocks
+            anime({
+              targets: ".contact-dir-cell",
+              clipPath: ["inset(100% 0 0 0)", "inset(0% 0 0 0)"],
+              opacity: [0, 1],
+              duration: 700,
+              delay: anime.stagger(100, { start: 900 }),
+              easing: GUILLOTINE,
+            });
+
+            observer.disconnect();
+          }
+        });
+      },
+      { threshold: 0.05 }
+    );
+
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, [isReduced]);
+
   return (
-    <section id="contact" className="relative px-5 py-32 border-t-2 border-white overflow-hidden">
+    <section
+      id="contact"
+      ref={sectionRef}
+      className="relative px-5 py-32 border-t-2 border-white overflow-hidden"
+    >
       <div className="absolute inset-0 grid-bg opacity-20 pointer-events-none" />
 
       <div className="relative grid grid-cols-12 gap-5 z-10">
@@ -49,20 +115,44 @@ export function Contact() {
 
         {/* Right Column */}
         <div className="col-span-12 md:col-span-9">
-          <h2 className="font-display font-black tracking-[-0.06em] leading-none text-[clamp(3rem,8vw,7rem)] uppercase text-white">
-            LET&rsquo;S<br />
-            <span className="text-outline-yellow">BUILD.</span>
+          {/* Heading with per-word overflow clip */}
+          <h2 className="font-display font-black tracking-[-0.06em] leading-none text-[clamp(3rem,8vw,7rem)] uppercase text-white overflow-hidden">
+            <div className="overflow-hidden">
+              <span
+                className="contact-heading-word inline-block"
+                style={{ opacity: isReduced ? 1 : 0 }}
+              >
+                LET&rsquo;S
+              </span>
+            </div>
+            <div className="overflow-hidden">
+              <span
+                className="contact-heading-word text-outline-yellow inline-block"
+                style={{ opacity: isReduced ? 1 : 0 }}
+              >
+                BUILD.
+              </span>
+            </div>
           </h2>
 
-          <p className="font-display text-[15px] text-white/60 max-w-lg leading-relaxed mt-6 uppercase">
-            If you&rsquo;re hiring for business development, growth strategy, or product thinking &mdash; 
+          <p
+            className="contact-subtext font-display text-[15px] text-white/60 max-w-lg leading-relaxed mt-6 uppercase"
+            style={{
+              opacity: isReduced ? 1 : 0,
+              clipPath: isReduced ? "none" : "inset(0 100% 0 0)",
+            }}
+          >
+            If you&rsquo;re hiring for business development, growth strategy, or product thinking &mdash;
             or you just want to talk about what&rsquo;s broken in AgriTech &mdash; the inbox is open.
           </p>
 
           {/* Contact Form */}
           <form onSubmit={handleSubmit} className="mt-12 max-w-lg">
             {/* Name Field */}
-            <div className="relative border-b-2 border-white/30 mb-8">
+            <div
+              className="contact-form-field relative border-b-2 border-white/30 mb-8"
+              style={{ opacity: isReduced ? 1 : 0 }}
+            >
               <input
                 id="form-name"
                 type="text"
@@ -72,15 +162,14 @@ export function Contact() {
                 onBlur={() => handleBlur("name")}
                 className="bg-transparent w-full pb-3 pt-1 font-display text-[15px] text-white placeholder-white/20 uppercase outline-none border-none"
               />
-              {/* Focus Underline */}
-              <div
-                id="name-underline"
-                className="absolute bottom-0 left-0 h-[2px] bg-[#ffff00] w-0"
-              />
+              <div id="name-underline" className="absolute bottom-0 left-0 h-[2px] bg-[#ffff00] w-0" />
             </div>
 
             {/* Message Field */}
-            <div className="relative border-b-2 border-white/30 mb-8">
+            <div
+              className="contact-form-field relative border-b-2 border-white/30 mb-8"
+              style={{ opacity: isReduced ? 1 : 0 }}
+            >
               <textarea
                 id="form-message"
                 placeholder="YOUR MESSAGE"
@@ -90,16 +179,14 @@ export function Contact() {
                 onBlur={() => handleBlur("message")}
                 className="bg-transparent w-full pb-3 pt-1 font-display text-[15px] text-white placeholder-white/20 uppercase outline-none border-none resize-none"
               />
-              {/* Focus Underline */}
-              <div
-                id="message-underline"
-                className="absolute bottom-0 left-0 h-[2px] bg-[#ffff00] w-0"
-              />
+              <div id="message-underline" className="absolute bottom-0 left-0 h-[2px] bg-[#ffff00] w-0" />
             </div>
 
             {/* Buttons Row */}
-            <div className="flex flex-col sm:flex-row gap-4 mt-8">
-              {/* Send Button */}
+            <div
+              className="contact-form-field flex flex-col sm:flex-row gap-4 mt-8"
+              style={{ opacity: isReduced ? 1 : 0 }}
+            >
               <button
                 type="submit"
                 className="group/btn relative border-2 border-white px-8 py-4 font-mono text-[11px] uppercase tracking-[0.2em] text-white hover:text-black overflow-hidden cursor-pointer transition-colors duration-300"
@@ -108,7 +195,6 @@ export function Contact() {
                 <span className="absolute inset-0 bg-[#ffff00] translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300 ease-[cubic-bezier(0.85,0,0.15,1)] z-0" />
               </button>
 
-              {/* Download Resume */}
               <a
                 href="https://drive.google.com/file/d/1Du6QLPI58renRduOlaXqYmsCB6aXjen-/view?usp=drive_link"
                 target="_blank"
@@ -129,12 +215,15 @@ export function Contact() {
               ["LINKEDIN", "CONNECT ON LINKEDIN", profile.linkedin],
               ["GITHUB", "FOLLOW ON GITHUB", profile.github],
             ].map(([label, val, href], idx) => {
-              const borderClasses = `p-8 border-b-2 border-white ${
+              const borderClasses = `contact-dir-cell p-8 border-b-2 border-white ${
                 idx % 2 === 0 ? "sm:border-r-2 border-white" : ""
               }`;
-
               return (
-                <div key={label} className={borderClasses}>
+                <div
+                  key={label}
+                  className={borderClasses}
+                  style={{ opacity: isReduced ? 1 : 0, clipPath: isReduced ? "none" : "inset(100% 0 0 0)" }}
+                >
                   <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/40 mb-2">
                     {label}
                   </div>

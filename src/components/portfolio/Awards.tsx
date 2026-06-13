@@ -15,26 +15,40 @@ export function Awards() {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
+            // Full clip-path reveal from bottom with stagger
             anime({
               targets: ".award-row",
-              translateX: ["-24px", "0px"],
+              clipPath: ["inset(0 0 100% 0)", "inset(0 0 0% 0)"],
+              translateY: [50, 0],
+              scaleX: [0.94, 1],
               opacity: [0, 1],
-              duration: 500,
-              delay: anime.stagger(100),
+              duration: 900,
+              delay: anime.stagger(140, { start: 0 }),
               easing: GUILLOTINE,
             });
+
+            // HackNITR (first row) gets an extra flash of yellow bg
+            setTimeout(() => {
+              const hero = document.querySelector(".award-row.is-hero");
+              if (hero) {
+                anime({
+                  targets: ".award-hero-flash",
+                  opacity: [0.6, 0],
+                  duration: 600,
+                  easing: "easeOutSine",
+                });
+              }
+            }, 800);
+
             observer.disconnect();
           }
         });
       },
-      { threshold: 0.15 }
+      { threshold: 0.1 }
     );
 
     observer.observe(section);
-
-    return () => {
-      observer.disconnect();
-    };
+    return () => observer.disconnect();
   }, [isReduced]);
 
   const handleMouseEnter = (rowId: string, idxText: string, titleText: string) => {
@@ -76,18 +90,23 @@ export function Awards() {
                 id={rowId}
                 onMouseEnter={() => handleMouseEnter(rowId, formattedIndex, award.title)}
                 onMouseLeave={() => handleMouseLeave(rowId, formattedIndex, award.title)}
-                className={`award-row group relative grid grid-cols-12 gap-5 items-start py-8 px-4 border-b-2 border-white cursor-default overflow-hidden ${
+                className={`award-row ${isHackNITR ? "is-hero" : ""} group relative grid grid-cols-12 gap-5 items-start py-8 px-4 border-b-2 border-white cursor-default overflow-hidden ${
                   isHackNITR ? "border-l-4 border-[#ffff00]" : ""
                 }`}
                 style={{
-                  transform: isReduced ? "none" : "translateX(-24px)",
                   opacity: isReduced ? 1 : 0,
+                  clipPath: isReduced ? "none" : "inset(0 0 100% 0)",
                 }}
               >
                 {/* Yellow Hover Wipe panel */}
                 <span className="absolute inset-0 bg-[#ffff00] translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.85,0,0.15,1)] z-0" />
 
-                {/* Index (Col 1) */}
+                {/* Flash overlay for first award */}
+                {isHackNITR && (
+                  <span className="award-hero-flash absolute inset-0 bg-[#ffff00] pointer-events-none z-20 opacity-0" />
+                )}
+
+                {/* Index */}
                 <div
                   id={`${rowId}-index`}
                   className="col-span-1 font-mono text-[10px] uppercase tracking-[0.2em] text-[#ffff00] group-hover:text-black transition-colors duration-300 relative z-10"
@@ -95,14 +114,14 @@ export function Awards() {
                   {formattedIndex}
                 </div>
 
-                {/* Scope Badge (Col 2) */}
+                {/* Scope Badge */}
                 <div className="col-span-12 md:col-span-2 relative z-10">
                   <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/30 border border-white/20 px-2 py-1 inline-block group-hover:border-black/20 group-hover:text-black/40 transition-colors duration-300">
                     {award.scope}
                   </span>
                 </div>
 
-                {/* Title (Col 6) */}
+                {/* Title */}
                 <div className="col-span-12 md:col-span-6 relative z-10">
                   <h3
                     id={`${rowId}-title`}
@@ -114,7 +133,7 @@ export function Awards() {
                   </h3>
                 </div>
 
-                {/* Description (Col 3) */}
+                {/* Description */}
                 <div className="col-span-12 md:col-span-3 font-display text-[12px] text-white/50 leading-relaxed uppercase group-hover:text-black/60 transition-colors duration-300 relative z-10">
                   {award.description}
                 </div>

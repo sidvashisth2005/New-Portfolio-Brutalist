@@ -18,34 +18,37 @@ export function Gallery() {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            anime({
-              targets: ".gallery-card",
-              clipPath: ["inset(0 100% 0 0)", "inset(0 0% 0 0)"],
-              opacity: [0, 1],
-              duration: 500,
-              delay: anime.stagger(80),
-              easing: GUILLOTINE,
+            // Alternate direction stagger — odd from left, even from right
+            galleryItems.forEach((_, i) => {
+              const el = document.querySelector(`.gallery-card:nth-child(${i + 1})`);
+              if (!el) return;
+              anime({
+                targets: el,
+                translateX: [i % 2 === 0 ? -80 : 80, 0],
+                translateY: [40, 0],
+                scaleY: [0.85, 1],
+                clipPath: ["inset(0 0 100% 0)", "inset(0 0 0% 0)"],
+                opacity: [0, 1],
+                duration: 900,
+                delay: i * 130,
+                easing: GUILLOTINE,
+              });
             });
+
             observer.disconnect();
           }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.05 }
     );
 
     observer.observe(section);
-
-    return () => {
-      observer.disconnect();
-    };
+    return () => observer.disconnect();
   }, [isReduced]);
 
-  // Handle Escape key to close modal
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        closeModal();
-      }
+      if (e.key === "Escape") closeModal();
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
@@ -60,21 +63,22 @@ export function Gallery() {
       return;
     }
 
+    // Flash + scale the card before opening
     anime({
       targets: cardEl,
-      scale: [1, 1.02],
-      duration: 150,
-      easing: GUILLOTINE,
+      scale: [1, 1.03, 1],
+      duration: 250,
+      easing: "easeInOutSine",
     }).finished.then(() => {
       setSelectedItem(item);
-      // Let React render the overlay, then animate it in
       setTimeout(() => {
         if (overlayRef.current) {
           anime({
             targets: overlayRef.current,
+            clipPath: ["inset(100% 0 0 0)", "inset(0% 0 0 0)"],
             opacity: [0, 1],
-            duration: 200,
-            easing: "easeOutSine",
+            duration: 600,
+            easing: GUILLOTINE,
           });
         }
       }, 30);
@@ -92,12 +96,11 @@ export function Gallery() {
     if (overlayRef.current) {
       anime({
         targets: overlayRef.current,
+        clipPath: ["inset(0% 0 0 0)", "inset(0% 0 100% 0)"],
         opacity: [1, 0],
-        duration: 200,
-        easing: "easeInSine",
-        complete: () => {
-          setSelectedItem(null);
-        },
+        duration: 500,
+        easing: GUILLOTINE,
+        complete: () => setSelectedItem(null),
       });
     } else {
       setSelectedItem(null);
@@ -126,8 +129,8 @@ export function Gallery() {
                 onClick={() => handleCardClick(item, elementId)}
                 className="gallery-card group relative block border-2 border-white p-8 mb-0 -mt-[2px] first:mt-0 bg-black cursor-pointer overflow-hidden transition-all duration-300 hover:z-10"
                 style={{
-                  clipPath: isReduced ? "none" : "inset(0 100% 0 0)",
                   opacity: isReduced ? 1 : 0,
+                  clipPath: isReduced ? "none" : "inset(0 0 100% 0)",
                 }}
               >
                 {/* Hover sliding bg */}
@@ -161,7 +164,7 @@ export function Gallery() {
         <div
           ref={overlayRef}
           className="fixed inset-0 z-50 bg-black flex items-center justify-center p-4 md:p-8"
-          style={{ opacity: isReduced ? 1 : 0 }}
+          style={{ opacity: isReduced ? 1 : 0, clipPath: isReduced ? "none" : "inset(100% 0 0 0)" }}
         >
           {/* Close button */}
           <button
@@ -173,10 +176,9 @@ export function Gallery() {
 
           {/* Modal Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 w-full h-full max-w-7xl max-h-[85vh] border-2 border-white bg-black relative">
-            
-            {/* Left Column: Title & Image Frame */}
+
+            {/* Left Column */}
             <div className="p-8 md:p-12 flex flex-col justify-between relative overflow-hidden">
-              {/* Giant absolute index backdrop */}
               <div className="absolute top-[-5vw] left-[-2vw] font-display font-black text-[20vw] tracking-[-0.06em] text-white/5 select-none leading-none z-0">
                 {String(selectedItem.id).padStart(2, "0")}
               </div>
@@ -206,22 +208,16 @@ export function Gallery() {
               </div>
             </div>
 
-            {/* Right Column: Full Info */}
+            {/* Right Column */}
             <div className="border-t-2 md:border-t-0 md:border-l-2 border-white p-8 md:p-12 flex flex-col justify-between bg-black">
               <div className="space-y-6">
                 <div>
-                  <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#ffff00]">
-                    SCOPE / CONTEXT
-                  </div>
-                  <div className="font-mono text-[11px] uppercase tracking-wider text-white/50 mt-1">
-                    {selectedItem.meta}
-                  </div>
+                  <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#ffff00]">SCOPE / CONTEXT</div>
+                  <div className="font-mono text-[11px] uppercase tracking-wider text-white/50 mt-1">{selectedItem.meta}</div>
                 </div>
 
                 <div className="border-t border-white/20 pt-6">
-                  <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#ffff00] mb-3">
-                    MANIFEST
-                  </div>
+                  <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#ffff00] mb-3">MANIFEST</div>
                   <p className="font-display text-sm md:text-base text-white/70 leading-relaxed uppercase">
                     {selectedItem.description}
                   </p>
@@ -230,22 +226,16 @@ export function Gallery() {
 
               {/* Carousel Placeholder */}
               <div className="border-t border-white/20 pt-6 mt-6">
-                <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/40 mb-3">
-                  ADDITIONAL RECORDS
-                </div>
+                <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/40 mb-3">ADDITIONAL RECORDS</div>
                 <div className="flex gap-4">
                   {[...Array(3)].map((_, idx) => (
-                    <div
-                      key={idx}
-                      className="border border-white/20 w-24 h-16 flex items-center justify-center font-mono text-[8px] text-white/30 uppercase bg-white/5"
-                    >
+                    <div key={idx} className="border border-white/20 w-24 h-16 flex items-center justify-center font-mono text-[8px] text-white/30 uppercase bg-white/5">
                       RECORD {idx + 1}
                     </div>
                   ))}
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       )}
