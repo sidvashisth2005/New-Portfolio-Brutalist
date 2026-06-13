@@ -109,8 +109,6 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body className="noise">
-        {/* Global scanline sweep overlay */}
-        <div className="scanline-overlay" aria-hidden="true" />
         {children}
         <Scripts />
       </body>

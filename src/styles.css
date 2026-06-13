@@ -218,26 +218,6 @@
   @keyframes ticker { from { transform: translateY(0); } to { transform: translateY(-50%); } }
   .animate-ticker { animation: ticker 8s linear infinite; }
 
-  /* ─── SCANLINE OVERLAY ─── */
-  @keyframes scanline-move {
-    0%   { transform: translateY(-100%); }
-    100% { transform: translateY(110vh); }
-  }
-  .scanline-overlay {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 9998;
-    overflow: hidden;
-  }
-  .scanline-overlay::after {
-    content: "";
-    position: absolute;
-    left: 0; right: 0;
-    height: 2px;
-    background: rgba(255, 255, 0, 0.12);
-    animation: scanline-move 6s linear infinite;
-  }
 
   /* ─── CRT SCANLINES (static) ─── */
   .crt-lines {
@@ -453,9 +433,6 @@
     }
     .will-change-transform {
       transform: translateX(0) !important;
-    }
-    .scanline-overlay::after {
-      animation: none;
     }
     .animate-glitch::before,
     .animate-glitch::after {
