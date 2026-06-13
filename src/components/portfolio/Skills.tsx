@@ -76,39 +76,7 @@ export function Skills() {
     setActiveCategory(categoryName);
   };
 
-  // Anime.js hover ripple wave
-  const handleMouseEnter = (flatIdx: number) => {
-    if (isReduced) return;
-    anime({
-      targets: ".skill-pill",
-      scale: (el, i) => {
-        if (i === flatIdx) return 1.06;
-        const dist = Math.abs(i - flatIdx);
-        if (dist === 1) return 1.01;
-        if (dist === 2) return 0.99;
-        return 0.96;
-      },
-      translateY: (el, i) => {
-        if (i === flatIdx) return -3;
-        const dist = Math.abs(i - flatIdx);
-        if (dist === 1) return -1;
-        return 0;
-      },
-      duration: 350,
-      easing: "easeOutQuad",
-    });
-  };
 
-  const handleMouseLeave = () => {
-    if (isReduced) return;
-    anime({
-      targets: ".skill-pill",
-      scale: 1,
-      translateY: 0,
-      duration: 300,
-      easing: "easeOutQuad",
-    });
-  };
 
   const activeMeta = skillMeta[activeSkillName] || { abbr: "SK", rating: 80, desc: "" };
 
@@ -150,11 +118,7 @@ export function Skills() {
                   return (
                     <div
                       key={item}
-                      onMouseEnter={() => {
-                        changeSkill(item, cat.category);
-                        handleMouseEnter(flatIdx);
-                      }}
-                      onMouseLeave={handleMouseLeave}
+                      onMouseEnter={() => changeSkill(item, cat.category)}
                       onClick={() => changeSkill(item, cat.category)}
                       className={`skill-pill px-5 py-4 border-2 flex justify-between items-center transition-colors duration-300 rounded-none select-none cursor-pointer ${
                         isSkillActive

@@ -35,14 +35,14 @@ export function CustomCursor() {
 
     window.addEventListener("mousemove", handleMouseMove);
 
-    // Mouse click compression scaling
+    // Mouse click compression scaling (GPU transform-only)
     const handleMouseDown = () => {
-      gsapCore.to("#cursor-ring", { scale: 0.5, duration: 0.15, ease: "power2.out" });
+      gsapCore.to("#cursor-ring .cursor-ring-bg", { scale: 0.5, duration: 0.15, ease: "power2.out" });
       gsapCore.to("#cursor-dot", { scale: 2.0, duration: 0.15, ease: "power2.out" });
     };
 
     const handleMouseUp = () => {
-      gsapCore.to("#cursor-ring", { scale: 1, duration: 0.2, ease: "power2.out" });
+      gsapCore.to("#cursor-ring .cursor-ring-bg", { scale: 1, duration: 0.2, ease: "power2.out" });
       gsapCore.to("#cursor-dot", { scale: 1, duration: 0.2, ease: "power2.out" });
     };
 
@@ -62,34 +62,28 @@ export function CustomCursor() {
         const isPodcast = interactiveEl.closest("#podcast");
 
         let labelText = "";
-        let width = 56;
-        let height = 56;
-        let ringBg = "#E8FF00";
-        let ringBorder = "none";
-        let mixBlend = "normal"; // normal blend to show yellow circle
+        let scale = 1.5; // default hover size (1.5 * 24px = 36px)
+        let ringBg = "transparent";
+        let ringBorder = "2px solid #E8FF00";
+        let mixBlend = "difference";
 
-        if (isProject) {
-          labelText = "EXPLORE";
-        } else if (isGallery) {
-          labelText = "ZOOM";
-        } else if (isPodcast) {
-          labelText = "LISTEN";
-        } else {
-          // Standard interactive
-          width = 36;
-          height = 36;
-          ringBg = "transparent";
-          ringBorder = "2px solid #E8FF00";
-          mixBlend = "difference";
+        if (isProject || isGallery || isPodcast) {
+          scale = 2.33; // larger action circle (2.33 * 24px = 56px)
+          ringBg = "#E8FF00";
+          ringBorder = "none";
+          mixBlend = "normal";
+
+          if (isProject) labelText = "EXPLORE";
+          if (isGallery) labelText = "ZOOM";
+          if (isPodcast) labelText = "LISTEN";
         }
 
         // Hide dot
         gsapCore.to("#cursor-dot", { scale: 0, opacity: 0, duration: 0.2 });
 
-        // Expand and color ring
-        gsapCore.to("#cursor-ring", {
-          width,
-          height,
+        // Expand and style outer circle
+        gsapCore.to("#cursor-ring .cursor-ring-bg", {
+          scale,
           backgroundColor: ringBg,
           border: ringBorder,
           mixBlendMode: mixBlend as any,
@@ -124,10 +118,9 @@ export function CustomCursor() {
         // Restore dot
         gsapCore.to("#cursor-dot", { scale: 1, opacity: 1, duration: 0.2 });
 
-        // Restore ring
-        gsapCore.to("#cursor-ring", {
-          width: 24,
-          height: 24,
+        // Restore ring circle
+        gsapCore.to("#cursor-ring .cursor-ring-bg", {
+          scale: 1,
           backgroundColor: "transparent",
           border: "1.5px solid #E8FF00",
           mixBlendMode: "difference" as any,
@@ -208,13 +201,17 @@ export function CustomCursor() {
 
   return (
     <>
-      {/* Outer lagging ring */}
+      {/* Outer lagging ring wrapper */}
       <div
         id="cursor-ring"
         ref={ringRef}
-        className="fixed top-0 left-0 w-6 h-6 border-[1.5px] border-[#E8FF00] rounded-full pointer-events-none z-[99999] mix-blend-difference flex items-center justify-center overflow-hidden"
+        className="fixed top-0 left-0 w-6 h-6 pointer-events-none z-[99999] flex items-center justify-center overflow-visible"
       >
-        <span className="cursor-label opacity-0 font-mono text-[8px] font-bold text-black select-none tracking-widest whitespace-nowrap">
+        {/* Actual scaling background circle */}
+        <div className="cursor-ring-bg w-full h-full border-[1.5px] border-[#E8FF00] rounded-full mix-blend-difference" />
+        
+        {/* Label centered overlay (stops text from scaling/blurring) */}
+        <span className="cursor-label absolute font-mono text-[8px] font-bold text-black select-none tracking-widest opacity-0">
           VIEW
         </span>
       </div>

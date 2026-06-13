@@ -536,4 +536,38 @@
   .animate-swirl-in {
     animation: swirlIn 0.45s cubic-bezier(0.25, 1, 0.5, 1) forwards;
   }
+
+  /* GPU Layer Promotion for buttery scrolling & hovers */
+  .project-slide,
+  .project-card,
+  .section-border-line,
+  .section-label,
+  .section-title,
+  .reveal-block,
+  .moment-card,
+  .skill-pill,
+  .eq-bar,
+  #cursor-ring,
+  #cursor-dot,
+  .cursor-ring-bg {
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+  }
+
+  /* GPU-Accelerated Skill Hover */
+  .skill-pill {
+    transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+  .skill-pill:hover {
+    transform: translateY(-4px) scale(1.02);
+  }
+
+  /* GPU-Accelerated Gallery Tilt Reset */
+  .moment-card {
+    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), filter 0.3s ease, border-color 0.3s ease;
+  }
+  .moment-card.is-tilting {
+    transition: none !important;
+  }
 }

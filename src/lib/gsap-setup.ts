@@ -15,15 +15,19 @@ export function initAnimationStack() {
 
   // Initialize Lenis smooth scroll
   const lenis = new Lenis({
-    duration: 1.2,
+    duration: 1.0, // Snappier and more responsive
     easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    gestureOrientation: "vertical",
+    normalizeWheel: true, // Normalize scroll speed across different trackpads/mice
   });
 
   // Sync Lenis with GSAP ticker
   gsap.ticker.add((time) => {
     lenis.raf(time * 1000);
   });
-  gsap.ticker.lagSmoothing(0);
+
+  // Enable lag smoothing to prevent sudden animation jumps during performance hiccups
+  gsap.ticker.lagSmoothing(1000, 16);
 
   // Expose them globally if needed for debugging or direct use
   (window as any).gsap = gsap;

@@ -105,6 +105,7 @@ export function Gallery() {
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (isReduced) return;
     const card = e.currentTarget;
+    card.classList.add("is-tilting");
     const box = card.getBoundingClientRect();
     const x = e.clientX - box.left;
     const y = e.clientY - box.top;
@@ -120,6 +121,7 @@ export function Gallery() {
   const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
     if (isReduced) return;
     const card = e.currentTarget;
+    card.classList.remove("is-tilting");
     card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)";
   };
 
