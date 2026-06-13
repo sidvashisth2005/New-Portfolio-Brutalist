@@ -28,8 +28,20 @@ function nodeRequestToWebRequest(req) {
   const searchString = searchParams.toString();
   const url = new URL(`${originalPath}${searchString ? "?" + searchString : ""}`, `${protocol}://${host}`);
 
+  const hasBody = req.method !== "GET" && req.method !== "HEAD";
+
   const headers = new Headers();
   for (const [key, value] of Object.entries(req.headers)) {
+    const lowerKey = key.toLowerCase();
+    // Skip hop-by-hop headers
+    if (["connection", "keep-alive", "transfer-encoding", "te", "upgrade"].includes(lowerKey)) {
+      continue;
+    }
+    // Skip content-length if there's no body
+    if (lowerKey === "content-length" && !hasBody) {
+      continue;
+    }
+
     if (Array.isArray(value)) {
       value.forEach((v) => headers.append(key, v));
     } else if (value) {
@@ -37,7 +49,6 @@ function nodeRequestToWebRequest(req) {
     }
   }
 
-  const hasBody = req.method !== "GET" && req.method !== "HEAD";
   return new Request(url.toString(), {
     method: req.method,
     headers,
