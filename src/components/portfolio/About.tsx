@@ -92,30 +92,6 @@ export function About() {
               easing: GUILLOTINE,
             });
 
-            // Count up numbers
-            stats.forEach((stat, i) => {
-              const elements = document.querySelectorAll(".stat-value");
-              const el = elements[i];
-              if (!el) return;
-              const target = stat.value;
-              anime({
-                targets: { value: 0 },
-                value: target,
-                duration: 1600,
-                delay: i * 120 + 300,
-                easing: "easeOutExpo",
-                round: 1,
-                update: function (anim) {
-                  const val = Math.round(Number(anim.animations[0].currentValue));
-                  const suffix = stat.display.includes("+")
-                    ? "+"
-                    : stat.display.includes("%")
-                    ? "%"
-                    : "";
-                  el.textContent = val.toLocaleString() + suffix;
-                },
-              });
-            });
 
             observer.disconnect();
           }
@@ -264,6 +240,7 @@ export function About() {
                 <div
                   className="stat-value font-display font-black text-3xl md:text-5xl tracking-[-0.06em] text-white group-hover:text-black leading-none"
                   data-target={stat.value}
+                  data-suffix={stat.display.includes("+") ? "+" : stat.display.includes("%") ? "%" : ""}
                 >
                   {isReduced ? stat.display : "0"}
                 </div>

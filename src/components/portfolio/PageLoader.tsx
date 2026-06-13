@@ -1,77 +1,90 @@
-import { useEffect, useRef, useState } from "react";
-import anime from "animejs";
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
 
 export function PageLoader({ onComplete }: { onComplete: () => void }) {
-  const loaderRef = useRef<HTMLDivElement>(null);
-  const counterRef = useRef<HTMLSpanElement>(null);
-  const [visible, setVisible] = useState(true);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const counterRef = useRef<HTMLDivElement>(null);
+  const topHalfRef = useRef<HTMLDivElement>(null);
+  const bottomHalfRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Animate counter 0 → 100
-    const obj = { val: 0 };
-    const counterAnim = anime({
-      targets: obj,
-      val: 100,
-      duration: 1400,
-      easing: "easeInOutExpo",
-      update: () => {
+    const counterObj = { value: 0 };
+    const tl = gsap.timeline({
+      onComplete: () => {
+        onComplete();
+      },
+    });
+
+    // 1. Counter counts 0 → 100 in 1.4s
+    tl.to(counterObj, {
+      value: 100,
+      duration: 1.4,
+      ease: "power1.inOut",
+      onUpdate: () => {
         if (counterRef.current) {
-          counterRef.current.textContent = String(Math.round(obj.val)).padStart(3, "0");
+          counterRef.current.textContent = String(Math.round(counterObj.value));
         }
       },
     });
 
-    // After counter done: slam panels out
-    counterAnim.finished.then(() => {
-      // Animate top panel up
-      anime({
-        targets: ".loader-panel-top",
-        translateY: [0, "-100%"],
-        duration: 900,
-        easing: "cubicBezier(0.85, 0, 0.15, 1)",
-        delay: 100,
-      });
-      // Animate bottom panel down
-      anime({
-        targets: ".loader-panel-bottom",
-        translateY: [0, "100%"],
-        duration: 900,
-        easing: "cubicBezier(0.85, 0, 0.15, 1)",
-        delay: 100,
-        complete: () => {
-          setVisible(false);
-          onComplete();
-        },
-      });
+    // 2. Counter fades out
+    tl.to(counterRef.current, {
+      opacity: 0,
+      duration: 0.2,
+      ease: "power2.out",
     });
-  }, [onComplete]);
 
-  if (!visible) return null;
+    // 3. When counter hits 100: clip-path on the overlay splits into two halves
+    // top half: clip-path animates from "inset(0 0 0 0)" to "inset(0 0 100% 0)"
+    // bottom half: clip-path animates from "inset(0 0 0 0)" to "inset(100% 0 0 0)"
+    // duration: 0.8s, ease: "power4.inOut"
+    tl.to(
+      topHalfRef.current,
+      {
+        clipPath: "inset(0% 0% 100% 0%)",
+        duration: 0.8,
+        ease: "power4.inOut",
+      },
+      "-=0.1"
+    );
+
+    tl.to(
+      bottomHalfRef.current,
+      {
+        clipPath: "inset(100% 0% 0% 0%)",
+        duration: 0.8,
+        ease: "power4.inOut",
+      },
+      "<" // Start at the same time as top half
+    );
+
+  }, [onComplete]);
 
   return (
     <div
-      ref={loaderRef}
-      className="fixed inset-0 z-[9999] pointer-events-none"
+      ref={containerRef}
+      className="fixed inset-0 z-[9999] pointer-events-none w-screen h-screen overflow-hidden"
     >
-      {/* Top panel - black */}
+      {/* Top half overlay */}
       <div
-        className="loader-panel-top absolute top-0 left-0 right-0 h-1/2 bg-black flex items-end justify-start px-8 pb-4"
-        style={{ borderBottom: "2px solid #ffff00" }}
-      >
-        <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#ffff00]">
-          LOADING PORTFOLIO
-        </span>
-      </div>
+        ref={topHalfRef}
+        className="absolute top-0 left-0 right-0 h-1/2 bg-[#0A0A0A] pointer-events-auto"
+        style={{ clipPath: "inset(0% 0% 0% 0%)" }}
+      />
+      {/* Bottom half overlay */}
+      <div
+        ref={bottomHalfRef}
+        className="absolute bottom-0 left-0 right-0 h-1/2 bg-[#0A0A0A] pointer-events-auto"
+        style={{ clipPath: "inset(0% 0% 0% 0%)" }}
+      />
 
-      {/* Bottom panel - yellow */}
-      <div className="loader-panel-bottom absolute bottom-0 left-0 right-0 h-1/2 bg-[#ffff00] flex items-start justify-end px-8 pt-4">
-        <span
-          ref={counterRef}
-          className="font-display font-black text-[20vw] leading-none tracking-[-0.06em] text-black select-none"
-          style={{ lineHeight: 1 }}
-        >
-          000
-        </span>
+      {/* Center counter */}
+      <div
+        ref={counterRef}
+        className="absolute inset-0 flex items-center justify-center font-display font-bold text-[48px] text-[#E8FF00] pointer-events-none select-none"
+        style={{ letterSpacing: "-0.04em", fontFamily: "Inter, sans-serif" }}
+      >
+        0
       </div>
     </div>
   );
