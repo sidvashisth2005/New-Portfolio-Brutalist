@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Nav } from "@/components/portfolio/Nav";
 import { Hero } from "@/components/portfolio/Hero";
 import { Marquee } from "@/components/portfolio/Marquee";
@@ -15,6 +15,8 @@ import { Divider } from "@/components/portfolio/Divider";
 import { StickyTicker } from "@/components/portfolio/StickyTicker";
 import { ScrollProgress } from "@/components/portfolio/ScrollProgress";
 import { PageLoader } from "@/components/portfolio/PageLoader";
+import { revealSection } from "@/lib/gsap-setup";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -30,6 +32,22 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const [loaderComplete, setLoaderComplete] = useState(false);
+
+  useEffect(() => {
+    if (!loaderComplete) return;
+
+    const sections = ["about", "experience", "projects", "podcast", "gallery", "skills", "awards", "contact"];
+    sections.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) {
+        revealSection(el);
+      }
+    });
+
+    // Refresh ScrollTrigger to ensure all positions are calculated correctly
+    ScrollTrigger.refresh();
+  }, [loaderComplete]);
+
 
   return (
     <main className="bg-black text-white">

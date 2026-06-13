@@ -95,8 +95,8 @@
   --sidebar-accent-foreground: #FFFFFF;
   --sidebar-border: #222222;
   --sidebar-ring: #E8FF00;
-  --font-display: 'Inter', sans-serif;
-  --font-mono: 'Inter', sans-serif;
+  --font-display: 'Inter', 'Helvetica Now', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', ui-monospace, monospace;
   --grid-color: #222222;
 }
 
@@ -199,6 +199,12 @@
     to { transform: translateX(-50%); }
   }
   .animate-marquee { animation: marquee 25s linear infinite; }
+
+  @keyframes marquee-reverse {
+    from { transform: translateX(-50%); }
+    to { transform: translateX(0); }
+  }
+  .animate-marquee-reverse { animation: marquee-reverse 25s linear infinite; }
 
   @keyframes blink { 50% { opacity: 0; } }
   .animate-blink { animation: blink 1s steps(2) infinite; }
@@ -438,5 +444,18 @@
     .animate-glitch::after {
       display: none;
     }
+  }
+
+  /* Custom Cursor Styles - Disable default cursor for interactive elements */
+  .has-custom-cursor,
+  .has-custom-cursor a,
+  .has-custom-cursor button,
+  .has-custom-cursor input,
+  .has-custom-cursor textarea,
+  .has-custom-cursor select,
+  .has-custom-cursor [role="button"],
+  .has-custom-cursor .project-card,
+  .has-custom-cursor .gallery-card {
+    cursor: none !important;
   }
 }

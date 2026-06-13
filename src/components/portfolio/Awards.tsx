@@ -1,55 +1,8 @@
-import { useEffect, useRef } from "react";
-import anime from "animejs";
-import { GUILLOTINE, useReducedMotion, glitchText } from "@/lib/anime-utils";
+import { useReducedMotion, glitchText } from "@/lib/anime-utils";
 import { awards } from "@/lib/content";
 
 export function Awards() {
   const isReduced = useReducedMotion();
-  const sectionRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const section = sectionRef.current;
-    if (!section || isReduced) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            // Full clip-path reveal from bottom with stagger
-            anime({
-              targets: ".award-row",
-              clipPath: ["inset(0 0 100% 0)", "inset(0 0 0% 0)"],
-              translateY: [50, 0],
-              scaleX: [0.94, 1],
-              opacity: [0, 1],
-              duration: 900,
-              delay: anime.stagger(140, { start: 0 }),
-              easing: GUILLOTINE,
-            });
-
-            // HackNITR (first row) gets an extra flash of yellow bg
-            setTimeout(() => {
-              const hero = document.querySelector(".award-row.is-hero");
-              if (hero) {
-                anime({
-                  targets: ".award-hero-flash",
-                  opacity: [0.6, 0],
-                  duration: 600,
-                  easing: "easeOutSine",
-                });
-              }
-            }, 800);
-
-            observer.disconnect();
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-    observer.observe(section);
-    return () => observer.disconnect();
-  }, [isReduced]);
 
   const handleMouseEnter = (rowId: string, idxText: string, titleText: string) => {
     if (isReduced) return;
@@ -68,12 +21,24 @@ export function Awards() {
   };
 
   return (
-    <section id="awards" ref={sectionRef} className="relative px-5 py-32 border-t-2 border-white bg-black">
+    <section id="awards" className="relative px-5 py-32 bg-black overflow-hidden">
+      {/* Step 1 — Section divider line sweep */}
+      <div
+        className="section-border-line absolute top-0 left-0 right-0 h-[1px] bg-[#E8FF00] origin-left"
+        style={{ transform: isReduced ? "none" : "scaleX(0)" }}
+      />
+
       <div className="grid grid-cols-12 gap-5">
         {/* Left Column */}
         <div className="col-span-12 md:col-span-3">
-          <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#ffff00] md:sticky md:top-20">
-            (07) AWARDS / RECEIPTS
+          <div className="overflow-hidden md:sticky md:top-20">
+            <div
+              className="section-label font-mono text-[10px] uppercase tracking-[0.2em] text-[#E8FF00]"
+              style={{ transform: isReduced ? "none" : "translateY(100%)" }}
+            >
+              <span>(07) </span>
+              <span>AWARDS / RECEIPTS</span>
+            </div>
           </div>
         </div>
 
@@ -90,12 +55,11 @@ export function Awards() {
                 id={rowId}
                 onMouseEnter={() => handleMouseEnter(rowId, formattedIndex, award.title)}
                 onMouseLeave={() => handleMouseLeave(rowId, formattedIndex, award.title)}
-                className={`award-row ${isHackNITR ? "is-hero" : ""} group relative grid grid-cols-12 gap-5 items-start py-8 px-4 border-b-2 border-white cursor-default overflow-hidden ${
+                className={`award-row reveal-block ${isHackNITR ? "is-hero" : ""} group relative grid grid-cols-12 gap-5 items-start py-8 px-4 border-b-2 border-white cursor-default overflow-hidden ${
                   isHackNITR ? "border-l-4 border-[#ffff00]" : ""
                 }`}
                 style={{
                   opacity: isReduced ? 1 : 0,
-                  clipPath: isReduced ? "none" : "inset(0 0 100% 0)",
                 }}
               >
                 {/* Yellow Hover Wipe panel */}

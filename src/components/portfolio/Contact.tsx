@@ -36,110 +36,48 @@ export function Contact() {
     window.location.href = `mailto:${profile.email}?subject=${subject}&body=${body}`;
   };
 
-  // Scroll-in animation
-  useEffect(() => {
-    const section = sectionRef.current;
-    if (!section || isReduced) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            // BIG heading: each word slams
-            anime({
-              targets: ".contact-heading-word",
-              translateY: ["120%", "0%"],
-              skewY: [-6, 0],
-              opacity: [0, 1],
-              duration: 900,
-              delay: anime.stagger(150, { start: 0 }),
-              easing: GUILLOTINE,
-            });
-
-            // Subtext
-            anime({
-              targets: ".contact-subtext",
-              clipPath: ["inset(0 100% 0 0)", "inset(0 0% 0 0)"],
-              opacity: [0, 1],
-              duration: 700,
-              delay: 400,
-              easing: GUILLOTINE,
-            });
-
-            // Form fields slam up
-            anime({
-              targets: ".contact-form-field",
-              translateY: [50, 0],
-              opacity: [0, 1],
-              duration: 600,
-              delay: anime.stagger(130, { start: 600 }),
-              easing: GUILLOTINE,
-            });
-
-            // Directory grid blocks
-            anime({
-              targets: ".contact-dir-cell",
-              clipPath: ["inset(100% 0 0 0)", "inset(0% 0 0 0)"],
-              opacity: [0, 1],
-              duration: 700,
-              delay: anime.stagger(100, { start: 900 }),
-              easing: GUILLOTINE,
-            });
-
-            observer.disconnect();
-          }
-        });
-      },
-      { threshold: 0.05 }
-    );
-
-    observer.observe(section);
-    return () => observer.disconnect();
-  }, [isReduced]);
 
   return (
     <section
       id="contact"
-      ref={sectionRef}
-      className="relative px-5 py-32 border-t-2 border-white overflow-hidden"
+      className="relative px-5 py-32 bg-black overflow-hidden"
     >
+      {/* Step 1 — Section divider line sweep */}
+      <div
+        className="section-border-line absolute top-0 left-0 right-0 h-[1px] bg-[#E8FF00] origin-left"
+        style={{ transform: isReduced ? "none" : "scaleX(0)" }}
+      />
+
       <div className="absolute inset-0 grid-bg opacity-20 pointer-events-none" />
 
       <div className="relative grid grid-cols-12 gap-5 z-10">
         {/* Left Column */}
         <div className="col-span-12 md:col-span-3">
-          <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#ffff00] md:sticky md:top-20">
-            (08) CONTACT / SIGNAL
+          <div className="overflow-hidden md:sticky md:top-20">
+            <div
+              className="section-label font-mono text-[10px] uppercase tracking-[0.2em] text-[#E8FF00]"
+              style={{ transform: isReduced ? "none" : "translateY(100%)" }}
+            >
+              <span>(08) </span>
+              <span>CONTACT / SIGNAL</span>
+            </div>
           </div>
         </div>
 
         {/* Right Column */}
         <div className="col-span-12 md:col-span-9">
           {/* Heading with per-word overflow clip */}
-          <h2 className="font-display font-black tracking-[-0.06em] leading-none text-[clamp(3rem,8vw,7rem)] uppercase text-white overflow-hidden">
-            <div className="overflow-hidden">
-              <span
-                className="contact-heading-word inline-block"
-                style={{ opacity: isReduced ? 1 : 0 }}
-              >
-                LET&rsquo;S
-              </span>
-            </div>
-            <div className="overflow-hidden">
-              <span
-                className="contact-heading-word text-outline-yellow inline-block"
-                style={{ opacity: isReduced ? 1 : 0 }}
-              >
-                BUILD.
-              </span>
-            </div>
-          </h2>
+          <div className="overflow-hidden">
+            <h2 className="section-title font-display font-black tracking-[-0.06em] leading-none text-[clamp(3rem,8vw,7rem)] uppercase text-white">
+              LET&rsquo;S <span className="text-outline-yellow">BUILD.</span>
+            </h2>
+          </div>
 
           <p
-            className="contact-subtext font-display text-[15px] text-white/60 max-w-lg leading-relaxed mt-6 uppercase"
+            className="contact-subtext reveal-block font-display text-[15px] text-white/60 max-w-lg leading-relaxed mt-6 uppercase"
             style={{
               opacity: isReduced ? 1 : 0,
-              clipPath: isReduced ? "none" : "inset(0 100% 0 0)",
             }}
           >
             If you&rsquo;re hiring for business development, growth strategy, or product thinking &mdash;
@@ -150,7 +88,7 @@ export function Contact() {
           <form onSubmit={handleSubmit} className="mt-12 max-w-lg">
             {/* Name Field */}
             <div
-              className="contact-form-field relative border-b-2 border-white/30 mb-8"
+              className="contact-form-field reveal-block relative border-b-2 border-white/30 mb-8"
               style={{ opacity: isReduced ? 1 : 0 }}
             >
               <input
@@ -167,7 +105,7 @@ export function Contact() {
 
             {/* Message Field */}
             <div
-              className="contact-form-field relative border-b-2 border-white/30 mb-8"
+              className="contact-form-field reveal-block relative border-b-2 border-white/30 mb-8"
               style={{ opacity: isReduced ? 1 : 0 }}
             >
               <textarea
@@ -184,12 +122,12 @@ export function Contact() {
 
             {/* Buttons Row */}
             <div
-              className="contact-form-field flex flex-col sm:flex-row gap-4 mt-8"
+              className="contact-form-field reveal-block flex flex-col sm:flex-row gap-4 mt-8"
               style={{ opacity: isReduced ? 1 : 0 }}
             >
               <button
                 type="submit"
-                className="group/btn relative border-2 border-white px-8 py-4 font-mono text-[11px] uppercase tracking-[0.2em] text-white hover:text-black overflow-hidden cursor-pointer transition-colors duration-300"
+                className="magnetic-btn group/btn relative border-2 border-white px-8 py-4 font-mono text-[11px] uppercase tracking-[0.2em] text-white hover:text-black overflow-hidden cursor-pointer transition-colors duration-300"
               >
                 <span className="relative z-10">SEND TRANSMISSION</span>
                 <span className="absolute inset-0 bg-[#ffff00] translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300 ease-[cubic-bezier(0.85,0,0.15,1)] z-0" />
@@ -199,7 +137,7 @@ export function Contact() {
                 href="https://drive.google.com/file/d/1Du6QLPI58renRduOlaXqYmsCB6aXjen-/view?usp=drive_link"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group/btn relative border-2 border-white/30 px-8 py-4 font-mono text-[11px] uppercase tracking-[0.2em] text-white/70 hover:text-black hover:border-white overflow-hidden cursor-pointer text-center transition-colors duration-300"
+                className="magnetic-btn group/btn relative border-2 border-white/30 px-8 py-4 font-mono text-[11px] uppercase tracking-[0.2em] text-white/70 hover:text-black hover:border-white overflow-hidden cursor-pointer text-center transition-colors duration-300"
               >
                 <span className="relative z-10">DOWNLOAD RESUME &rarr;</span>
                 <span className="absolute inset-0 bg-[#ffff00] translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300 ease-[cubic-bezier(0.85,0,0.15,1)] z-0" />
@@ -215,14 +153,14 @@ export function Contact() {
               ["LINKEDIN", "CONNECT ON LINKEDIN", profile.linkedin],
               ["GITHUB", "FOLLOW ON GITHUB", profile.github],
             ].map(([label, val, href], idx) => {
-              const borderClasses = `contact-dir-cell p-8 border-b-2 border-white ${
+              const borderClasses = `contact-dir-cell reveal-block p-8 border-b-2 border-white ${
                 idx % 2 === 0 ? "sm:border-r-2 border-white" : ""
               }`;
               return (
                 <div
                   key={label}
                   className={borderClasses}
-                  style={{ opacity: isReduced ? 1 : 0, clipPath: isReduced ? "none" : "inset(100% 0 0 0)" }}
+                  style={{ opacity: isReduced ? 1 : 0 }}
                 >
                   <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/40 mb-2">
                     {label}

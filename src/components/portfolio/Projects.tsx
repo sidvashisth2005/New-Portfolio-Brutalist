@@ -1,179 +1,211 @@
-import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
-import anime from "animejs";
-import { GUILLOTINE, useReducedMotion } from "@/lib/anime-utils";
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { useReducedMotion } from "@/lib/anime-utils";
 import { projects } from "@/lib/content";
-import { SliceHeading } from "./SliceHeading";
-import { ExternalLink } from "lucide-react";
-
-const EASE = [0.85, 0, 0.15, 1] as const;
 
 export function Projects() {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
   const isReduced = useReducedMotion();
-  const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (typeof window === "undefined" || isReduced) return;
+
     const section = sectionRef.current;
-    if (!section || isReduced) return;
+    const track = trackRef.current;
+    if (!section || !track) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            // ROWS: stagger in from right with skew + clip
-            anime({
-              targets: ".project-row",
-              clipPath: ["inset(0 0 100% 0)", "inset(0 0 0% 0)"],
-              translateX: [60, 0],
-              skewX: [-6, 0],
-              opacity: [0, 1],
-              duration: 800,
-              delay: anime.stagger(120, { start: 0 }),
-              easing: GUILLOTINE,
-            });
+    const ctx = gsap.context(() => {
+      // Horizontal scrolling timeline
+      const horizontalTween = gsap.to(track, {
+        x: () => -(track.scrollWidth - window.innerWidth),
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          pin: true,
+          scrub: 1,
+          start: "top top",
+          end: () => `+=${track.scrollWidth - window.innerWidth}`,
+          invalidateOnRefresh: true,
+        },
+      });
 
-            // INDEX numbers: pop in
-            anime({
-              targets: ".project-index-num",
-              scale: [0, 1],
-              rotate: [-20, 0],
-              opacity: [0, 1],
-              duration: 500,
-              delay: anime.stagger(120, { start: 200 }),
-              easing: "easeOutBack",
-            });
+      // Individual slide title entrances via containerAnimation
+      const slides = track.querySelectorAll(".project-slide");
+      slides.forEach((slide) => {
+        const title = slide.querySelector(".project-title");
+        if (title) {
+          gsap.fromTo(
+            title,
+            { clipPath: "inset(0 100% 0 0)" },
+            {
+              clipPath: "inset(0 0% 0 0)",
+              duration: 0.6,
+              ease: "power3.out",
+              scrollTrigger: {
+                trigger: slide,
+                containerAnimation: horizontalTween,
+                start: "left 75%", // start animation when slide is 75% into viewport from the right
+                toggleActions: "play none none none",
+              },
+            }
+          );
+        }
+      });
+    }, section);
 
-            observer.disconnect();
-          }
-        });
-      },
-      { threshold: 0.05 }
-    );
-
-    observer.observe(section);
-    return () => observer.disconnect();
+    return () => ctx.revert();
   }, [isReduced]);
 
-  return (
-    <section id="projects" ref={sectionRef} className="relative px-5 py-32 border-t-2 border-white bg-black">
-      <SliceHeading index="(03)" label="PROJECTS">
-        FEATURED <span className="text-outline">PROJECTS</span>
-      </SliceHeading>
-
-      <div className="border-t-2 border-white">
-        {projects.map((p, i) => {
-          const isHovered = hoveredIndex === i;
-          return (
-            <div
-              key={p.index}
-              onMouseEnter={() => setHoveredIndex(i)}
-              onMouseLeave={() => setHoveredIndex(null)}
-              className="project-row group relative block border-b-2 border-white py-6 overflow-hidden text-white hover:text-black transition-colors duration-300 cursor-pointer"
-              style={{
-                opacity: isReduced ? 1 : 0,
-                clipPath: isReduced ? "none" : "inset(0 0 100% 0)",
-              }}
-            >
-              <div className="grid grid-cols-12 gap-5 items-center relative z-10">
-                {/* Index */}
-                <span
-                  className="project-index-num col-span-1 font-mono text-xs uppercase tracking-[0.2em] pl-2 text-[#ffff00] group-hover:text-black transition-colors duration-300"
-                  style={{ opacity: isReduced ? 1 : 0 }}
-                >
-                  ({p.index})
-                </span>
-
-                {/* Title and Awards */}
-                <div className="col-span-5 md:col-span-4 flex flex-col justify-center gap-1">
-                  {p.awards && p.awards.length > 0 && (
-                    <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#ffff00] group-hover:text-black transition-colors duration-300">
-                      {p.awards.join(" / ")}
-                    </span>
-                  )}
-                  <span className="font-display font-black text-xl md:text-3xl tracking-tight uppercase leading-none">
+  if (isReduced) {
+    // Accessible fallback: stacked vertically
+    return (
+      <section id="projects" className="relative px-5 py-32 bg-black">
+        <div className="section-border-line absolute top-0 left-0 right-0 h-[1px] bg-[#E8FF00]" />
+        <div className="max-w-7xl mx-auto space-y-24">
+          <div className="overflow-hidden mb-16">
+            <h2 className="font-display font-black text-[9vw] sm:text-[8vw] md:text-[4vw] tracking-[-0.06em] uppercase leading-none text-white">
+              FEATURED <span className="text-outline">PROJECTS</span>
+            </h2>
+          </div>
+          
+          <div className="space-y-16">
+            {projects.map((p) => (
+              <div
+                key={p.index}
+                className="grid grid-cols-12 gap-8 border-b border-white/10 pb-12 items-center"
+              >
+                <div className="col-span-12 md:col-span-7 flex flex-col gap-6">
+                  <div className="flex items-center gap-4">
+                    <span className="font-mono text-xs text-[#E8FF00]">({p.index})</span>
+                    <span className="font-mono text-xs text-white/50">{p.tags.join(" / ")}</span>
+                  </div>
+                  <h3 className="font-display font-bold text-3xl md:text-5xl uppercase text-white leading-none">
                     {p.title}
-                  </span>
-                </div>
-
-                {/* Category */}
-                <span className="col-span-3 hidden md:block font-mono text-[10px] uppercase tracking-[0.2em] text-white/50 group-hover:text-black/60 transition-colors duration-300">
-                  {p.category}
-                </span>
-
-                {/* Tags */}
-                <div className="col-span-4 md:col-span-3 flex flex-wrap gap-2">
-                  {p.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="font-mono text-[9px] uppercase tracking-[0.2em] border border-white/30 px-2 py-0.5 text-white/50 group-hover:border-black/30 group-hover:text-black/50 transition-all duration-300"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-
-                {/* Github Link */}
-                <span className="col-span-2 md:col-span-1 text-right font-mono text-xs uppercase tracking-[0.2em] pr-2 text-white/50 group-hover:text-black/50 flex items-center justify-end gap-2">
+                  </h3>
+                  <ul className="space-y-3">
+                    {p.bullets.map((bullet, idx) => (
+                      <li key={idx} className="flex items-start">
+                        <span className="w-1.5 h-1.5 bg-[#E8FF00] mt-[8px] flex-shrink-0" />
+                        <span className="font-display text-xs md:text-sm text-white/70 ml-3 uppercase font-bold">
+                          {bullet}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
                   {p.github && (
+                    <div className="mt-2">
+                      <a
+                        href={p.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-mono text-xs uppercase tracking-wider text-[#E8FF00] hover:text-white transition-colors"
+                      >
+                        VIEW ON GITHUB &rarr;
+                      </a>
+                    </div>
+                  )}
+                </div>
+                <div className="col-span-12 md:col-span-5 flex justify-center md:justify-end">
+                  <div className="w-[200px] h-[300px] border border-[#333] bg-[#0A0A0A] flex items-center justify-center relative">
+                    <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#333]">
+                      IMAGE COMING SOON
+                    </span>
+                    <div className="absolute inset-2 border border-dashed border-[#1a1a1a]" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section
+      id="projects"
+      ref={sectionRef}
+      className="relative w-full h-screen bg-black overflow-hidden projects-section"
+    >
+      {/* Top Border Line Sweep */}
+      <div
+        className="section-border-line absolute top-0 left-0 right-0 h-[1px] bg-[#E8FF00] origin-left z-20"
+        style={{ transform: "scaleX(0)" }}
+      />
+
+      <div
+        ref={trackRef}
+        className="projects-track reveal-block flex h-full items-center select-none"
+        style={{ width: `${projects.length * 100}vw`, opacity: 0 }}
+      >
+        {projects.map((p) => (
+          <div
+            key={p.index}
+            className="project-slide project-card w-screen h-full flex-shrink-0 flex items-center justify-center relative px-6 md:px-24 bg-black border-r border-white/10"
+          >
+            {/* Top-Left Project Number */}
+            <div className="absolute top-12 left-12 font-mono text-[14px] text-[#E8FF00] tracking-wider transition-all duration-300 hover:text-white hover:scale-105 origin-left inline-block cursor-pointer select-none">
+              ({p.index})
+            </div>
+
+            {/* Top-Right Tech Stack Tags */}
+            <div className="absolute top-12 right-12 font-mono text-xs text-white/50 tracking-wider select-none">
+              {p.tags.join(" / ")}
+            </div>
+
+            {/* Content Container Grid */}
+            <div className="grid grid-cols-12 gap-8 w-full max-w-7xl mx-auto items-center">
+              {/* Left Half: Details */}
+              <div className="col-span-12 md:col-span-7 flex flex-col justify-center gap-6 text-left pl-4 md:pl-0">
+                <h3
+                  className="project-title font-display font-bold text-[clamp(2.2rem,6.5vw,72px)] tracking-[-0.05em] uppercase text-white leading-[0.95] mb-2 select-none"
+                  style={{ clipPath: "inset(0 100% 0 0)" }}
+                >
+                  {p.title}
+                </h3>
+                <ul className="space-y-4 max-w-xl">
+                  {p.bullets.map((bullet, idx) => (
+                    <li key={idx} className="flex items-start">
+                      <span className="w-1.5 h-1.5 bg-[#E8FF00] mt-[8px] flex-shrink-0" />
+                      <span className="font-display text-[13px] md:text-[14px] text-white/70 leading-relaxed ml-4 uppercase">
+                        {bullet}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+
+                {p.github ? (
+                  <div className="mt-4">
                     <a
                       href={p.github}
                       target="_blank"
                       rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className="inline-block hover:scale-115 transition-transform"
+                      className="group relative inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] text-[#E8FF00] select-none"
                     >
-                      <ExternalLink size={14} className="text-white/50 group-hover:text-black" />
+                      <span>VIEW ON GITHUB &rarr;</span>
+                      <span className="absolute left-0 bottom-[-4px] h-[1.5px] w-full bg-[#E8FF00] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out" />
                     </a>
-                  )}
-                </span>
+                  </div>
+                ) : (
+                  <div className="mt-4 font-mono text-[11px] uppercase tracking-[0.2em] text-white/30 select-none">
+                    PROPRIETARY PROJECT
+                  </div>
+                )}
               </div>
 
-              {/* Expanding Details Drawer */}
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={isHovered ? { height: "auto", opacity: 1 } : { height: 0, opacity: 0 }}
-                transition={{ duration: 0.3, ease: EASE }}
-                className="relative z-10 overflow-hidden"
-              >
-                <div className="grid grid-cols-12 gap-5 mt-4 px-2 text-white group-hover:text-black font-mono text-xs md:text-sm uppercase tracking-[0.05em] leading-relaxed">
-                  <div className="col-span-1 md:col-span-1" />
-                  <div className="col-span-11 md:col-span-11 space-y-2 pr-4">
-                    {p.bullets.map((bullet, idx) => (
-                      <div key={idx} className="flex gap-2">
-                        <span className="text-[#ffff00] group-hover:text-black">▸</span>
-                        <span>{bullet}</span>
-                      </div>
-                    ))}
-                    {p.github && (
-                      <div className="pt-3 flex items-center">
-                        <span className="text-[#ffff00] group-hover:text-black mr-2 select-none">▸</span>
-                        <a
-                          href={p.github}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          className="inline-flex items-center gap-2 border border-white/20 group-hover:border-black/20 px-4 py-2 text-[10px] uppercase tracking-[0.15em] font-bold text-white/80 group-hover:text-black relative overflow-hidden group/btn ml-1"
-                        >
-                          <span className="absolute inset-0 bg-white group-hover:bg-black translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300 ease-[cubic-bezier(0.85,0,0.15,1)] z-0" />
-                          <span className="relative z-10 flex items-center gap-2 group-hover/btn:text-black group-hover:group-hover/btn:text-[#ffff00] transition-colors duration-300">
-                            <svg role="img" viewBox="0 0 24 24" className="h-3.5 w-3.5 fill-current" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
-                            </svg>
-                            <span>View Code on GitHub</span>
-                          </span>
-                        </a>
-                      </div>
-                    )}
-                  </div>
+              {/* Right Half: Screenshot Box */}
+              <div className="col-span-12 md:col-span-5 flex justify-center md:justify-end pr-4 md:pr-0">
+                <div className="w-[200px] h-[300px] border border-[#333] bg-[#0A0A0A] flex items-center justify-center relative group">
+                  <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#333] group-hover:text-white/60 transition-colors duration-300 select-none">
+                    IMAGE COMING SOON
+                  </span>
+                  <div className="absolute inset-2 border border-dashed border-[#1a1a1a] pointer-events-none group-hover:border-[#333] transition-colors duration-300" />
                 </div>
-              </motion.div>
-
-              {/* Physical wipe span on hover */}
-              <span className="absolute left-0 top-0 h-full w-0 bg-[#ffff00] z-0 group-hover:w-full transition-all duration-500 ease-[cubic-bezier(0.85,0,0.15,1)]" />
+              </div>
             </div>
-          );
-        })}
+          </div>
+        ))}
       </div>
     </section>
   );

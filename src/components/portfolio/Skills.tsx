@@ -55,12 +55,21 @@ export function Skills() {
   const activeContribution = skillContributions[activeSkillName] || "";
 
   return (
-    <section id="skills" className="relative px-5 py-32 border-t-2 border-white bg-black">
+    <section id="skills" className="relative px-5 py-32 bg-black overflow-hidden">
+      {/* Step 1 — Section divider line sweep */}
+      <div
+        className="section-border-line absolute top-0 left-0 right-0 h-[1px] bg-[#E8FF00] origin-left"
+        style={{ transform: isReduced ? "none" : "scaleX(0)" }}
+      />
+
       <SliceHeading index="(06)" label="SKILLS">
         TECHNICAL & <span className="text-outline">BUSINESS CORE</span>
       </SliceHeading>
 
-      <div className="grid grid-cols-12 gap-5 mt-10 items-stretch">
+      <div
+        className="reveal-block grid grid-cols-12 gap-5 mt-10 items-stretch"
+        style={{ opacity: isReduced ? 1 : 0 }}
+      >
         {/* Left Panel: Category Cards */}
         <div className="col-span-12 md:col-span-6 space-y-0">
           {skills.map((cat) => {

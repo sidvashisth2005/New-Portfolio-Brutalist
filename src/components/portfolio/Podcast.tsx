@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import anime from "animejs";
 import { GUILLOTINE, useReducedMotion } from "@/lib/anime-utils";
 import { podcastEpisodes } from "@/lib/content";
-import { Headphones, Volume2, VolumeX, Play, Pause, RotateCcw } from "lucide-react";
+import { Headphones, Volume2, VolumeX, RotateCcw } from "lucide-react";
 
 export function Podcast() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -163,28 +163,155 @@ export function Podcast() {
     return `${pad(minutes)}:${pad(seconds)}`;
   };
 
+  const loadYT = (videoId: string, thumbId: string, frameId: string) => {
+    const thumb = document.getElementById(thumbId);
+    const frame = document.getElementById(frameId) as HTMLIFrameElement;
+    if (thumb && frame) {
+      thumb.style.display = "none";
+      frame.src = "https://www.youtube.com/embed/" + videoId + "?autoplay=1";
+      frame.style.display = "block";
+    }
+  };
+
   return (
-    <section id="podcast" className="relative px-5 py-32 border-t-2 border-white bg-black">
-      <div className="grid grid-cols-12 gap-5">
-        {/* Left Column: Ticker & Channel Title */}
-        <div className="col-span-12 md:col-span-3">
-          <div className="md:sticky md:top-20">
-            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#ffff00]">
-              (04) PODCAST / PITCHED.
-            </span>
-            <h2 className="font-display font-black text-5xl md:text-6xl tracking-[-0.06em] text-white mt-4 uppercase leading-none">
+    <section id="podcast" className="relative px-5 py-32 bg-black overflow-hidden">
+      {/* Step 1 — Section divider line sweep */}
+      <div
+        className="section-border-line absolute top-0 left-0 right-0 h-[1px] bg-[#E8FF00] origin-left"
+        style={{ transform: isReduced ? "none" : "scaleX(0)" }}
+      />
+
+      <div className="grid grid-cols-12 gap-8 md:gap-16">
+        <audio ref={audioRef} preload="metadata" />
+
+        {/* Section Header */}
+        <div className="col-span-12 flex flex-col gap-1 text-left mb-4">
+          <div className="overflow-hidden">
+            <div className="section-label font-mono text-[10px] uppercase tracking-[0.2em] text-[#E8FF00]">
+              <span>(04) </span>
+              <span>PODCAST / PITCHED.</span>
+            </div>
+          </div>
+          <div className="overflow-hidden mt-4">
+            <h2 className="section-title font-display font-black text-5xl md:text-6xl tracking-[-0.06em] text-white uppercase leading-none">
               PITCHED.
             </h2>
-            <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/40 mt-2">
-              BD &middot; STRATEGY &middot; BUILDER LIFE
-            </p>
+          </div>
+          <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/40 mt-2">
+            BD &middot; STRATEGY &middot; BUILDER LIFE
+          </p>
+        </div>
+
+        {/* LEFT COLUMN (40%): YouTube Channel Embeds */}
+        <div
+          className="podcast-left col-span-12 md:col-span-5 flex flex-col gap-8"
+          style={{ opacity: isReduced ? 1 : 0 }}
+        >
+          {/* Section Header */}
+          <div className="flex flex-col gap-1 text-left border-b border-white/20 pb-4">
+            <span className="font-mono text-[13px] uppercase tracking-[0.12em] text-[#E8FF00] font-black">
+              THE PEOPLE DECODER
+            </span>
+            <span className="font-mono text-xs text-[#666666] uppercase">
+              Communication &middot; Hackathon Strategy
+            </span>
+            <a
+              href="https://youtube.com/@ThePeopleDecoder"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/40 hover:text-[#E8FF00] transition-colors mt-1"
+            >
+              youtube.com/@ThePeopleDecoder &rarr;
+            </a>
+          </div>
+
+          {/* Videos Grid */}
+          <div className="flex flex-col gap-8">
+            {/* Video Card 1 */}
+            <div className="flex flex-col gap-3">
+              <div className="relative border border-[#333] aspect-video w-full overflow-hidden bg-black group/yt">
+                <iframe
+                  id="frame-1"
+                  className="w-full h-full"
+                  style={{ display: "none" }}
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+                <div
+                  id="thumb-1"
+                  onClick={() => loadYT("w7ejDZ8SWv8", "thumb-1", "frame-1")}
+                  className="absolute inset-0 cursor-pointer"
+                >
+                  <img
+                    src="https://img.youtube.com/vi/w7ejDZ8SWv8/hqdefault.jpg"
+                    alt="Video Thumbnail"
+                    className="w-full h-full object-cover transition-transform duration-300 ease-out group-hover/yt:scale-103"
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                    {/* Brutalist play indicator */}
+                    <div className="h-12 w-12 bg-[#E8FF00] flex items-center justify-center text-black font-mono text-xs font-bold uppercase select-none">
+                      PLAY
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <h4 className="font-display font-medium text-[13px] text-white uppercase tracking-wide">
+                  How to Pitch a Hackathon Project
+                </h4>
+                <span className="font-mono text-[11px] text-[#555555] uppercase mt-1 block">
+                  OCT 12, 2023
+                </span>
+              </div>
+            </div>
+
+            {/* Video Card 2 */}
+            <div className="flex flex-col gap-3">
+              <div className="relative border border-[#333] aspect-video w-full overflow-hidden bg-black group/yt">
+                <iframe
+                  id="frame-2"
+                  className="w-full h-full"
+                  style={{ display: "none" }}
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+                <div
+                  id="thumb-2"
+                  onClick={() => loadYT("ysz5S6PUM-U", "thumb-2", "frame-2")}
+                  className="absolute inset-0 cursor-pointer"
+                >
+                  <img
+                    src="https://img.youtube.com/vi/ysz5S6PUM-U/hqdefault.jpg"
+                    alt="Video Thumbnail"
+                    className="w-full h-full object-cover transition-transform duration-300 ease-out group-hover/yt:scale-103"
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                    {/* Brutalist play indicator */}
+                    <div className="h-12 w-12 bg-[#E8FF00] flex items-center justify-center text-black font-mono text-xs font-bold uppercase select-none">
+                      PLAY
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <h4 className="font-display font-medium text-[13px] text-white uppercase tracking-wide">
+                  Mastering the Tech Presentation
+                </h4>
+                <span className="font-mono text-[11px] text-[#555555] uppercase mt-1 block">
+                  JAN 18, 2024
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Right Column: Audio System & Tracks */}
-        <div className="col-span-12 md:col-span-9 space-y-8">
-          <audio ref={audioRef} preload="metadata" />
-
+        {/* RIGHT COLUMN (60%): Podcast Hub */}
+        <div
+          className="podcast-right col-span-12 md:col-span-7 flex flex-col gap-8"
+          style={{ opacity: isReduced ? 1 : 0 }}
+        >
           {/* Player Box */}
           <div className="relative border-2 border-white p-6 bg-black overflow-hidden">
             <div className="absolute inset-0 grid-bg opacity-10 pointer-events-none" />
@@ -197,7 +324,7 @@ export function Podcast() {
                     <Headphones size={20} className="text-white" />
                   </div>
                   <div>
-                    <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#ffff00]">
+                    <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#E8FF00]">
                       NOW PLAYING // {currentEpisode.ep}
                     </span>
                     <h3 className="font-display font-black text-base md:text-lg uppercase tracking-tight text-white mt-0.5">
@@ -211,7 +338,7 @@ export function Podcast() {
                   {[...Array(7)].map((_, i) => (
                     <span
                       key={i}
-                      className="eq-bar w-1 bg-[#ffff00] transition-all duration-75"
+                      className="eq-bar w-1 bg-[#E8FF00] transition-all duration-75"
                       style={{ height: "4px" }}
                     />
                   ))}
@@ -225,7 +352,7 @@ export function Podcast() {
                   className="h-1.5 w-full bg-white/20 hover:bg-white/30 transition-colors cursor-pointer relative"
                 >
                   <div
-                    className="h-full bg-[#ffff00]"
+                    className="h-full bg-[#E8FF00]"
                     style={{ width: `${duration ? (currentTime / duration) * 100 : 0}%` }}
                   />
                 </div>
@@ -239,31 +366,42 @@ export function Podcast() {
               <div className="flex items-center justify-between mt-2 flex-wrap gap-4">
                 {/* Audio Controls */}
                 <div className="flex items-center gap-4">
+                  {/* Brutalist play button: flat E8FF00 square containing play/pause triangle/rects */}
                   <button
                     onClick={togglePlay}
-                    className="border border-white hover:bg-[#ffff00] hover:text-black transition-colors font-mono text-[10px] uppercase tracking-[0.2em] font-bold px-6 py-3 flex items-center gap-2"
+                    className="w-12 h-12 bg-[#E8FF00] text-black flex items-center justify-center cursor-pointer hover:bg-white transition-colors duration-300 rounded-none border-none outline-none select-none"
+                    title={isPlaying ? "Pause" : "Play"}
                   >
                     {isPlaying ? (
-                      <>
-                        <Pause size={10} fill="currentColor" /> PAUSE
-                      </>
+                      <svg
+                        viewBox="0 0 24 24"
+                        className="w-5 h-5 fill-current text-black"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <rect x="4" y="4" width="4" height="16" />
+                        <rect x="16" y="4" width="4" height="16" />
+                      </svg>
                     ) : (
-                      <>
-                        <Play size={10} fill="currentColor" /> PLAY
-                      </>
+                      <svg
+                        viewBox="0 0 24 24"
+                        className="w-5 h-5 fill-current text-black"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="M8 5v14l11-7z" />
+                      </svg>
                     )}
                   </button>
 
                   <button
                     onClick={skipBackward}
-                    className="p-3 border border-white hover:bg-[#ffff00] hover:text-black transition-colors"
+                    className="p-3 border border-white hover:bg-[#E8FF00] hover:text-black transition-colors"
                     title="-15s"
                   >
                     <RotateCcw size={12} className="scale-x-[-1]" />
                   </button>
                   <button
                     onClick={skipForward}
-                    className="p-3 border border-white hover:bg-[#ffff00] hover:text-black transition-colors"
+                    className="p-3 border border-white hover:bg-[#E8FF00] hover:text-black transition-colors"
                     title="+15s"
                   >
                     <RotateCcw size={12} />
@@ -282,7 +420,7 @@ export function Podcast() {
                     step="0.05"
                     value={isMuted ? 0 : volume}
                     onChange={handleVolumeChange}
-                    className="w-20 md:w-28 h-1 bg-white/20 accent-[#ffff00] cursor-pointer"
+                    className="w-20 md:w-28 h-1 bg-white/20 accent-[#E8FF00] cursor-pointer"
                   />
                 </div>
               </div>
@@ -302,27 +440,32 @@ export function Podcast() {
                   }}
                   className="group relative flex items-center justify-between border-b border-white/20 py-5 px-3 cursor-pointer overflow-hidden transition-colors duration-300 hover:text-black"
                 >
-                  {/* Left */}
-                  <span className="relative z-10 font-mono text-[10px] uppercase tracking-[0.2em] text-[#ffff00] group-hover:text-black transition-colors duration-300 w-16">
+                  {/* Left Index */}
+                  <span className="relative z-10 font-mono text-[10px] uppercase tracking-[0.2em] text-[#E8FF00] group-hover:text-black transition-colors duration-300 w-16">
                     {ep.ep}
                   </span>
 
-                  {/* Center */}
+                  {/* Center Title */}
                   <span
                     className={`relative z-10 flex-1 font-display text-[15px] uppercase tracking-wide font-black ${
-                      isActive ? "text-[#ffff00]" : "text-white"
+                      isActive ? "text-[#E8FF00]" : "text-white"
                     } group-hover:text-black transition-colors duration-300`}
                   >
                     {ep.title}
                   </span>
 
-                  {/* Right */}
+                  {/* Status Badge: COMING SOON */}
+                  <span className="relative z-10 font-mono text-[8px] uppercase tracking-[0.2em] bg-[#E8FF00] text-black px-2 py-0.5 font-bold mr-6 select-none group-hover:bg-black group-hover:text-[#E8FF00] transition-colors duration-300">
+                    COMING SOON
+                  </span>
+
+                  {/* Right Duration */}
                   <span className="relative z-10 font-mono text-[10px] uppercase tracking-[0.2em] text-white/40 group-hover:text-black/60 transition-colors duration-300">
                     {ep.duration}
                   </span>
 
                   {/* Hover sliding bg */}
-                  <span className="absolute inset-0 bg-[#ffff00] translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.85,0,0.15,1)] z-0" />
+                  <span className="absolute inset-0 bg-[#E8FF00] translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.85,0,0.15,1)] z-0" />
                 </div>
               );
             })}

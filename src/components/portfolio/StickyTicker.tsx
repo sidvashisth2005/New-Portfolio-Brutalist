@@ -1,28 +1,18 @@
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
-
-export function StickyTicker({ text }: { text: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
-  const x = useTransform(scrollYProgress, [0, 1], ["30%", "-130%"]);
-  const items = Array.from({ length: 4 }, (_, i) => i);
+export function StickyTicker() {
+  const items = Array.from({ length: 12 }, (_, i) => i);
 
   return (
-    <div ref={ref} className="relative overflow-hidden border-y-2 border-white py-10 md:py-16 bg-black">
-      <motion.div style={{ x }} className="flex gap-12 whitespace-nowrap will-change-transform">
+    <div className="relative overflow-hidden border-y border-white/10 py-4 bg-black w-full select-none">
+      <div className="flex gap-8 whitespace-nowrap animate-marquee-reverse w-max">
         {items.map((i) => (
           <span
             key={i}
-            className="font-display font-black uppercase tracking-[-0.04em] text-[12vw] leading-none flex items-center gap-12"
+            className="font-mono text-[13px] uppercase tracking-[0.15em] text-[#444444] select-none"
           >
-            <span className={i % 2 === 0 ? "text-outline" : "text-white"}>{text}</span>
-            <span className="text-[#ffff00]">✶</span>
+            TECHNICAL & BUSINESS CORE ✶
           </span>
         ))}
-      </motion.div>
+      </div>
     </div>
   );
 }
