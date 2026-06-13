@@ -16,7 +16,7 @@ import { StickyTicker } from "@/components/portfolio/StickyTicker";
 import { ScrollProgress } from "@/components/portfolio/ScrollProgress";
 import { PageLoader } from "@/components/portfolio/PageLoader";
 import { revealSection } from "@/lib/gsap-setup";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import ScrollTrigger from "gsap/ScrollTrigger";
 
 export const Route = createFileRoute("/")({
   head: () => ({
