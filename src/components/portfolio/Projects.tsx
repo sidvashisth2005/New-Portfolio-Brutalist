@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
+import gsap from "gsap";
 import { useReducedMotion } from "@/lib/anime-utils";
 import { projects } from "@/lib/content";
 

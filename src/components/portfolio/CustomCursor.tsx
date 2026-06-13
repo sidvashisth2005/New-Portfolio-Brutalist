@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useReducedMotion } from "@/lib/anime-utils";
-import { gsap as gsapCore } from "gsap";
+import gsapCore from "gsap";
 
 export function CustomCursor() {
   const cursorRef = useRef<HTMLDivElement>(null);
