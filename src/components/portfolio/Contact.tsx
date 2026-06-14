@@ -49,14 +49,24 @@ export function Contact() {
         },
         body: json
       });
-      const data = await response.json();
-      if (data.success) {
-        setStatus('success');
-        e.currentTarget.reset();
+      
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        const data = await response.json();
+        if (data.success) {
+          setStatus('success');
+          e.currentTarget.reset();
+        } else {
+          console.error("Web3Forms submission failed. Response:", data);
+          setStatus('error');
+        }
       } else {
+        const text = await response.text();
+        console.error(`Web3Forms returned non-JSON response (${response.status}):`, text);
         setStatus('error');
       }
     } catch (error) {
+      console.error("Web3Forms network/CORS error:", error);
       setStatus('error');
     } finally {
       setIsSubmitting(false);
