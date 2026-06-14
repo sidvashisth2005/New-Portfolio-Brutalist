@@ -37,6 +37,13 @@ export function Contact() {
 
     const formData = new FormData(formEl);
     formData.append("access_key", "34876f3a-ab36-4d99-86f5-edb5e82a016b");
+    formData.append("replyto", formData.get("email") as string);
+    formData.append("subject", `⚡ [PORTFOLIO ENQUIRY] — Connection Request from ${formData.get("name")}`);
+    formData.append("from_name", "⚡ Portfolio Terminal");
+    
+    // Add telemetry metadata for a premium console vibe in the email layout
+    formData.append("Telemetry Source", "PORTFOLIO // INTERACTION TERMINAL");
+    formData.append("Timestamp (IST)", new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }));
 
     const object = Object.fromEntries(formData);
     const json = JSON.stringify(object);
