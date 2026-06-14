@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import anime from "animejs";
 import { GUILLOTINE, useReducedMotion } from "@/lib/anime-utils";
 import { profile } from "@/lib/content";
@@ -6,6 +6,8 @@ import { profile } from "@/lib/content";
 export function Contact() {
   const isReduced = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [status, setStatus] = useState<'success' | 'error' | ''>('');
 
   const handleFocus = (fieldId: string) => {
     if (isReduced) return;
@@ -27,13 +29,38 @@ export function Contact() {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const nameVal = (document.getElementById("form-name") as HTMLInputElement)?.value || "";
-    const msgVal = (document.getElementById("form-message") as HTMLTextAreaElement)?.value || "";
-    const subject = encodeURIComponent(`Message from ${nameVal} (Portfolio)`);
-    const body = encodeURIComponent(msgVal);
-    window.location.href = `mailto:${profile.email}?subject=${subject}&body=${body}`;
+    setIsSubmitting(true);
+    setStatus('');
+
+    const formData = new FormData(e.currentTarget);
+    formData.append("access_key", "34876f3a-ab36-4d99-86f5-edb5e82a016b");
+
+    const object = Object.fromEntries(formData);
+    const json = JSON.stringify(object);
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json"
+        },
+        body: json
+      });
+      const data = await response.json();
+      if (data.success) {
+        setStatus('success');
+        e.currentTarget.reset();
+      } else {
+        setStatus('error');
+      }
+    } catch (error) {
+      setStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
 
@@ -94,6 +121,7 @@ export function Contact() {
             >
               <input
                 id="form-name"
+                name="name"
                 type="text"
                 placeholder="YOUR NAME"
                 required
@@ -104,6 +132,24 @@ export function Contact() {
               <div id="name-underline" className="absolute bottom-0 left-0 h-[2px] bg-[#ffff00] w-0" />
             </div>
 
+            {/* Email Field */}
+            <div
+              className="contact-form-field reveal-block relative border-b-2 border-white/30 mb-8"
+              style={{ opacity: isReduced ? 1 : 0 }}
+            >
+              <input
+                id="form-email"
+                name="email"
+                type="email"
+                placeholder="YOUR EMAIL"
+                required
+                onFocus={() => handleFocus("email")}
+                onBlur={() => handleBlur("email")}
+                className="bg-transparent w-full pb-3 pt-1 font-display text-[15px] text-white placeholder-white/20 uppercase outline-none border-none"
+              />
+              <div id="email-underline" className="absolute bottom-0 left-0 h-[2px] bg-[#ffff00] w-0" />
+            </div>
+
             {/* Message Field */}
             <div
               className="contact-form-field reveal-block relative border-b-2 border-white/30 mb-8"
@@ -111,6 +157,7 @@ export function Contact() {
             >
               <textarea
                 id="form-message"
+                name="message"
                 placeholder="YOUR MESSAGE"
                 rows={4}
                 required
@@ -128,9 +175,10 @@ export function Contact() {
             >
               <button
                 type="submit"
-                className="magnetic-btn group/btn relative border-2 border-white px-8 py-4 font-mono text-[11px] uppercase tracking-[0.2em] text-white hover:text-black overflow-hidden cursor-pointer transition-colors duration-300"
+                disabled={isSubmitting}
+                className="magnetic-btn group/btn relative border-2 border-white px-8 py-4 font-mono text-[11px] uppercase tracking-[0.2em] text-white hover:text-black overflow-hidden cursor-pointer transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <span className="relative z-10">SEND TRANSMISSION</span>
+                <span className="relative z-10">{isSubmitting ? "TRANSMITTING..." : "SEND TRANSMISSION"}</span>
                 <span className="absolute inset-0 bg-[#ffff00] translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300 ease-[cubic-bezier(0.85,0,0.15,1)] z-0" />
               </button>
 
@@ -144,12 +192,24 @@ export function Contact() {
                 <span className="absolute inset-0 bg-[#ffff00] translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300 ease-[cubic-bezier(0.85,0,0.15,1)] z-0" />
               </a>
             </div>
+
+            {/* Status Messages */}
+            {status === 'success' && (
+              <div className="mt-6 font-mono text-[11px] text-[#ffff00] uppercase tracking-[0.2em]">
+                // TRANSMISSION SUCCESSFUL. INBOX UPDATED.
+              </div>
+            )}
+            {status === 'error' && (
+              <div className="mt-6 font-mono text-[11px] text-[#ffff00] uppercase tracking-[0.2em]">
+                // ERROR: TRANSMISSION FAILED. TRY AGAIN OR EMAIL DIRECTLY.
+              </div>
+            )}
           </form>
 
           {/* Directory Grid */}
           <div className="mt-20 grid grid-cols-1 sm:grid-cols-2 border-t-2 border-white">
             {[
-              ["EMAIL", profile.email, `mailto:${profile.email}`],
+              ["EMAIL", profile.email, "#form-name"],
               ["LOCATION", profile.location, null],
               ["LINKEDIN", "CONNECT ON LINKEDIN", profile.linkedin],
               ["GITHUB", "FOLLOW ON GITHUB", profile.github],
@@ -169,7 +229,22 @@ export function Contact() {
                   {href ? (
                     <a
                       href={href}
-                      target={href.startsWith("mailto:") ? undefined : "_blank"}
+                      onClick={(e) => {
+                        if (label === "EMAIL") {
+                          e.preventDefault();
+                          const target = document.getElementById("form-name");
+                          if (target) {
+                            const lenis = (window as any).lenis;
+                            if (lenis) {
+                              lenis.scrollTo(target);
+                            } else {
+                              target.scrollIntoView({ behavior: "smooth" });
+                            }
+                            target.focus({ preventScroll: true });
+                          }
+                        }
+                      }}
+                      target={href.startsWith("http") ? "_blank" : undefined}
                       rel="noopener noreferrer"
                       className="font-display text-[14px] text-white hover:text-[#ffff00] transition-colors uppercase font-black tracking-wide"
                     >
