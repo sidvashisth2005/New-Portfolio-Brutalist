@@ -34,14 +34,14 @@ export function PageLoader({ onComplete }: { onComplete: () => void }) {
       ease: "power2.out",
     });
 
-    // 3. When counter hits 100: clip-path on the overlay splits into two halves
-    // top half: clip-path animates from "inset(0 0 0 0)" to "inset(0 0 100% 0)"
-    // bottom half: clip-path animates from "inset(0 0 0 0)" to "inset(100% 0 0 0)"
+    // 3. When counter hits 100: Top and Bottom halves slide apart via yPercent (hardware GPU transform)
+    // top half: slides up out of viewport (yPercent: -100)
+    // bottom half: slides down out of viewport (yPercent: 100)
     // duration: 0.8s, ease: "power4.inOut"
     tl.to(
       topHalfRef.current,
       {
-        clipPath: "inset(0% 0% 100% 0%)",
+        yPercent: -100,
         duration: 0.8,
         ease: "power4.inOut",
       },
@@ -51,7 +51,7 @@ export function PageLoader({ onComplete }: { onComplete: () => void }) {
     tl.to(
       bottomHalfRef.current,
       {
-        clipPath: "inset(100% 0% 0% 0%)",
+        yPercent: 100,
         duration: 0.8,
         ease: "power4.inOut",
       },
@@ -69,13 +69,11 @@ export function PageLoader({ onComplete }: { onComplete: () => void }) {
       <div
         ref={topHalfRef}
         className="absolute top-0 left-0 right-0 h-1/2 bg-[#0A0A0A] pointer-events-auto"
-        style={{ clipPath: "inset(0% 0% 0% 0%)" }}
       />
       {/* Bottom half overlay */}
       <div
         ref={bottomHalfRef}
         className="absolute bottom-0 left-0 right-0 h-1/2 bg-[#0A0A0A] pointer-events-auto"
-        style={{ clipPath: "inset(0% 0% 0% 0%)" }}
       />
 
       {/* Center counter */}

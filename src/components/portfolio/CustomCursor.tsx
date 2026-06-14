@@ -13,86 +13,165 @@ export function CustomCursor() {
     // Add class to hide default cursor globally
     document.body.classList.add("has-custom-cursor");
 
-    // Center the cursor elements initially
-    gsapCore.set("#cursor-dot", { xPercent: -50, yPercent: -50 });
-    gsapCore.set("#cursor-ring", { xPercent: -50, yPercent: -50 });
+    // Center the cursor elements initially and make them invisible until first movement
+    gsapCore.set("#cursor-dot", { xPercent: -50, yPercent: -50, opacity: 0 });
+    gsapCore.set("#cursor-ring", { xPercent: -50, yPercent: -50, opacity: 0 });
 
     // QuickTo for high-performance translation
     // Dot: fast tracking
-    const dotXTo = gsapCore.quickTo("#cursor-dot", "x", { duration: 0.08, ease: "power3.out" });
-    const dotYTo = gsapCore.quickTo("#cursor-dot", "y", { duration: 0.08, ease: "power3.out" });
+    const dotXTo = gsapCore.quickTo("#cursor-dot", "x", { duration: 0.05, ease: "power3.out" });
+    const dotYTo = gsapCore.quickTo("#cursor-dot", "y", { duration: 0.05, ease: "power3.out" });
 
     // Ring: smooth lagging follow
-    const ringXTo = gsapCore.quickTo("#cursor-ring", "x", { duration: 0.3, ease: "power3.out" });
-    const ringYTo = gsapCore.quickTo("#cursor-ring", "y", { duration: 0.3, ease: "power3.out" });
+    const ringXTo = gsapCore.quickTo("#cursor-ring", "x", { duration: 0.25, ease: "power3.out" });
+    const ringYTo = gsapCore.quickTo("#cursor-ring", "y", { duration: 0.25, ease: "power3.out" });
+
+    // QuickTo for stretching (squash and stretch based on speed)
+    const ringScaleXTo = gsapCore.quickTo("#cursor-ring .cursor-ring-bg", "scaleX", { duration: 0.15, ease: "power2.out" });
+    const ringScaleYTo = gsapCore.quickTo("#cursor-ring .cursor-ring-bg", "scaleY", { duration: 0.15, ease: "power2.out" });
+    const ringRotationTo = gsapCore.quickTo("#cursor-ring .cursor-ring-bg", "rotation", { duration: 0.15, ease: "power2.out" });
+
+    let lastX = 0;
+    let lastY = 0;
+    let hasMoved = false;
 
     const handleMouseMove = (e: MouseEvent) => {
-      dotXTo(e.clientX);
-      dotYTo(e.clientY);
-      ringXTo(e.clientX);
-      ringYTo(e.clientY);
+      const x = e.clientX;
+      const y = e.clientY;
+
+      if (!hasMoved) {
+        gsapCore.to(["#cursor-dot", "#cursor-ring"], { opacity: 1, duration: 0.3 });
+        hasMoved = true;
+        lastX = x;
+        lastY = y;
+      }
+
+      dotXTo(x);
+      dotYTo(y);
+      ringXTo(x);
+      ringYTo(y);
+
+      // Calculate velocity and angle for organic squash-and-stretch
+      const dx = x - lastX;
+      const dy = y - lastY;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+
+      // Max stretch at velocity = 120
+      const velocity = Math.min(120, distance);
+      const stretch = (velocity / 120) * 0.45; // max 45% stretch
+
+      // If we are currently hovering over an interactive element, we lock scale/rotation for readability
+      if (!(window as any)._isCursorHovering) {
+        ringScaleXTo(1 + stretch);
+        ringScaleYTo(1 - stretch * 0.5);
+        ringRotationTo(angle);
+      } else {
+        ringRotationTo(0);
+      }
+
+      lastX = x;
+      lastY = y;
     };
 
     window.addEventListener("mousemove", handleMouseMove);
 
     // Mouse click compression scaling (GPU transform-only)
     const handleMouseDown = () => {
-      gsapCore.to("#cursor-ring .cursor-ring-bg", { scale: 0.5, duration: 0.15, ease: "power2.out" });
-      gsapCore.to("#cursor-dot", { scale: 2.0, duration: 0.15, ease: "power2.out" });
+      if ((window as any)._isCursorHovering) return;
+      gsapCore.to("#cursor-ring .cursor-ring-bg", { scaleX: 0.6, scaleY: 0.6, duration: 0.15, ease: "power2.out" });
+      gsapCore.to("#cursor-dot", { scale: 1.8, duration: 0.15, ease: "power2.out" });
     };
 
     const handleMouseUp = () => {
-      gsapCore.to("#cursor-ring .cursor-ring-bg", { scale: 1, duration: 0.2, ease: "power2.out" });
+      if ((window as any)._isCursorHovering) return;
+      gsapCore.to("#cursor-ring .cursor-ring-bg", { scaleX: 1, scaleY: 1, duration: 0.2, ease: "power2.out" });
       gsapCore.to("#cursor-dot", { scale: 1, duration: 0.2, ease: "power2.out" });
     };
 
     window.addEventListener("mousedown", handleMouseDown);
     window.addEventListener("mouseup", handleMouseUp);
 
-    // Hover detection using event delegation
+    // Hover detection using event delegation + computed cursor check
     const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       if (!target) return;
 
-      const interactiveEl = target.closest("a, button, [role='button'], .project-card, .gallery-card, .ep-card, .clickable, .project-slide h3, .project-slide div");
-      if (interactiveEl) {
-        // Determine hover type
-        const isProject = interactiveEl.closest("#projects");
-        const isGallery = interactiveEl.closest("#gallery");
-        const isPodcast = interactiveEl.closest("#podcast");
+      // Match elements that are links, buttons, form controls, have cursor-pointer class, OR have computed pointer style
+      const interactiveEl = target.closest("a, button, [role='button'], .project-card, .moment-card, .clickable, .cursor-pointer, input, textarea, select") as HTMLElement;
+      const isPointer = window.getComputedStyle(target).cursor === "pointer";
+      const el = interactiveEl || (isPointer ? target : null);
+
+      if (el) {
+        (window as any)._isCursorHovering = true;
+
+        // Determine context labels and custom scaling
+        const isProject = el.closest("#projects");
+        const isGallery = el.closest("#gallery");
+        const isPodcast = el.closest("#podcast");
+        const isInput = el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.tagName === "SELECT";
 
         let labelText = "";
-        let scale = 1.5; // default hover size (1.5 * 24px = 36px)
+        let scale = 1.6; // default hover size (1.6 * 32px = 51.2px)
         let ringBg = "transparent";
-        let ringBorder = "2px solid #E8FF00";
+        let ringBorder = "1.5px solid #E8FF00";
         let mixBlend = "difference";
+        let borderRadius = "50%";
 
-        if (isProject || isGallery || isPodcast) {
-          scale = 2.33; // larger action circle (2.33 * 24px = 56px)
+        if (isProject) {
+          scale = 2.2;
           ringBg = "#E8FF00";
           ringBorder = "none";
           mixBlend = "normal";
-
-          if (isProject) labelText = "EXPLORE";
-          if (isGallery) labelText = "ZOOM";
-          if (isPodcast) labelText = "LISTEN";
+          labelText = "EXPLORE";
+        } else if (isGallery) {
+          scale = 2.2;
+          ringBg = "#E8FF00";
+          ringBorder = "none";
+          mixBlend = "normal";
+          labelText = "ZOOM";
+        } else if (isPodcast) {
+          scale = 2.2;
+          ringBg = "#E8FF00";
+          ringBorder = "none";
+          mixBlend = "normal";
+          
+          // Check if hovering near a play trigger (like an SVG or thumbnail)
+          const isPlay = el.closest("[onClick*='loadYT']") || el.closest(".group\\/yt") || el.tagName === "svg" || el.closest("svg") || el.classList.contains("cursor-pointer");
+          labelText = isPlay ? "PLAY" : "LISTEN";
+        } else if (isInput) {
+          scale = 0.5;
+          ringBg = "transparent";
+          ringBorder = "1px solid rgba(232, 255, 0, 0.4)";
+          borderRadius = "4px"; // morph into capsule/rect for text fields
+        } else {
+          // General button/link
+          scale = 1.5;
+          ringBg = "rgba(232, 255, 0, 0.12)";
+          ringBorder = "1.5px solid #E8FF00";
         }
 
-        // Hide dot
-        gsapCore.to("#cursor-dot", { scale: 0, opacity: 0, duration: 0.2 });
+        // Hide dot (except inside input fields where it acts as a precise focus point)
+        if (isInput) {
+          gsapCore.to("#cursor-dot", { scale: 1.2, opacity: 0.7, backgroundColor: "#E8FF00", duration: 0.2 });
+        } else {
+          gsapCore.to("#cursor-dot", { scale: 0, opacity: 0, duration: 0.2 });
+        }
 
-        // Expand and style outer circle
+        // Style the outer ring
         gsapCore.to("#cursor-ring .cursor-ring-bg", {
-          scale,
+          scaleX: scale,
+          scaleY: scale,
           backgroundColor: ringBg,
           border: ringBorder,
           mixBlendMode: mixBlend as any,
+          borderRadius: borderRadius,
           duration: 0.25,
           ease: "power2.out",
           overwrite: "auto",
         });
 
-        // Show label inside ring
+        // Transition the text label
         const label = document.querySelector("#cursor-ring .cursor-label");
         if (label) {
           label.innerHTML = labelText;
@@ -111,19 +190,24 @@ export function CustomCursor() {
       if (!target) return;
 
       const relatedTarget = e.relatedTarget as HTMLElement;
-      const currentEl = target.closest("a, button, [role='button'], .project-card, .gallery-card, .ep-card, .clickable, .project-slide h3, .project-slide div");
-      const nextEl = relatedTarget ? relatedTarget.closest("a, button, [role='button'], .project-card, .gallery-card, .ep-card, .clickable, .project-slide h3, .project-slide div") : null;
+      
+      const currentEl = target.closest("a, button, [role='button'], .project-card, .moment-card, .clickable, .cursor-pointer, input, textarea, select") || (window.getComputedStyle(target).cursor === "pointer" ? target : null);
+      const nextEl = relatedTarget ? (relatedTarget.closest("a, button, [role='button'], .project-card, .moment-card, .clickable, .cursor-pointer, input, textarea, select") || (window.getComputedStyle(relatedTarget).cursor === "pointer" ? relatedTarget : null)) : null;
 
       if (currentEl && currentEl !== nextEl) {
+        (window as any)._isCursorHovering = false;
+
         // Restore dot
-        gsapCore.to("#cursor-dot", { scale: 1, opacity: 1, duration: 0.2 });
+        gsapCore.to("#cursor-dot", { scale: 1, opacity: 1, backgroundColor: "#E8FF00", duration: 0.2 });
 
         // Restore ring circle
         gsapCore.to("#cursor-ring .cursor-ring-bg", {
-          scale: 1,
+          scaleX: 1,
+          scaleY: 1,
           backgroundColor: "transparent",
           border: "1.5px solid #E8FF00",
           mixBlendMode: "difference" as any,
+          borderRadius: "50%",
           duration: 0.25,
           ease: "power2.out",
           overwrite: "auto",
@@ -145,7 +229,19 @@ export function CustomCursor() {
     document.addEventListener("mouseover", handleMouseOver);
     document.addEventListener("mouseout", handleMouseOut);
 
-    // Magnetic buttons logic (.magnetic-btn)
+    // Hide custom cursor elements when the mouse leaves the browser window
+    const handleMouseLeaveWindow = () => {
+      gsapCore.to(["#cursor-dot", "#cursor-ring"], { opacity: 0, duration: 0.2 });
+    };
+
+    const handleMouseEnterWindow = () => {
+      gsapCore.to(["#cursor-dot", "#cursor-ring"], { opacity: 1, duration: 0.2 });
+    };
+
+    document.addEventListener("mouseleave", handleMouseLeaveWindow);
+    document.addEventListener("mouseenter", handleMouseEnterWindow);
+
+    // Magnetic buttons logic
     const onMagneticMouseMove = (e: MouseEvent) => {
       const magneticBtns = document.querySelectorAll(".magnetic-btn");
       magneticBtns.forEach((btn) => {
@@ -187,6 +283,8 @@ export function CustomCursor() {
       window.removeEventListener("mouseup", handleMouseUp);
       document.removeEventListener("mouseover", handleMouseOver);
       document.removeEventListener("mouseout", handleMouseOut);
+      document.removeEventListener("mouseleave", handleMouseLeaveWindow);
+      document.removeEventListener("mouseenter", handleMouseEnterWindow);
       window.removeEventListener("mousemove", onMagneticMouseMove);
 
       const magneticBtns = document.querySelectorAll(".magnetic-btn");
@@ -205,7 +303,7 @@ export function CustomCursor() {
       <div
         id="cursor-ring"
         ref={ringRef}
-        className="fixed top-0 left-0 w-6 h-6 pointer-events-none z-[99999] flex items-center justify-center overflow-visible"
+        className="fixed top-0 left-0 w-8 h-8 pointer-events-none z-[99999] flex items-center justify-center overflow-visible"
       >
         {/* Actual scaling background circle */}
         <div className="cursor-ring-bg w-full h-full border-[1.5px] border-[#E8FF00] rounded-full mix-blend-difference" />

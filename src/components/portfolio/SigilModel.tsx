@@ -1,6 +1,6 @@
 import { useRef, Suspense, useState, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Float, Stars, Environment, OrbitControls, MeshTransmissionMaterial } from "@react-three/drei";
+import { Float, Environment, OrbitControls, MeshTransmissionMaterial } from "@react-three/drei";
 import * as THREE from "three";
 
 /**
@@ -141,13 +141,36 @@ const SigilScene = ({ coordsRef }: { coordsRef?: React.RefObject<HTMLDivElement 
 /**
  * 3D Sigil Canvas Wrapper Component
  * Sets up lights, environment presets, stars backdrop, floating motion, and drag controls.
+ * Throttled using IntersectionObserver to only render when visible in the viewport.
  */
 export function SigilModel({ coordsRef }: { coordsRef?: React.RefObject<HTMLDivElement | null> }) {
   const [mounted, setMounted] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !containerRef.current) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      {
+        root: null, // viewport
+        rootMargin: "50px", // pre-render when 50px close to viewport
+        threshold: 0.0,
+      }
+    );
+
+    observer.observe(containerRef.current);
+    return () => {
+      observer.disconnect();
+    };
+  }, [mounted]);
 
   if (!mounted) {
     return (
@@ -156,25 +179,31 @@ export function SigilModel({ coordsRef }: { coordsRef?: React.RefObject<HTMLDivE
   }
 
   return (
-    <Canvas camera={{ position: [0, 0, 3.2], fov: 45 }} dpr={[1, 2]}>
-      {/* Basic WebGL Lighting */}
-      <ambientLight intensity={0.5} />
-      <directionalLight position={[5, 5, 5]} intensity={1.5} />
-      <pointLight position={[-5, -5, -5]} intensity={0.5} />
+    <div ref={containerRef} className="w-full h-full relative">
+      {isVisible ? (
+        <Canvas camera={{ position: [0, 0, 3.2], fov: 45 }} dpr={[1, 1.5]}>
+          {/* Basic WebGL Lighting */}
+          <ambientLight intensity={0.5} />
+          <directionalLight position={[5, 5, 5]} intensity={1.5} />
+          <pointLight position={[-5, -5, -5]} intensity={0.5} />
 
-      {/* Suspense is required for async environment loading */}
-      <Suspense fallback={null}>
-        {/* Float adds slow vertical floating movement */}
-        <Float speed={1.5} rotationIntensity={0.5} floatIntensity={0.5}>
-          <SigilScene coordsRef={coordsRef} />
-        </Float>
-        
-        {/* Environment preset provides metal reflections */}
-        <Environment preset="city" />
-      </Suspense>
+          {/* Suspense is required for async environment loading */}
+          <Suspense fallback={null}>
+            {/* Float adds slow vertical floating movement */}
+            <Float speed={1.5} rotationIntensity={0.5} floatIntensity={0.5}>
+              <SigilScene coordsRef={coordsRef} />
+            </Float>
+            
+            {/* Environment preset provides metal reflections */}
+            <Environment preset="city" />
+          </Suspense>
 
-      {/* OrbitControls enables dragging to spin the sigil */}
-      <OrbitControls enableZoom={false} enablePan={false} />
-    </Canvas>
+          {/* OrbitControls enables dragging to spin the sigil */}
+          <OrbitControls enableZoom={false} enablePan={false} />
+        </Canvas>
+      ) : (
+        <div className="w-full h-full bg-transparent flex items-center justify-center" />
+      )}
+    </div>
   );
 }

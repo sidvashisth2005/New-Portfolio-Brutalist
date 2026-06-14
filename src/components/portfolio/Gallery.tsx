@@ -192,7 +192,7 @@ export function Gallery() {
                     onMouseMove={handleMouseMove}
                     onMouseLeave={handleMouseLeave}
                     onClick={() => setSelectedMoment(m)}
-                    className="w-full h-full border-2 border-white/10 hover:border-[#E8FF00] bg-[#0A0A0A] p-2 relative group cursor-pointer transition-all duration-300 ease-out origin-center flex flex-col justify-between overflow-hidden"
+                    className="moment-card w-full h-full border-2 border-white/10 hover:border-[#E8FF00] bg-[#0A0A0A] p-2 relative group cursor-pointer transition-all duration-300 ease-out origin-center flex flex-col justify-between overflow-hidden"
                   >
                     {/* Image Box */}
                     <div className="flex-grow w-full h-[80%] overflow-hidden relative border border-white/5">

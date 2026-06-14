@@ -18,27 +18,45 @@ export function Marquee() {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    // Retrieve global Lenis instance configured in gsap-setup.ts
+    const track = trackRef.current;
+    if (!track) return;
+
+    // Set initial position
+    gsap.set(track, { x: "0%" });
+
+    // Loop from 0% to -33.3333% (since we replicated items 3 times, shifting 1/3 of the total width is exactly 1 loop iteration)
+    const loop = gsap.to(track, {
+      x: "-33.3333%",
+      ease: "none",
+      duration: 25,
+      repeat: -1,
+    });
+
     const lenis = (window as any).lenis;
     if (!lenis) return;
 
     const handleScroll = (inst: any) => {
       const velocity = inst.velocity || 0;
-      const track = trackRef.current;
-      if (!track) return;
-
-      // Animate animationDuration and scaleX direction
-      gsap.to(track, {
-        animationDuration: `${Math.max(4, 20 - Math.abs(velocity) * 8)}s`,
-        scaleX: velocity < 0 ? -1 : 1, // scaleX: -1 reverses the CSS marquee direction
+      
+      // Calculate target timeScale: faster when scrolling.
+      // Base speed is 1. Maximum is 5.
+      const speedMultiplier = 1 + Math.min(4, Math.abs(velocity) * 0.4);
+      // Scroll down -> positive velocity -> standard marquee direction (right-to-left, timescale positive)
+      // Scroll up -> negative velocity -> reverse direction (timescale negative)
+      const direction = velocity < 0 ? -1 : 1;
+      
+      gsap.to(loop, {
+        timeScale: speedMultiplier * direction,
         duration: 0.4,
-        ease: "power1.out",
+        ease: "power2.out",
+        overwrite: "auto",
       });
     };
 
     lenis.on("scroll", handleScroll);
     return () => {
       lenis.off("scroll", handleScroll);
+      loop.kill();
     };
   }, []);
 
@@ -52,8 +70,7 @@ export function Marquee() {
     >
       <div
         ref={trackRef}
-        className="marquee-track flex gap-8 whitespace-nowrap animate-marquee w-max"
-        style={{ animationDuration: "20s" }}
+        className="marquee-track flex gap-8 whitespace-nowrap w-max"
       >
         {row.map((it, i) => (
           <span
