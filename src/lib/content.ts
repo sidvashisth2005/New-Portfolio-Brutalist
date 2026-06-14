@@ -117,10 +117,10 @@ export const projects = [
 ];
 
 export const podcastEpisodes = [
-  { ep: "EP 01", title: "What BD Actually Means in a Startup", duration: "32 MIN", url: "/audio/podcast.mp3" },
-  { ep: "EP 02", title: "Pitching to Judges Who've Seen It All", duration: "28 MIN", url: "/audio/podcast.mp3" },
-  { ep: "EP 03", title: "How I Built a Team at 19 and Led It", duration: "24 MIN", url: "/audio/podcast.mp3" },
-  { ep: "EP 04", title: "The Research → Product → Pitch Pipeline", duration: "35 MIN", url: "/audio/podcast.mp3" },
+  { ep: "EP 01", title: "What BD Actually Means in a Startup", duration: "32 MIN", url: "/Siddhant Vashisth Audio.mp3" },
+  { ep: "EP 02", title: "Pitching to Judges Who've Seen It All", duration: "28 MIN", url: "/Siddhant Vashisth Audio.mp3" },
+  { ep: "EP 03", title: "How I Built a Team at 19 and Led It", duration: "24 MIN", url: "/Siddhant Vashisth Audio.mp3" },
+  { ep: "EP 04", title: "The Research → Product → Pitch Pipeline", duration: "35 MIN", url: "/Siddhant Vashisth Audio.mp3" },
 ];
 
 export const galleryItems = [

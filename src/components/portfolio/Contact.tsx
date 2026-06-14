@@ -135,7 +135,7 @@ export function Contact() {
               </button>
 
               <a
-                href="https://drive.google.com/file/d/1Du6QLPI58renRduOlaXqYmsCB6aXjen-/view?usp=drive_link"
+                href="/Siddhant's Resume.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="magnetic-btn group/btn relative border-2 border-white/30 px-8 py-4 font-mono text-[11px] uppercase tracking-[0.2em] text-white/70 hover:text-black hover:border-white overflow-hidden cursor-pointer text-center transition-colors duration-300"
