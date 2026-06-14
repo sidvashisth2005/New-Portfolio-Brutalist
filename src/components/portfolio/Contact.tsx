@@ -31,10 +31,11 @@ export function Contact() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const formEl = e.currentTarget;
     setIsSubmitting(true);
     setStatus('');
 
-    const formData = new FormData(e.currentTarget);
+    const formData = new FormData(formEl);
     formData.append("access_key", "34876f3a-ab36-4d99-86f5-edb5e82a016b");
 
     const object = Object.fromEntries(formData);
@@ -55,7 +56,7 @@ export function Contact() {
         const data = await response.json();
         if (data.success) {
           setStatus('success');
-          e.currentTarget.reset();
+          formEl.reset();
         } else {
           console.error("Web3Forms submission failed. Response:", data);
           setStatus('error');
