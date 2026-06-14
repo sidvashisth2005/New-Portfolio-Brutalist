@@ -8,24 +8,26 @@ import * as THREE from "three";
  * Renders the interlocking metal lattice, crystal shards, and glowing core.
  */
 const SigilScene = ({ coordsRef }: { coordsRef?: React.RefObject<HTMLDivElement | null> }) => {
-  const groupRef = useRef<THREE.Group>(null);
+  const parallaxGroupRef = useRef<THREE.Group>(null);
+  const autoRotateGroupRef = useRef<THREE.Group>(null);
   
   // Set the theme accent color (yellow in this case)
   const accentColor = "#ffff00";
 
   // useFrame runs on every frame of the render loop (approx. 60fps)
   useFrame((state) => {
-    if (!groupRef.current) return;
-    
-    // 1. Auto-rotation: slowly rotate the sigil over time
-    groupRef.current.rotation.y += 0.003;
-    groupRef.current.rotation.x += 0.001;
+    // 1. Auto-rotation: slowly rotate the inner group over time
+    if (autoRotateGroupRef.current) {
+      autoRotateGroupRef.current.rotation.y += 0.0025; // very slow speed
+    }
 
-    // 2. Mouse Parallax: tilt the sigil based on mouse coordinates
-    const targetX = (state.pointer.x * Math.PI) / 10;
-    const targetY = (state.pointer.y * Math.PI) / 10;
-    groupRef.current.rotation.y += (targetX - groupRef.current.rotation.y) * 0.05;
-    groupRef.current.rotation.x += (targetY - groupRef.current.rotation.x) * 0.05;
+    // 2. Mouse Parallax: tilt the outer group based on mouse coordinates
+    if (parallaxGroupRef.current) {
+      const targetX = (state.pointer.x * Math.PI) / 12; // slightly more subtle mouse tilt
+      const targetY = (state.pointer.y * Math.PI) / 12;
+      parallaxGroupRef.current.rotation.y += (targetX - parallaxGroupRef.current.rotation.y) * 0.05;
+      parallaxGroupRef.current.rotation.x += (targetY - parallaxGroupRef.current.rotation.x) * 0.05;
+    }
 
     // 3. Dynamic coordinates update via DOM ref (no-rerender, 60fps safe)
     if (coordsRef && coordsRef.current) {
@@ -53,7 +55,8 @@ const SigilScene = ({ coordsRef }: { coordsRef?: React.RefObject<HTMLDivElement 
   });
 
   return (
-    <group ref={groupRef}>
+    <group ref={parallaxGroupRef}>
+      <group ref={autoRotateGroupRef}>
       {/* SECTION A: 5 Interlocking Metal Beams (The Lattice Frame) */}
       <group>
         {/* Beam 1 */}
@@ -134,6 +137,7 @@ const SigilScene = ({ coordsRef }: { coordsRef?: React.RefObject<HTMLDivElement 
 
       {/* SECTION D: Core Light Source (Creates glow reflections on metal lattice) */}
       <pointLight position={[0, 0, 0]} intensity={2} color={accentColor} distance={3} />
+      </group>
     </group>
   );
 };
@@ -190,7 +194,7 @@ export function SigilModel({ coordsRef }: { coordsRef?: React.RefObject<HTMLDivE
           {/* Suspense is required for async environment loading */}
           <Suspense fallback={null}>
             {/* Float adds slow vertical floating movement */}
-            <Float speed={1.5} rotationIntensity={0.5} floatIntensity={0.5}>
+            <Float speed={1.2} rotationIntensity={0.15} floatIntensity={0.25}>
               <SigilScene coordsRef={coordsRef} />
             </Float>
             
