@@ -178,7 +178,7 @@ export function Contact() {
                 disabled={isSubmitting}
                 className="magnetic-btn group/btn relative border-2 border-white px-8 py-4 font-mono text-[11px] uppercase tracking-[0.2em] text-white hover:text-black overflow-hidden cursor-pointer transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <span className="relative z-10">{isSubmitting ? "TRANSMITTING..." : "SEND TRANSMISSION"}</span>
+                <span className="relative z-10">{isSubmitting ? "SENDING..." : "SEND MESSAGE"}</span>
                 <span className="absolute inset-0 bg-[#ffff00] translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300 ease-[cubic-bezier(0.85,0,0.15,1)] z-0" />
               </button>
 
