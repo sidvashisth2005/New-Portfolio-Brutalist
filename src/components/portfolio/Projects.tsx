@@ -340,7 +340,7 @@ export function Projects() {
                     </button>
                   </div>
                 </div>
-                <div className="col-span-12 md:col-span-5 flex justify-center md:justify-end mt-8 md:mt-0">
+                <div className="col-span-12 md:col-span-5 flex justify-center md:justify-end md:pr-16 mt-8 md:mt-0">
                   <div className="w-[160px] h-[230px] sm:w-[190px] sm:h-[270px] md:w-[210px] md:h-[300px] relative group cursor-pointer">
                     {/* Card 1 (Bottom) */}
                     <div
@@ -494,8 +494,7 @@ export function Projects() {
                 </div>
               </div>
 
-              {/* Right Half: Screenshot Box */}
-              <div className="col-span-12 md:col-span-5 flex justify-center md:justify-end pr-4 md:pr-0 mt-8 md:mt-0">
+              <div className="col-span-12 md:col-span-5 flex justify-center md:justify-end pr-4 md:pr-16 mt-8 md:mt-0">
                 <div className="w-[160px] h-[230px] sm:w-[190px] sm:h-[270px] md:w-[210px] md:h-[300px] relative group cursor-pointer">
                   {/* Card 1 (Bottom) */}
                   <div
