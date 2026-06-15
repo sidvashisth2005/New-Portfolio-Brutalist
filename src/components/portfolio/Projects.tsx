@@ -436,103 +436,105 @@ export function Projects() {
             key={p.index}
             className="project-slide project-card w-screen h-full flex-shrink-0 flex items-center justify-center relative px-6 md:px-24 bg-black border-r border-white/10"
           >
-            {/* Top-Left Project Number */}
-            <div className="absolute top-24 left-12 font-mono text-[14px] text-[#E8FF00] tracking-wider transition-all duration-300 hover:text-white hover:scale-105 origin-left inline-block cursor-pointer select-none">
-              ({p.index})
-            </div>
-
-            {/* Top-Right Tech Stack Tags */}
-            <div className="absolute top-24 right-12 font-mono text-xs text-white/50 tracking-wider select-none">
-              {p.tags.join(" / ")}
-            </div>
-
-            {/* Content Container Grid */}
-            <div className="grid grid-cols-12 gap-8 w-full max-w-7xl mx-auto items-center">
-              {/* Left Half: Details */}
-              <div className="col-span-12 md:col-span-6 md:col-start-2 flex flex-col justify-center gap-6 text-left pl-4 md:pl-0">
-                <h3
-                  className="project-title font-display font-bold text-[clamp(2.2rem,6.5vw,72px)] tracking-[-0.05em] uppercase text-white leading-[0.95] mb-2 select-none cursor-pointer hover:text-[#E8FF00] transition-colors"
-                  style={{ clipPath: "inset(0 100% 0 0)" }}
-                  onClick={() => openProjectModal(p, 0)}
-                >
-                  {p.title}
-                </h3>
-                <ul className="space-y-4 max-w-xl">
-                  {p.bullets.map((bullet, idx) => (
-                    <li key={idx} className="flex items-start">
-                      <span className="w-1.5 h-1.5 bg-[#E8FF00] mt-[8px] flex-shrink-0" />
-                      <span className="font-display text-[13px] md:text-[14px] text-white/70 leading-relaxed ml-4 uppercase">
-                        {bullet}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-
-                <div className="flex flex-wrap items-center gap-6 mt-4">
-                  {p.github ? (
-                    <a
-                      href={p.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group relative inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] text-[#E8FF00] select-none"
-                    >
-                      <span>VIEW ON GITHUB &rarr;</span>
-                      <span className="absolute left-0 bottom-[-4px] h-[1.5px] w-full bg-[#E8FF00] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out" />
-                    </a>
-                  ) : (
-                    <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/30 select-none">
-                      PROPRIETARY PROJECT
-                    </div>
-                  )}
-                  <button
-                    onClick={() => openProjectModal(p, 0)}
-                    className="group relative inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] text-white hover:text-[#E8FF00] transition-colors select-none bg-transparent border-none outline-none cursor-pointer"
-                  >
-                    <span>EXPLORE PROJECT &rarr;</span>
-                    <span className="absolute left-0 bottom-[-4px] h-[1.5px] w-full bg-[#E8FF00] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out" />
-                  </button>
-                </div>
+            <div className="relative w-full max-w-7xl mx-auto h-full flex flex-col justify-center">
+              {/* Top-Left Project Number */}
+              <div className="absolute top-24 left-0 font-mono text-[14px] text-[#E8FF00] tracking-wider transition-all duration-300 hover:text-white hover:scale-105 origin-left inline-block cursor-pointer select-none">
+                ({p.index})
               </div>
 
-              <div className="col-span-12 md:col-span-4 flex justify-center md:justify-center mt-8 md:mt-0">
-                <div className="w-[160px] h-[230px] sm:w-[190px] sm:h-[270px] md:w-[210px] md:h-[300px] relative group cursor-pointer">
-                  {/* Card 1 (Bottom) */}
-                  <div
+              {/* Top-Right Tech Stack Tags */}
+              <div className="absolute top-24 right-0 font-mono text-xs text-white/50 tracking-wider select-none">
+                {p.tags.join(" / ")}
+              </div>
+
+              {/* Content Container Grid */}
+              <div className="grid grid-cols-12 gap-8 w-full items-center">
+                {/* Left Half: Details */}
+                <div className="col-span-12 md:col-span-6 md:col-start-2 flex flex-col justify-center gap-6 text-left pl-4 md:pl-0">
+                  <h3
+                    className="project-title font-display font-bold text-[clamp(2.2rem,6.5vw,72px)] tracking-[-0.05em] uppercase text-white leading-[0.95] mb-2 select-none cursor-pointer hover:text-[#E8FF00] transition-colors"
+                    style={{ clipPath: "inset(0 100% 0 0)" }}
                     onClick={() => openProjectModal(p, 0)}
-                    className="absolute inset-0 bg-[#0A0A0A] border border-white sm:border-2 p-1 sm:p-1.5 shadow-2xl transition-all duration-500 ease-out origin-bottom rotate-[-12deg] -translate-x-4 sm:-translate-x-6 translate-y-1.5 sm:translate-y-2 z-10 group-hover:rotate-[-24deg] group-hover:-translate-x-8 sm:group-hover:-translate-x-12 group-hover:-translate-y-2 group-hover:border-[#E8FF00] overflow-hidden"
                   >
-                    <img
-                      src={PROJECT_CARD_IMAGES[p.index]?.[0]}
-                      alt={`${p.title} preview 1`}
-                      className="w-full h-full object-cover filter grayscale contrast-125 group-hover:grayscale-0 group-hover:contrast-100 transition-all duration-500"
-                      loading="lazy"
-                    />
-                  </div>
+                    {p.title}
+                  </h3>
+                  <ul className="space-y-4 max-w-xl">
+                    {p.bullets.map((bullet, idx) => (
+                      <li key={idx} className="flex items-start">
+                        <span className="w-1.5 h-1.5 bg-[#E8FF00] mt-[8px] flex-shrink-0" />
+                        <span className="font-display text-[13px] md:text-[14px] text-white/70 leading-relaxed ml-4 uppercase">
+                          {bullet}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
 
-                  {/* Card 2 (Middle) */}
-                  <div
-                    onClick={() => openProjectModal(p, 1)}
-                    className="absolute inset-0 bg-[#0A0A0A] border border-white sm:border-2 p-1 sm:p-1.5 shadow-2xl transition-all duration-500 ease-out origin-bottom rotate-0 translate-y-0 z-20 group-hover:-translate-y-4 sm:group-hover:-translate-y-6 group-hover:scale-105 group-hover:border-[#E8FF00] overflow-hidden"
-                  >
-                    <img
-                      src={PROJECT_CARD_IMAGES[p.index]?.[1]}
-                      alt={`${p.title} preview 2`}
-                      className="w-full h-full object-cover filter grayscale contrast-125 group-hover:grayscale-0 group-hover:contrast-100 transition-all duration-500"
-                      loading="lazy"
-                    />
+                  <div className="flex flex-wrap items-center gap-6 mt-4">
+                    {p.github ? (
+                      <a
+                        href={p.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group relative inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] text-[#E8FF00] select-none"
+                      >
+                        <span>VIEW ON GITHUB &rarr;</span>
+                        <span className="absolute left-0 bottom-[-4px] h-[1.5px] w-full bg-[#E8FF00] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out" />
+                      </a>
+                    ) : (
+                      <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/30 select-none">
+                        PROPRIETARY PROJECT
+                      </div>
+                    )}
+                    <button
+                      onClick={() => openProjectModal(p, 0)}
+                      className="group relative inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] text-white hover:text-[#E8FF00] transition-colors select-none bg-transparent border-none outline-none cursor-pointer"
+                    >
+                      <span>EXPLORE PROJECT &rarr;</span>
+                      <span className="absolute left-0 bottom-[-4px] h-[1.5px] w-full bg-[#E8FF00] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out" />
+                    </button>
                   </div>
+                </div>
 
-                  {/* Card 3 (Top) */}
-                  <div
-                    onClick={() => openProjectModal(p, 2)}
-                    className="absolute inset-0 bg-[#0A0A0A] border border-white sm:border-2 p-1 sm:p-1.5 shadow-2xl transition-all duration-500 ease-out origin-bottom rotate-[12deg] translate-x-4 sm:translate-x-6 translate-y-1.5 sm:translate-y-2 z-30 group-hover:rotate-[24deg] group-hover:translate-x-8 sm:group-hover:translate-x-12 group-hover:-translate-y-2 group-hover:border-[#E8FF00] overflow-hidden"
-                  >
-                    <img
-                      src={PROJECT_CARD_IMAGES[p.index]?.[2]}
-                      alt={`${p.title} preview 3`}
-                      className="w-full h-full object-cover filter grayscale contrast-125 group-hover:grayscale-0 group-hover:contrast-100 transition-all duration-500"
-                      loading="lazy"
-                    />
+                <div className="col-span-12 md:col-span-4 flex justify-center md:justify-center mt-8 md:mt-0">
+                  <div className="w-[160px] h-[230px] sm:w-[190px] sm:h-[270px] md:w-[210px] md:h-[300px] relative group cursor-pointer">
+                    {/* Card 1 (Bottom) */}
+                    <div
+                      onClick={() => openProjectModal(p, 0)}
+                      className="absolute inset-0 bg-[#0A0A0A] border border-white sm:border-2 p-1 sm:p-1.5 shadow-2xl transition-all duration-500 ease-out origin-bottom rotate-[-12deg] -translate-x-4 sm:-translate-x-6 translate-y-1.5 sm:translate-y-2 z-10 group-hover:rotate-[-24deg] group-hover:-translate-x-8 sm:group-hover:-translate-x-12 group-hover:-translate-y-2 group-hover:border-[#E8FF00] overflow-hidden"
+                    >
+                      <img
+                        src={PROJECT_CARD_IMAGES[p.index]?.[0]}
+                        alt={`${p.title} preview 1`}
+                        className="w-full h-full object-cover filter grayscale contrast-125 group-hover:grayscale-0 group-hover:contrast-100 transition-all duration-500"
+                        loading="lazy"
+                      />
+                    </div>
+
+                    {/* Card 2 (Middle) */}
+                    <div
+                      onClick={() => openProjectModal(p, 1)}
+                      className="absolute inset-0 bg-[#0A0A0A] border border-white sm:border-2 p-1 sm:p-1.5 shadow-2xl transition-all duration-500 ease-out origin-bottom rotate-0 translate-y-0 z-20 group-hover:-translate-y-4 sm:group-hover:-translate-y-6 group-hover:scale-105 group-hover:border-[#E8FF00] overflow-hidden"
+                    >
+                      <img
+                        src={PROJECT_CARD_IMAGES[p.index]?.[1]}
+                        alt={`${p.title} preview 2`}
+                        className="w-full h-full object-cover filter grayscale contrast-125 group-hover:grayscale-0 group-hover:contrast-100 transition-all duration-500"
+                        loading="lazy"
+                      />
+                    </div>
+
+                    {/* Card 3 (Top) */}
+                    <div
+                      onClick={() => openProjectModal(p, 2)}
+                      className="absolute inset-0 bg-[#0A0A0A] border border-white sm:border-2 p-1 sm:p-1.5 shadow-2xl transition-all duration-500 ease-out origin-bottom rotate-[12deg] translate-x-4 sm:translate-x-6 translate-y-1.5 sm:translate-y-2 z-30 group-hover:rotate-[24deg] group-hover:translate-x-8 sm:group-hover:translate-x-12 group-hover:-translate-y-2 group-hover:border-[#E8FF00] overflow-hidden"
+                    >
+                      <img
+                        src={PROJECT_CARD_IMAGES[p.index]?.[2]}
+                        alt={`${p.title} preview 3`}
+                        className="w-full h-full object-cover filter grayscale contrast-125 group-hover:grayscale-0 group-hover:contrast-100 transition-all duration-500"
+                        loading="lazy"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

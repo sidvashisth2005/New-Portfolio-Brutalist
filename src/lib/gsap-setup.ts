@@ -150,6 +150,28 @@ export function revealSection(sectionEl: HTMLElement) {
     );
   }
 
+  // Experience section custom animation for company characters
+  if (sectionEl.id === "experience") {
+    const entries = sectionEl.querySelectorAll(".experience-entry");
+    entries.forEach((entry, entryIndex) => {
+      const chars = entry.querySelectorAll(".company-char");
+      if (chars.length > 0) {
+        tl.fromTo(
+          chars,
+          { y: "110%", rotate: 2 },
+          {
+            y: "0%",
+            rotate: 0,
+            duration: 0.65,
+            stagger: 0.012,
+            ease: "power3.out",
+          },
+          0.35 + entryIndex * 0.1
+        );
+      }
+    });
+  }
+
   // Counter animations if present in this section
   const statsElements = sectionEl.querySelectorAll(".stat-value");
   if (statsElements.length > 0) {

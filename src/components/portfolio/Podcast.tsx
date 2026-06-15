@@ -251,8 +251,14 @@ export function Podcast() {
                   />
                   <div className="absolute inset-0 flex items-center justify-center bg-black/40">
                     {/* Brutalist play indicator */}
-                    <div className="h-12 w-12 bg-[#E8FF00] flex items-center justify-center text-black font-mono text-xs font-bold uppercase select-none">
-                      PLAY
+                    <div className="h-12 w-12 bg-[#E8FF00] flex items-center justify-center text-black select-none">
+                      <svg
+                        viewBox="0 0 24 24"
+                        className="w-6 h-6 fill-current text-black"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="M8 5v14l11-7z" />
+                      </svg>
                     </div>
                   </div>
                 </div>
@@ -290,8 +296,14 @@ export function Podcast() {
                   />
                   <div className="absolute inset-0 flex items-center justify-center bg-black/40">
                     {/* Brutalist play indicator */}
-                    <div className="h-12 w-12 bg-[#E8FF00] flex items-center justify-center text-black font-mono text-xs font-bold uppercase select-none">
-                      PLAY
+                    <div className="h-12 w-12 bg-[#E8FF00] flex items-center justify-center text-black select-none">
+                      <svg
+                        viewBox="0 0 24 24"
+                        className="w-6 h-6 fill-current text-black"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="M8 5v14l11-7z" />
+                      </svg>
                     </div>
                   </div>
                 </div>

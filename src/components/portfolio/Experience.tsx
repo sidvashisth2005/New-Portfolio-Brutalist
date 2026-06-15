@@ -40,8 +40,16 @@ export function Experience() {
                 </div>
 
                 {/* Company Name */}
-                <h3 className="font-display font-black text-3xl md:text-5xl tracking-[-0.06em] uppercase text-white mt-2 leading-none">
-                  {exp.company}
+                <h3 className="font-display font-black text-3xl md:text-5xl tracking-[-0.06em] uppercase text-white mt-2 leading-none overflow-hidden block py-1">
+                  {exp.company.split("").map((char, idx) => (
+                    <span
+                      key={idx}
+                      className="company-char inline-block origin-bottom-left"
+                      style={{ display: char === " " ? "inline" : "inline-block" }}
+                    >
+                      {char === " " ? "\u00A0" : char}
+                    </span>
+                  ))}
                 </h3>
 
                 {/* Role & Location */}
