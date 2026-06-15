@@ -300,7 +300,7 @@ export function Projects() {
                 key={p.index}
                 className="grid grid-cols-12 gap-8 border-b border-white/10 pb-12 items-center"
               >
-                <div className="col-span-12 md:col-span-7 flex flex-col gap-6">
+                <div className="col-span-12 md:col-span-6 md:col-start-2 flex flex-col gap-6">
                   <div className="flex items-center gap-4">
                     <span className="font-mono text-xs text-[#E8FF00]">({p.index})</span>
                     <span className="font-mono text-xs text-white/50">{p.tags.join(" / ")}</span>
@@ -340,7 +340,7 @@ export function Projects() {
                     </button>
                   </div>
                 </div>
-                <div className="col-span-12 md:col-span-5 flex justify-center md:justify-end md:pr-16 mt-8 md:mt-0">
+                <div className="col-span-12 md:col-span-4 flex justify-center md:justify-center mt-8 md:mt-0">
                   <div className="w-[160px] h-[230px] sm:w-[190px] sm:h-[270px] md:w-[210px] md:h-[300px] relative group cursor-pointer">
                     {/* Card 1 (Bottom) */}
                     <div
@@ -449,7 +449,7 @@ export function Projects() {
             {/* Content Container Grid */}
             <div className="grid grid-cols-12 gap-8 w-full max-w-7xl mx-auto items-center">
               {/* Left Half: Details */}
-              <div className="col-span-12 md:col-span-7 flex flex-col justify-center gap-6 text-left pl-4 md:pl-0">
+              <div className="col-span-12 md:col-span-6 md:col-start-2 flex flex-col justify-center gap-6 text-left pl-4 md:pl-0">
                 <h3
                   className="project-title font-display font-bold text-[clamp(2.2rem,6.5vw,72px)] tracking-[-0.05em] uppercase text-white leading-[0.95] mb-2 select-none cursor-pointer hover:text-[#E8FF00] transition-colors"
                   style={{ clipPath: "inset(0 100% 0 0)" }}
@@ -494,7 +494,7 @@ export function Projects() {
                 </div>
               </div>
 
-              <div className="col-span-12 md:col-span-5 flex justify-center md:justify-end pr-4 md:pr-16 mt-8 md:mt-0">
+              <div className="col-span-12 md:col-span-4 flex justify-center md:justify-center mt-8 md:mt-0">
                 <div className="w-[160px] h-[230px] sm:w-[190px] sm:h-[270px] md:w-[210px] md:h-[300px] relative group cursor-pointer">
                   {/* Card 1 (Bottom) */}
                   <div
