@@ -86,7 +86,7 @@ export function Contact() {
   return (
     <section
       id="contact"
-      className="relative px-5 py-32 bg-black overflow-hidden"
+      className="relative px-5 py-16 md:py-32 bg-black overflow-hidden"
     >
       {/* Step 1 — Section divider line sweep */}
       <div
@@ -96,7 +96,7 @@ export function Contact() {
 
       <div className="absolute inset-0 grid-bg opacity-20 pointer-events-none" />
 
-      <div className="relative grid grid-cols-12 gap-5 z-10">
+      <div className="relative grid grid-cols-12 gap-5 z-10" data-skew>
         {/* Left Column */}
         <div className="col-span-12 md:col-span-3">
           <div className="overflow-hidden md:sticky md:top-20">
@@ -112,13 +112,15 @@ export function Contact() {
 
         {/* Right Column */}
         <div className="col-span-12 md:col-span-9">
-          {/* Heading with per-word overflow clip */}
-          <div className="overflow-hidden">
-            <h2 className="section-title font-display font-black text-[9vw] sm:text-[8vw] md:text-[7vw] tracking-[-0.05em] leading-[0.9] uppercase text-white">
-              LET&rsquo;S <br />
-              <span className="text-outline">BUILD.</span>
-            </h2>
-          </div>
+          {/* Heading with per-line word reveal */}
+          <h2 className="section-title font-display font-black text-[9vw] sm:text-[8vw] md:text-[7vw] tracking-[-0.05em] leading-[0.9] uppercase text-white">
+            <div className="overflow-hidden">
+              <span className="word-reveal inline-block whitespace-nowrap">LET&rsquo;S</span>
+            </div>
+            <div className="overflow-hidden">
+              <span className="word-reveal text-outline inline-block whitespace-nowrap">BUILD.</span>
+            </div>
+          </h2>
 
           <p
             className="contact-subtext reveal-block font-display text-[15px] text-white/60 max-w-lg leading-relaxed mt-6 uppercase"
@@ -131,7 +133,7 @@ export function Contact() {
           </p>
 
           {/* Contact Form */}
-          <form onSubmit={handleSubmit} className="mt-12 max-w-lg">
+          <form onSubmit={handleSubmit} className="mt-8 md:mt-12 max-w-lg w-full">
             {/* Name Field */}
             <div
               className="contact-form-field reveal-block relative border-b-2 border-white/30 mb-8"
@@ -225,14 +227,14 @@ export function Contact() {
           </form>
 
           {/* Directory Grid */}
-          <div className="mt-20 grid grid-cols-1 sm:grid-cols-2 border-t-2 border-white">
+          <div className="mt-12 md:mt-20 grid grid-cols-1 sm:grid-cols-2 border-t-2 border-white">
             {[
               ["EMAIL", profile.email, "#form-name"],
               ["LOCATION", profile.location, null],
               ["LINKEDIN", "CONNECT ON LINKEDIN", profile.linkedin],
               ["GITHUB", "FOLLOW ON GITHUB", profile.github],
             ].map(([label, val, href], idx) => {
-              const borderClasses = `contact-dir-cell reveal-block p-8 border-b-2 border-white ${
+              const borderClasses = `contact-dir-cell reveal-block p-5 md:p-8 border-b-2 border-white ${
                 idx % 2 === 0 ? "sm:border-r-2 border-white" : ""
               }`;
               return (
@@ -281,7 +283,7 @@ export function Contact() {
       </div>
 
       {/* Footer */}
-      <footer className="relative mt-32 pt-8 border-t-2 border-white flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
+      <footer className="relative mt-16 md:mt-32 pt-8 border-t-2 border-white flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
         <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/30 leading-relaxed">
           &copy; MMXXVI &middot; {profile.name} <br />
           COMPOSED IN GUNA, INDIA

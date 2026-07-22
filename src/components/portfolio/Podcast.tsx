@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import anime from "animejs";
 import { GUILLOTINE, useReducedMotion } from "@/lib/anime-utils";
 import { podcastEpisodes } from "@/lib/content";
-import { Headphones, Volume2, VolumeX, RotateCcw } from "lucide-react";
+import { Headphones, VolumeHigh, VolumeMute, RotateLeft } from "iconsax-react";
 
 export function Podcast() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -174,14 +174,14 @@ export function Podcast() {
   };
 
   return (
-    <section id="podcast" className="relative px-5 py-32 bg-black overflow-hidden">
+    <section id="podcast" className="relative px-5 py-16 md:py-32 bg-black overflow-hidden">
       {/* Step 1 — Section divider line sweep */}
       <div
         className="section-border-line absolute top-0 left-0 right-0 h-[1px] bg-[#E8FF00] origin-left"
         style={{ transform: isReduced ? "none" : "scaleX(0)" }}
       />
 
-      <div className="grid grid-cols-12 gap-8 md:gap-16">
+      <div className="grid grid-cols-12 gap-6 md:gap-16" data-skew>
         <audio ref={audioRef} preload="metadata" />
 
         {/* Section Header */}
@@ -192,12 +192,14 @@ export function Podcast() {
               <span className="section-label-text">TRANSMISSIONS / PODCAST</span>
             </div>
           </div>
-          <div className="overflow-hidden mt-4">
-            <h2 className="section-title font-display font-black text-[9vw] sm:text-[8vw] md:text-[7vw] tracking-[-0.05em] leading-[0.9] uppercase text-white">
-              PITCHED <br />
-              <span className="text-outline">PODCAST</span>
-            </h2>
-          </div>
+          <h2 className="section-title font-display font-black text-[9vw] sm:text-[8vw] md:text-[7vw] tracking-[-0.05em] leading-[0.9] uppercase text-white mt-4">
+            <div className="overflow-hidden">
+              <span className="word-reveal inline-block whitespace-nowrap">PITCHED</span>
+            </div>
+            <div className="overflow-hidden">
+              <span className="word-reveal text-outline inline-block whitespace-nowrap">PODCAST</span>
+            </div>
+          </h2>
           <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/40 mt-2">
             BD &middot; STRATEGY &middot; BUILDER LIFE
           </p>
@@ -326,7 +328,7 @@ export function Podcast() {
           style={{ opacity: isReduced ? 1 : 0 }}
         >
           {/* Player Box */}
-          <div className="relative border-2 border-white p-6 bg-black overflow-hidden">
+          <div className="relative border-2 border-white p-4 md:p-6 bg-black overflow-hidden">
             <div className="absolute inset-0 grid-bg opacity-10 pointer-events-none" />
 
             <div className="relative z-10 flex flex-col gap-6">
@@ -334,7 +336,7 @@ export function Podcast() {
               <div className="flex items-center justify-between gap-4 border-b border-white/20 pb-4">
                 <div className="flex items-center gap-3">
                   <div className="relative flex items-center justify-center h-10 w-10 border border-white bg-black">
-                    <Headphones size={20} className="text-white" />
+                    <Headphones size={20} className="text-white" variant="Broken" />
                   </div>
                   <div>
                     <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#E8FF00]">
@@ -410,21 +412,21 @@ export function Podcast() {
                     className="p-3 border border-white hover:bg-[#E8FF00] hover:text-black transition-colors"
                     title="-15s"
                   >
-                    <RotateCcw size={12} className="scale-x-[-1]" />
+                    <RotateLeft size={12} className="scale-x-[-1]" variant="Broken" />
                   </button>
                   <button
                     onClick={skipForward}
                     className="p-3 border border-white hover:bg-[#E8FF00] hover:text-black transition-colors"
                     title="+15s"
                   >
-                    <RotateCcw size={12} />
+                    <RotateLeft size={12} variant="Broken" />
                   </button>
                 </div>
 
                 {/* Volume Controller */}
                 <div className="flex items-center gap-3">
                   <button onClick={toggleMute} className="text-white/70 hover:text-white transition-colors">
-                    {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
+                    {isMuted ? <VolumeMute size={16} variant="Broken" /> : <VolumeHigh size={16} variant="Broken" />}
                   </button>
                   <input
                     type="range"
@@ -433,7 +435,7 @@ export function Podcast() {
                     step="0.05"
                     value={isMuted ? 0 : volume}
                     onChange={handleVolumeChange}
-                    className="w-20 md:w-28 h-1 bg-white/20 accent-[#E8FF00] cursor-pointer"
+                    className="w-16 sm:w-20 md:w-28 h-1 bg-white/20 accent-[#E8FF00] cursor-pointer"
                   />
                 </div>
               </div>
@@ -451,29 +453,29 @@ export function Podcast() {
                     setCurrentEpisodeIndex(index);
                     setIsPlaying(true);
                   }}
-                  className="group relative flex items-center justify-between border-b border-white/20 py-5 px-3 cursor-pointer overflow-hidden transition-colors duration-300 hover:text-black"
+                  className="group relative flex items-center justify-between border-b border-white/20 py-4 md:py-5 px-2 md:px-3 cursor-pointer overflow-hidden transition-colors duration-300 hover:text-black"
                 >
                   {/* Left Index */}
-                  <span className="relative z-10 font-mono text-[10px] uppercase tracking-[0.2em] text-[#E8FF00] group-hover:text-black transition-colors duration-300 w-16">
+                  <span className="relative z-10 font-mono text-[10px] uppercase tracking-[0.2em] text-[#E8FF00] group-hover:text-black transition-colors duration-300 w-12 md:w-16 flex-shrink-0">
                     {ep.ep}
                   </span>
 
                   {/* Center Title */}
                   <span
-                    className={`relative z-10 flex-1 font-display text-[15px] uppercase tracking-wide font-black ${
+                    className={`relative z-10 flex-1 font-display text-[13px] md:text-[15px] uppercase tracking-wide font-black truncate pr-2 ${
                       isActive ? "text-[#E8FF00]" : "text-white"
                     } group-hover:text-black transition-colors duration-300`}
                   >
                     {ep.title}
                   </span>
 
-                  {/* Status Badge: COMING SOON */}
-                  <span className="relative z-10 font-mono text-[8px] uppercase tracking-[0.2em] bg-[#E8FF00] text-black px-2 py-0.5 font-bold mr-6 select-none group-hover:bg-black group-hover:text-[#E8FF00] transition-colors duration-300">
-                    COMING SOON
+                  {/* Status Badge: hidden on smallest screens to save space */}
+                  <span className="relative z-10 hidden sm:inline-block font-mono text-[8px] uppercase tracking-[0.2em] bg-[#E8FF00] text-black px-2 py-0.5 font-bold mr-3 md:mr-6 select-none group-hover:bg-black group-hover:text-[#E8FF00] transition-colors duration-300 flex-shrink-0">
+                    SOON
                   </span>
 
                   {/* Right Duration */}
-                  <span className="relative z-10 font-mono text-[10px] uppercase tracking-[0.2em] text-white/40 group-hover:text-black/60 transition-colors duration-300">
+                  <span className="relative z-10 font-mono text-[10px] uppercase tracking-[0.2em] text-white/40 group-hover:text-black/60 transition-colors duration-300 flex-shrink-0">
                     {ep.duration}
                   </span>
 

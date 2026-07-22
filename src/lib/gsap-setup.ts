@@ -15,10 +15,20 @@ export function initAnimationStack() {
 
   // Initialize Lenis smooth scroll
   const lenis = new Lenis({
-    duration: 1.0, // Snappier and more responsive
-    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    duration: 1.4,
+    easing: (t: number) => t === 1 ? 1 : 1 - Math.pow(2, -10 * t),
     gestureOrientation: "vertical",
-    normalizeWheel: true, // Normalize scroll speed across different trackpads/mice
+    normalizeWheel: true,
+    wheelMultiplier: 0.9,
+    touchMultiplier: 1.5,
+  });
+
+  // Velocity-based scroll skew with smooth decay — quickTo animates toward the target value
+  // so the tilt breathes in and out instead of snapping
+  const skewTo = gsap.quickTo("[data-skew]", "skewY", { duration: 0.8, ease: "power3.out" });
+  const clamp = gsap.utils.clamp(-3.5, 3.5);
+  lenis.on("scroll", (e: any) => {
+    skewTo(clamp(e.velocity * -0.016));
   });
 
   // Sync Lenis with GSAP ticker
@@ -52,7 +62,7 @@ export function revealSection(sectionEl: HTMLElement) {
   const tl = gsap.timeline({
     scrollTrigger: {
       trigger: sectionEl,
-      start: "top 90%", // Trigger earlier when section is 10% inside the viewport
+      start: "top 80%",
       toggleActions: "play none none none",
       once: true,
     },
@@ -89,18 +99,28 @@ export function revealSection(sectionEl: HTMLElement) {
     );
   }
 
-  // Step 3: Section heading (single block coming from bottom, no SplitText)
+  // Step 3: Section heading — per-line word-reveals if present, else single block
   const title = sectionEl.querySelector(".section-title");
-  if (title) {
+  const wordReveals = sectionEl.querySelectorAll(".word-reveal");
+  if (wordReveals.length > 0) {
+    tl.fromTo(
+      wordReveals,
+      { y: "108%", skewY: 1.5 },
+      {
+        y: "0%",
+        skewY: 0,
+        duration: 1.0,
+        stagger: 0.12,
+        ease: "power4.out",
+      },
+      0.1
+    );
+  } else if (title) {
     tl.fromTo(
       title,
       { y: "110%" },
-      {
-        y: "0%",
-        duration: 0.5,
-        ease: "power3.out",
-      },
-      0.15 // Starts 0.1s after section number/label starts (0.05s + 0.1s = 0.15s)
+      { y: "0%", duration: 0.5, ease: "power3.out" },
+      0.15
     );
   }
 
@@ -138,13 +158,13 @@ export function revealSection(sectionEl: HTMLElement) {
     const startTime = title ? 0.35 : 0.15;
     tl.fromTo(
       revealBlocks,
-      { y: 30, opacity: 0 },
+      { y: 24, opacity: 0 },
       {
         y: 0,
         opacity: 1,
-        stagger: 0.03, // Snappier stagger (0.03s instead of 0.05s)
-        duration: 0.5,
-        ease: "power2.out",
+        stagger: 0.07,
+        duration: 0.6,
+        ease: "power3.out",
       },
       startTime
     );
@@ -167,6 +187,16 @@ export function revealSection(sectionEl: HTMLElement) {
             ease: "power3.out",
           },
           0.35 + entryIndex * 0.1
+        );
+      }
+      // Per-bullet slide from left
+      const bullets = entry.querySelectorAll(".exp-bullet");
+      if (bullets.length > 0) {
+        tl.fromTo(
+          bullets,
+          { x: -20 },
+          { x: 0, duration: 0.45, stagger: 0.05, ease: "power2.out" },
+          0.7 + entryIndex * 0.1
         );
       }
     });
@@ -209,6 +239,19 @@ export function revealSection(sectionEl: HTMLElement) {
       },
       title ? 0.6 : 0.4
     );
+  }
+
+  // Awards section — per-row x-slide stagger (rows removed from reveal-block)
+  if (sectionEl.id === "awards") {
+    const rows = sectionEl.querySelectorAll(".award-row");
+    if (rows.length > 0) {
+      tl.fromTo(
+        rows,
+        { x: -60, opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.65, stagger: 0.08, ease: "power3.out" },
+        0.35
+      );
+    }
   }
 }
 

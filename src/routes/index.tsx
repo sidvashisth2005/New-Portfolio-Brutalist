@@ -22,9 +22,9 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "SIDDHANT VASHISTH — PORTFOLIO" },
-      { name: "description", content: "Siddhant Vashisth — brand identity, motion and interactive web design." },
+      { name: "description", content: "BD strategist, builder, and hackathon champion — Rank 1 of 6,200+ at HackNITR 7.0. AgriTech, AR, and AI." },
       { property: "og:title", content: "SIDDHANT VASHISTH — PORTFOLIO" },
-      { property: "og:description", content: "Siddhant Vashisth — brand identity, motion and interactive web design." },
+      { property: "og:description", content: "BD strategist, builder, and hackathon champion — Rank 1 of 6,200+ at HackNITR 7.0. AgriTech, AR, and AI." },
     ],
   }),
   component: Index,

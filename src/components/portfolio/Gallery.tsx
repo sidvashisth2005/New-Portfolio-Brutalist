@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import anime from "animejs";
+import gsap from "gsap/dist/gsap";
 import { useReducedMotion } from "@/lib/anime-utils";
-import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft2, ArrowRight2 } from "iconsax-react";
 
 interface Moment {
   id: number;
@@ -42,6 +42,7 @@ const categories = ["ALL", "HACKATHONS", "FIELD TOURS", "CAMPUS & CONFERENCES"];
 export function Gallery() {
   const [selectedCategory, setSelectedCategory] = useState("ALL");
   const [selectedMoment, setSelectedMoment] = useState<Moment | null>(null);
+  const lightboxInnerRef = useRef<HTMLDivElement>(null);
   const isReduced = useReducedMotion();
 
   // Filter moments
@@ -49,31 +50,41 @@ export function Gallery() {
     (m) => selectedCategory === "ALL" || m.category === selectedCategory
   );
 
-  // Stagger entry animation on active filter changes
+  // Clip-path bottom-tear reveal on filter change
   useEffect(() => {
     if (isReduced) return;
-    anime({
-      targets: ".gallery-card-wrap",
-      opacity: [0, 1],
-      scale: [0.96, 1],
-      translateY: [15, 0],
-      delay: anime.stagger(25, { start: 50 }),
-      duration: 500,
-      easing: "easeOutQuad",
-    });
+    gsap.fromTo(
+      ".gallery-card-wrap",
+      { clipPath: "inset(100% 0% 0% 0%)", opacity: 0 },
+      {
+        clipPath: "inset(0% 0% 0% 0%)",
+        opacity: 1,
+        duration: 0.7,
+        stagger: { amount: 0.5, from: "start" },
+        ease: "power3.inOut",
+        delay: 0.05,
+      }
+    );
   }, [selectedCategory, isReduced]);
 
-  // Body scroll lock on modal open
+  // Body scroll lock + entrance animation on lightbox open
   useEffect(() => {
     if (selectedMoment) {
       document.body.style.overflow = "hidden";
+      if (!isReduced && lightboxInnerRef.current) {
+        gsap.fromTo(
+          lightboxInnerRef.current,
+          { opacity: 0, scale: 0.94, y: 20 },
+          { opacity: 1, scale: 1, y: 0, duration: 0.38, ease: "power3.out" }
+        );
+      }
     } else {
       document.body.style.overflow = "";
     }
     return () => {
       document.body.style.overflow = "";
     };
-  }, [selectedMoment]);
+  }, [selectedMoment, isReduced]);
 
   // Keyboard navigation inside lightbox
   useEffect(() => {
@@ -134,14 +145,14 @@ export function Gallery() {
   };
 
   return (
-    <section id="gallery" className="relative px-5 py-32 bg-black">
+    <section id="gallery" className="relative px-5 py-16 md:py-32 bg-black">
       {/* Section divider line sweep */}
       <div
         className="section-border-line absolute top-0 left-0 right-0 h-[1px] bg-[#E8FF00] origin-left"
         style={{ transform: isReduced ? "none" : "scaleX(0)" }}
       />
 
-      <div className="grid grid-cols-12 gap-5">
+      <div className="grid grid-cols-12 gap-5" data-skew>
         {/* Left Column Label */}
         <div className="col-span-12 md:col-span-3">
           <div className="md:sticky md:top-24">
@@ -156,8 +167,12 @@ export function Gallery() {
         <div className="col-span-12 md:col-span-9 space-y-8">
           <div>
             <h2 className="section-title font-display font-black text-[9vw] sm:text-[8vw] md:text-[7vw] tracking-[-0.05em] leading-[0.9] uppercase text-white">
-              MOMENTS & <br />
-              <span className="text-outline">ACHIEVEMENTS</span>
+              <div className="overflow-hidden">
+                <span className="word-reveal inline-block whitespace-nowrap">MOMENTS &</span>
+              </div>
+              <div className="overflow-hidden">
+                <span className="word-reveal text-outline inline-block whitespace-nowrap">ACHIEVEMENTS</span>
+              </div>
             </h2>
           </div>
 
@@ -225,7 +240,7 @@ export function Gallery() {
       {/* Lightbox Slide Modal Overlay */}
       {selectedMoment && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 p-4 sm:p-6 md:p-10 backdrop-blur-md">
-          <div className="relative w-full max-w-5xl bg-black border-4 border-white p-6 sm:p-8 flex flex-col md:grid md:grid-cols-12 gap-8 text-white max-h-[90vh] overflow-y-auto">
+          <div ref={lightboxInnerRef} className="relative w-full max-w-5xl bg-black border-4 border-white p-6 sm:p-8 flex flex-col md:grid md:grid-cols-12 gap-8 text-white max-h-[90vh] overflow-y-auto">
             {/* Close Button */}
             <button
               onClick={() => setSelectedMoment(null)}
@@ -248,13 +263,13 @@ export function Gallery() {
                   onClick={navigatePrev}
                   className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 border-2 border-white bg-black/85 flex items-center justify-center font-mono text-xl text-white hover:bg-[#E8FF00] hover:text-black transition-all cursor-pointer select-none"
                 >
-                  <ChevronLeft size={18} />
+                  <ArrowLeft2 size={18} variant="Broken" />
                 </button>
                 <button
                   onClick={navigateNext}
                   className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 border-2 border-white bg-black/85 flex items-center justify-center font-mono text-xl text-white hover:bg-[#E8FF00] hover:text-black transition-all cursor-pointer select-none"
                 >
-                  <ChevronRight size={18} />
+                  <ArrowRight2 size={18} variant="Broken" />
                 </button>
               </div>
 

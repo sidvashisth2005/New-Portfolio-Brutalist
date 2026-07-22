@@ -1,6 +1,6 @@
 import { useReducedMotion } from "@/lib/anime-utils";
 import { stats, education, certifications } from "@/lib/content";
-import { FileText, Link as LinkIcon } from "lucide-react";
+import { DocumentText, Link as LinkIcon } from "iconsax-react";
 
 export function About() {
   const isReduced = useReducedMotion();
@@ -8,7 +8,7 @@ export function About() {
   return (
     <section
       id="about"
-      className="relative px-5 py-32 bg-black"
+      className="relative px-5 py-16 md:py-32 bg-black"
     >
       {/* Step 1 — Section divider line sweep */}
       <div
@@ -16,7 +16,7 @@ export function About() {
         style={{ transform: isReduced ? "none" : "scaleX(0)" }}
       />
 
-      <div className="grid grid-cols-12 gap-5">
+      <div className="grid grid-cols-12 gap-5" data-skew>
         {/* Left column info */}
         <div className="col-span-12 md:col-span-3">
           {/* Step 2 — Section number + label (overflow: hidden parent) */}
@@ -35,13 +35,15 @@ export function About() {
         <div className="col-span-12 md:col-span-9">
           {/* Biography */}
           <div className="space-y-6 max-w-3xl">
-            {/* Step 3 — Section heading */}
-            <div className="overflow-hidden">
-              <h2 className="section-title font-display font-black text-[8vw] sm:text-[7vw] md:text-[5.5vw] tracking-[-0.05em] leading-[0.9] uppercase text-white">
-                <span className="inline-block whitespace-nowrap">PITCHER'S MIND.</span> <br />
-                <span className="text-outline inline-block whitespace-nowrap">BUILDER'S HANDS.</span>
-              </h2>
-            </div>
+            {/* Step 3 — Section heading (per-line word reveal) */}
+            <h2 className="section-title font-display font-black text-[8vw] sm:text-[7vw] md:text-[5.5vw] tracking-[-0.05em] leading-[0.9] uppercase text-white">
+              <div className="overflow-hidden">
+                <span className="word-reveal inline-block whitespace-nowrap">PITCHER'S MIND.</span>
+              </div>
+              <div className="overflow-hidden">
+                <span className="word-reveal text-outline inline-block whitespace-nowrap">BUILDER'S HANDS.</span>
+              </div>
+            </h2>
 
             {/* Step 4 — Body content wrapper */}
             <div
@@ -59,7 +61,7 @@ export function About() {
 
           {/* Education & Certifications (reveal-block) */}
           <div
-            className="reveal-block grid grid-cols-1 md:grid-cols-2 gap-8 mt-16 border-t border-white/20 pt-10"
+            className="reveal-block grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mt-10 md:mt-16 border-t border-white/20 pt-8 md:pt-10"
             style={{ opacity: isReduced ? 1 : 0 }}
           >
             <div>
@@ -106,7 +108,7 @@ export function About() {
               rel="noopener noreferrer"
               className="flex items-center gap-2 border border-white px-4 py-2 hover:bg-[#E8FF00] hover:text-black transition-colors"
             >
-              <FileText size={12} />
+              <DocumentText size={12} variant="Broken" />
               View Certificates
             </a>
             <a
@@ -115,20 +117,20 @@ export function About() {
               rel="noopener noreferrer"
               className="flex items-center gap-2 border border-white px-4 py-2 hover:bg-[#E8FF00] hover:text-black transition-colors"
             >
-              <LinkIcon size={12} />
+              <LinkIcon size={12} variant="Broken" />
               Supporting Documents
             </a>
           </div>
 
           {/* Metrics Grid (reveal-block) */}
           <div
-            className="reveal-block mt-16 grid grid-cols-2 md:grid-cols-4 border-t-2 border-white"
+            className="reveal-block mt-10 md:mt-16 grid grid-cols-2 md:grid-cols-4 border-t-2 border-white"
             style={{ opacity: isReduced ? 1 : 0 }}
           >
             {stats.map((stat, i) => (
               <div
                 key={stat.label}
-                className={`stat-card p-6 md:p-8 hover:bg-[#E8FF00] hover:text-black transition-colors group ${
+                className={`stat-card p-5 md:p-8 hover:bg-[#E8FF00] hover:text-black transition-colors group ${
                   i < stats.length - 1 ? "border-r-2 border-white" : ""
                 } border-b-2 border-white md:border-b-0`}
               >

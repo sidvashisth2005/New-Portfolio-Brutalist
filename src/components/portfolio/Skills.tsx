@@ -81,7 +81,7 @@ export function Skills() {
   const activeMeta = skillMeta[activeSkillName] || { abbr: "SK", rating: 80, desc: "" };
 
   return (
-    <section id="skills" className="relative px-5 py-32 bg-black">
+    <section id="skills" className="relative px-5 py-16 md:py-32 bg-black">
       {/* Step 1 — Section divider line sweep */}
       <div
         className="section-border-line absolute top-0 left-0 right-0 h-[1px] bg-[#E8FF00] origin-left"
@@ -89,12 +89,18 @@ export function Skills() {
       />
 
       <SliceHeading index="(06)" label="STACK / CAPABILITIES">
-        TECHNICAL & <br /> <span className="text-outline">BUSINESS CORE</span>
+        <div className="overflow-hidden">
+          <span className="word-reveal inline-block">TECHNICAL &</span>
+        </div>
+        <div className="overflow-hidden">
+          <span className="word-reveal text-outline inline-block">BUSINESS CORE</span>
+        </div>
       </SliceHeading>
 
       <div
-        className="reveal-block grid grid-cols-12 gap-8 mt-10 items-stretch"
+        className="reveal-block grid grid-cols-12 gap-6 md:gap-8 mt-6 md:mt-10 items-stretch"
         style={{ opacity: isReduced ? 1 : 0 }}
+        data-skew
       >
         {/* Left Column: All Skills Grid (Categorized) */}
         <div className="col-span-12 lg:col-span-8 space-y-10">
@@ -146,7 +152,7 @@ export function Skills() {
 
         {/* Right Column: Sticky Clean Info Card */}
         <div className="col-span-12 lg:col-span-4">
-          <div className="lg:sticky lg:top-24 border-4 border-white bg-[#0A0A0A] p-6 sm:p-8 flex flex-col justify-between min-h-[380px] shadow-2xl relative overflow-hidden">
+          <div className="lg:sticky lg:top-24 border-4 border-white bg-[#0A0A0A] p-5 sm:p-6 lg:p-8 flex flex-col justify-between min-h-[280px] md:min-h-[380px] shadow-2xl relative overflow-hidden">
             <div className="absolute inset-0 bg-scanlines pointer-events-none opacity-20 z-10" />
             <div className="absolute inset-x-0 h-[2px] bg-[#E8FF00]/10 pointer-events-none animate-scan z-10" />
             <div className="absolute inset-0 grid-bg opacity-10 pointer-events-none" />

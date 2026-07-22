@@ -87,9 +87,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "SIDDHANT VASHISTH — PORTFOLIO" },
-      { name: "description", content: "Siddhant Vashisth — brand identity, motion and interactive web design." },
+      { name: "description", content: "Siddhant Vashisth — BD strategist, builder, and hackathon champion — Rank 1 of 6,200+ at HackNITR 7.0. AgriTech, AR, and AI." },
       { property: "og:title", content: "SIDDHANT VASHISTH — PORTFOLIO" },
-      { property: "og:description", content: "Siddhant Vashisth — brand identity, motion and interactive web design." },
+      { property: "og:description", content: "Siddhant Vashisth — BD strategist, builder, and hackathon champion — Rank 1 of 6,200+ at HackNITR 7.0. AgriTech, AR, and AI." },
       { property: "og:type", content: "website" },
     ],
     links: [

@@ -8,7 +8,7 @@ export function Experience() {
   return (
     <section
       id="experience"
-      className="relative px-5 py-32 bg-black overflow-hidden"
+      className="relative px-5 py-16 md:py-32 bg-black overflow-hidden"
     >
       {/* Step 1 — Section divider line sweep */}
       <div
@@ -17,10 +17,15 @@ export function Experience() {
       />
 
       <SliceHeading index="(02)" label="CHRONICLE / EXPERIENCE">
-        WORK <br /> <span className="text-outline">EXPERIENCE</span>
+        <div className="overflow-hidden">
+          <span className="word-reveal inline-block">WORK</span>
+        </div>
+        <div className="overflow-hidden">
+          <span className="word-reveal text-outline inline-block">EXPERIENCE</span>
+        </div>
       </SliceHeading>
 
-      <div className="grid grid-cols-12 gap-5">
+      <div className="grid grid-cols-12 gap-5" data-skew>
         {/* Spacer for left column */}
         <div className="col-span-12 md:col-span-3" />
 
@@ -31,7 +36,7 @@ export function Experience() {
             return (
               <div
                 key={exp.company + exp.role}
-                className="experience-entry reveal-block border-t border-white/20 pt-12 pb-12 first:border-t-2 first:border-white"
+                className="experience-entry reveal-block border-t border-white/20 pt-8 pb-8 md:pt-12 md:pb-12 first:border-t-2 first:border-white"
                 style={{ opacity: isReduced ? 1 : 0 }}
               >
                 {/* Period */}
@@ -40,7 +45,7 @@ export function Experience() {
                 </div>
 
                 {/* Company Name */}
-                <h3 className="font-display font-black text-3xl md:text-5xl tracking-[-0.06em] uppercase text-white mt-2 leading-none overflow-hidden block py-1">
+                <h3 className="font-display font-black text-2xl sm:text-3xl md:text-5xl tracking-[-0.06em] uppercase text-white mt-2 leading-none overflow-hidden block py-1">
                   {exp.company.split("").map((char, idx) => (
                     <span
                       key={idx}
@@ -60,7 +65,7 @@ export function Experience() {
                 {/* Bullets */}
                 <ul className="mt-6 space-y-4">
                   {exp.bullets.map((bullet, idx) => (
-                    <div key={idx}>
+                    <div key={idx} className="exp-bullet">
                       <li className="flex items-start">
                         <span className="w-1.5 h-1.5 bg-[#E8FF00] mt-[6px] flex-shrink-0" />
                         <span className="font-display text-[14px] text-white/70 leading-relaxed ml-4 uppercase">

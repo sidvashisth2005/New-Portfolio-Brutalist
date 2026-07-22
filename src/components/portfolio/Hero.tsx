@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap/dist/gsap";
+import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import { useReducedMotion } from "@/lib/anime-utils";
 import { profile } from "@/lib/content";
 import { SigilModel } from "./SigilModel";
@@ -14,9 +15,7 @@ export function Hero({ start }: { start: boolean }) {
 
     const tl = gsap.timeline();
 
-    // Step 1 — "SIDDHANTVASHISTH" headline:
-    // Wrap each CHARACTER in a span inside a parent with overflow: hidden
-    // Each char: y: 110% → 0, duration: 0.9s, stagger: 0.025s, ease: "power3.out"
+    // Step 1 — headline: each character slides up
     tl.to(
       ".hero-letter",
       {
@@ -29,9 +28,7 @@ export function Hero({ start }: { start: boolean }) {
       0
     );
 
-    // Step 2 — Subtitle line (Business strategist...):
-    // Wrap in overflow: hidden parent
-    // y: 100% → 0, opacity: 0 → 1, duration: 0.7s, delay: 0.4s
+    // Step 2 — Subtitle line
     tl.to(
       ".hero-tagline",
       {
@@ -43,8 +40,7 @@ export function Hero({ start }: { start: boolean }) {
       0.4
     );
 
-    // Step 3 — Meta grid (ROLE / INST / YEAR / RANK cards):
-    // Each card: y: 20px → 0, opacity: 0 → 1, stagger: 0.08s, delay: 0.7s
+    // Step 3 — Meta grid cards
     tl.to(
       ".hero-meta",
       {
@@ -57,16 +53,13 @@ export function Hero({ start }: { start: boolean }) {
       0.7
     );
 
-    // Step 4 — Stat counters (6200+, 20, etc.):
-    // Use gsap.to on a plain object { val: 0 } → { val: 6200 }
-    // onUpdate: update the DOM text with Math.round(obj.val)
-    // duration: 1.8s, ease: "power2.out", delay: 0.9s
+    // Step 4 — Stat counters
     const statsElements = document.querySelectorAll(".stat-value");
     statsElements.forEach((el) => {
       const targetVal = parseInt(el.getAttribute("data-target") || "0", 10);
       const suffix = el.getAttribute("data-suffix") || "";
       const obj = { val: 0 };
-      
+
       tl.to(
         obj,
         {
@@ -81,8 +74,7 @@ export function Hero({ start }: { start: boolean }) {
       );
     });
 
-    // Step 5 — Nav bar:
-    // y: -100% → 0, duration: 0.6s, ease: "power2.out", delay: 0.2s
+    // Step 5 — Nav bar
     tl.to(
       ".portfolio-nav",
       {
@@ -93,7 +85,6 @@ export function Hero({ start }: { start: boolean }) {
       0.2
     );
 
-    // Additional animations for other elements on the Hero page
     tl.to(
       ".hero-divider",
       {
@@ -139,6 +130,53 @@ export function Hero({ start }: { start: boolean }) {
       1.2
     );
 
+    // Scroll-driven parallax
+    gsap.to(".hero-name-wrapper", {
+      y: -120,
+      ease: "none",
+      scrollTrigger: {
+        trigger: "#top",
+        start: "top top",
+        end: "bottom top",
+        scrub: 1.5,
+      },
+    });
+
+    gsap.to(".hero-model-container", {
+      y: -180,
+      ease: "none",
+      scrollTrigger: {
+        trigger: "#top",
+        start: "top top",
+        end: "bottom top",
+        scrub: 1,
+      },
+    });
+
+    gsap.to(".hero-bottom", {
+      opacity: 0,
+      y: -60,
+      ease: "none",
+      scrollTrigger: {
+        trigger: "#top",
+        start: "15% top",
+        end: "65% top",
+        scrub: 1,
+      },
+    });
+
+    gsap.to(".hero-info-row", {
+      opacity: 0,
+      y: -30,
+      ease: "none",
+      scrollTrigger: {
+        trigger: "#top",
+        start: "5% top",
+        end: "40% top",
+        scrub: 1,
+      },
+    });
+
   }, [start, isReduced]);
 
   return (
@@ -152,8 +190,8 @@ export function Hero({ start }: { start: boolean }) {
           <StarField />
         </div>
 
-        {/* 3D Model Container - separated into outer positioning and inner animation to prevent GSAP overrides */}
-        <div className="absolute right-5 md:right-10 top-[calc(50%+27px)] -translate-y-1/2 w-[280px] h-[280px] md:w-[450px] md:h-[450px] z-20 pointer-events-auto">
+        {/* 3D Model — hidden on mobile, visible md+ */}
+        <div className="hidden md:block absolute right-5 md:right-10 top-[calc(50%+27px)] -translate-y-1/2 w-[320px] h-[320px] md:w-[450px] md:h-[450px] z-20 pointer-events-auto">
           <div
             className="hero-model-container w-full h-full"
             style={{
@@ -165,46 +203,71 @@ export function Hero({ start }: { start: boolean }) {
           </div>
         </div>
 
-        {/* Top crosshair info */}
-        <div className="absolute top-20 left-5 right-5 grid grid-cols-12 gap-5 font-mono text-[10px] uppercase tracking-[0.2em] text-white/60 z-10">
-          <div
-            className="hero-info-row col-span-3 flex items-center gap-2"
-            style={{
-              opacity: isReduced ? 1 : 0,
-              transform: isReduced ? "none" : "translateY(-15px)",
-            }}
-          >
-            <span className="h-1.5 w-1.5 bg-[#ffff00] animate-blink" />
-            STATUS / ONLINE
+        {/* Top crosshair info — simplified on mobile */}
+        <div className="absolute top-20 left-5 right-5 z-10">
+          {/* Mobile: single row with status only */}
+          <div className="flex items-center justify-between md:hidden font-mono text-[9px] uppercase tracking-[0.2em] text-white/60">
+            <div
+              className="hero-info-row flex items-center gap-2"
+              style={{
+                opacity: isReduced ? 1 : 0,
+                transform: isReduced ? "none" : "translateY(-15px)",
+              }}
+            >
+              <span className="h-1.5 w-1.5 bg-[#ffff00] animate-blink" />
+              STATUS / ONLINE
+            </div>
+            <div
+              className="hero-info-row"
+              style={{
+                opacity: isReduced ? 1 : 0,
+                transform: isReduced ? "none" : "translateY(-15px)",
+              }}
+            >
+              PORTFOLIO_V04
+            </div>
           </div>
-          <div
-            ref={coordsRef}
-            className="hero-info-row col-span-3 col-start-7 select-none"
-            style={{
-              opacity: isReduced ? 1 : 0,
-              transform: isReduced ? "none" : "translateY(-15px)",
-            }}
-          >
-            N {profile.coords.lat}° / E {profile.coords.lng}°
-          </div>
-          <div
-            className="hero-info-row col-span-3 col-start-10 text-right"
-            style={{
-              opacity: isReduced ? 1 : 0,
-              transform: isReduced ? "none" : "translateY(-15px)",
-            }}
-          >
-            PORTFOLIO_V04 — 06.07.26
+
+          {/* Desktop: original 3-column grid */}
+          <div className="hidden md:grid grid-cols-12 gap-5 font-mono text-[10px] uppercase tracking-[0.2em] text-white/60">
+            <div
+              className="hero-info-row col-span-3 flex items-center gap-2"
+              style={{
+                opacity: isReduced ? 1 : 0,
+                transform: isReduced ? "none" : "translateY(-15px)",
+              }}
+            >
+              <span className="h-1.5 w-1.5 bg-[#ffff00] animate-blink" />
+              STATUS / ONLINE
+            </div>
+            <div
+              ref={coordsRef}
+              className="hero-info-row col-span-3 col-start-7 select-none"
+              style={{
+                opacity: isReduced ? 1 : 0,
+                transform: isReduced ? "none" : "translateY(-15px)",
+              }}
+            >
+              N {profile.coords.lat}° / E {profile.coords.lng}°
+            </div>
+            <div
+              className="hero-info-row col-span-3 col-start-10 text-right"
+              style={{
+                opacity: isReduced ? 1 : 0,
+                transform: isReduced ? "none" : "translateY(-15px)",
+              }}
+            >
+              PORTFOLIO_V04 — 06.07.26
+            </div>
           </div>
         </div>
 
         {/* Main Name + Divider */}
-        <div className="relative z-10 px-5 w-full">
+        <div className="hero-name-wrapper relative z-10 px-5 w-full">
           <h1
-            className="font-display font-black leading-[0.82] tracking-[-0.06em] text-[13vw] uppercase"
+            className="font-display font-black leading-[0.82] tracking-[-0.06em] text-[16vw] sm:text-[14vw] md:text-[13vw] uppercase"
           >
             {profile.nameLines.map((line, lineIdx) => {
-              // We calculate a running character index offset
               let charOffset = 0;
               for (let j = 0; j < lineIdx; j++) {
                 charOffset += profile.nameLines[j].length;
@@ -233,7 +296,7 @@ export function Hero({ start }: { start: boolean }) {
             })}
           </h1>
           <div
-            className="hero-divider origin-left h-[2px] bg-white mt-4 w-full"
+            className="hero-divider origin-left h-[2px] bg-white mt-3 md:mt-4 w-full"
             style={{
               transform: isReduced ? "none" : "scaleX(0)",
               transformOrigin: "left center",
@@ -244,10 +307,10 @@ export function Hero({ start }: { start: boolean }) {
       </div>
 
       {/* Bottom Part: role/description and metrics */}
-      <div className="relative z-10 px-5 pb-20 pt-6 grid grid-cols-12 gap-5 bg-black">
+      <div className="hero-bottom relative z-10 px-5 pb-14 md:pb-20 pt-5 md:pt-6 grid grid-cols-12 gap-4 md:gap-5 bg-black">
         <div className="col-span-12 md:col-span-5 overflow-hidden">
           <p
-            className="hero-tagline font-display text-base md:text-lg font-bold leading-tight uppercase text-white"
+            className="hero-tagline font-display text-sm md:text-base lg:text-lg font-bold leading-tight uppercase text-white"
             style={{
               transform: isReduced ? "none" : "translateY(100%)",
               opacity: isReduced ? 1 : 0,
@@ -258,7 +321,7 @@ export function Hero({ start }: { start: boolean }) {
           </p>
         </div>
 
-        <div className="col-span-12 md:col-span-7 md:col-start-6 grid grid-cols-2 md:grid-cols-4 gap-5">
+        <div className="col-span-12 md:col-span-7 md:col-start-6 grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5 mt-4 md:mt-0">
           {[
             ["ROLE", "CSE Student"],
             ["INST", "JUET Guna"],
@@ -267,21 +330,21 @@ export function Hero({ start }: { start: boolean }) {
           ].map(([k, v]) => (
             <div
               key={k}
-              className="hero-meta border-l-2 border-white pl-3"
+              className="hero-meta border-l-2 border-white pl-2 md:pl-3"
               style={{
                 transform: isReduced ? "none" : "translateY(20px)",
                 opacity: isReduced ? 1 : 0,
               }}
             >
-              <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/50">{k}</div>
-              <div className="font-display font-black text-xl uppercase mt-1">{v}</div>
+              <div className="font-mono text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-white/50">{k}</div>
+              <div className="font-display font-black text-lg md:text-xl uppercase mt-0.5 md:mt-1">{v}</div>
             </div>
           ))}
         </div>
       </div>
 
       <div
-        className="hero-scroll-indicator absolute bottom-5 left-5 font-mono text-[10px] uppercase tracking-[0.2em] text-white/60 z-30"
+        className="hero-scroll-indicator absolute bottom-4 md:bottom-5 left-5 font-mono text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-white/60 z-30"
         style={{
           opacity: isReduced ? 1 : 0,
           transform: isReduced ? "none" : "translateY(10px)",

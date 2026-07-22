@@ -10,6 +10,13 @@ export function CustomCursor() {
   useEffect(() => {
     if (typeof window === "undefined" || isReduced) return;
 
+    // Don't activate custom cursor on touch/pointer-coarse devices (phones, tablets)
+    const isTouchDevice =
+      "ontouchstart" in window ||
+      navigator.maxTouchPoints > 0 ||
+      window.matchMedia("(pointer: coarse)").matches;
+    if (isTouchDevice) return;
+
     // Add class to hide default cursor globally
     document.body.classList.add("has-custom-cursor");
 
@@ -17,19 +24,18 @@ export function CustomCursor() {
     gsapCore.set("#cursor-dot", { xPercent: -50, yPercent: -50, opacity: 0 });
     gsapCore.set("#cursor-ring", { xPercent: -50, yPercent: -50, opacity: 0 });
 
-    // QuickTo for high-performance translation
-    // Dot: fast tracking
-    const dotXTo = gsapCore.quickTo("#cursor-dot", "x", { duration: 0.05, ease: "power3.out" });
-    const dotYTo = gsapCore.quickTo("#cursor-dot", "y", { duration: 0.05, ease: "power3.out" });
+    // Dot: near-instant tracking
+    const dotXTo = gsapCore.quickTo("#cursor-dot", "x", { duration: 0.06, ease: "power2.out" });
+    const dotYTo = gsapCore.quickTo("#cursor-dot", "y", { duration: 0.06, ease: "power2.out" });
 
-    // Ring: smooth lagging follow
-    const ringXTo = gsapCore.quickTo("#cursor-ring", "x", { duration: 0.25, ease: "power3.out" });
-    const ringYTo = gsapCore.quickTo("#cursor-ring", "y", { duration: 0.25, ease: "power3.out" });
+    // Ring: silky lagging follow
+    const ringXTo = gsapCore.quickTo("#cursor-ring", "x", { duration: 0.45, ease: "power3.out" });
+    const ringYTo = gsapCore.quickTo("#cursor-ring", "y", { duration: 0.45, ease: "power3.out" });
 
-    // QuickTo for stretching (squash and stretch based on speed)
-    const ringScaleXTo = gsapCore.quickTo("#cursor-ring .cursor-ring-bg", "scaleX", { duration: 0.15, ease: "power2.out" });
-    const ringScaleYTo = gsapCore.quickTo("#cursor-ring .cursor-ring-bg", "scaleY", { duration: 0.15, ease: "power2.out" });
-    const ringRotationTo = gsapCore.quickTo("#cursor-ring .cursor-ring-bg", "rotation", { duration: 0.15, ease: "power2.out" });
+    // Squash-and-stretch with gentle easing
+    const ringScaleXTo = gsapCore.quickTo("#cursor-ring .cursor-ring-bg", "scaleX", { duration: 0.3, ease: "power3.out" });
+    const ringScaleYTo = gsapCore.quickTo("#cursor-ring .cursor-ring-bg", "scaleY", { duration: 0.3, ease: "power3.out" });
+    const ringRotationTo = gsapCore.quickTo("#cursor-ring .cursor-ring-bg", "rotation", { duration: 0.3, ease: "power3.out" });
 
     let lastX = 0;
     let lastY = 0;
@@ -166,8 +172,8 @@ export function CustomCursor() {
           border: ringBorder,
           mixBlendMode: mixBlend as any,
           borderRadius: borderRadius,
-          duration: 0.25,
-          ease: "power2.out",
+          duration: 0.4,
+          ease: "power3.out",
           overwrite: "auto",
         });
 
@@ -208,8 +214,8 @@ export function CustomCursor() {
           border: "1.5px solid #E8FF00",
           mixBlendMode: "difference" as any,
           borderRadius: "50%",
-          duration: 0.25,
-          ease: "power2.out",
+          duration: 0.4,
+          ease: "power3.out",
           overwrite: "auto",
         });
 
@@ -265,8 +271,8 @@ export function CustomCursor() {
           gsapCore.to(btn, {
             x: 0,
             y: 0,
-            duration: 0.5,
-            ease: "elastic.out(1, 0.4)",
+            duration: 0.7,
+            ease: "power4.out",
             overwrite: "auto",
           });
           (btn as any)._isMagnetized = false;

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap/dist/gsap";
+import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import { useReducedMotion } from "@/lib/anime-utils";
 import { projects } from "@/lib/content";
 
@@ -146,26 +147,39 @@ export function Projects() {
   const sectionRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const isReduced = useReducedMotion();
+  const [isMobile, setIsMobile] = useState(false);
 
   const [selectedProject, setSelectedProject] = useState<typeof projects[0] | null>(null);
   const [activeImageIdx, setActiveImageIdx] = useState<number>(0);
 
   const previewContainerRef = useRef<HTMLDivElement>(null);
   const lastWheelTimeRef = useRef<number>(0);
+  const modalInnerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   useEffect(() => {
     const nav = document.querySelector(".portfolio-nav") as HTMLElement;
 
     if (selectedProject) {
       document.body.style.overflow = "hidden";
-      if (nav) {
-        nav.style.display = "none";
+      if (nav) nav.style.display = "none";
+      // Entrance animation
+      if (!isReduced && modalInnerRef.current) {
+        gsap.fromTo(
+          modalInnerRef.current,
+          { opacity: 0, scale: 0.93, y: 24 },
+          { opacity: 1, scale: 1, y: 0, duration: 0.4, ease: "power3.out" }
+        );
       }
     } else {
       document.body.style.overflow = "";
-      if (nav) {
-        nav.style.display = "";
-      }
+      if (nav) nav.style.display = "";
     }
 
     return () => {
@@ -241,40 +255,42 @@ export function Projects() {
         },
       });
 
+      // Horizontal scroll progress indicator
+      const progressBar = section.querySelector(".projects-progress-bar") as HTMLElement;
+      if (progressBar) {
+        ScrollTrigger.create({
+          trigger: section,
+          start: "top top",
+          end: () => `+=${track.scrollWidth - window.innerWidth}`,
+          scrub: 1,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            gsap.set(progressBar, { scaleX: self.progress, transformOrigin: "left center" });
+          },
+        });
+      }
+
       // Individual slide title entrances via containerAnimation
       const slides = track.querySelectorAll(".project-slide");
       slides.forEach((slide, idx) => {
+        if (idx === 0) return; // Intro slide heading uses .word-reveal via revealSection
         const title = slide.querySelector(".project-title");
         if (title) {
-          if (idx === 0) {
-            // For the first (intro) slide, animate immediately upon section reveal
-            gsap.fromTo(
-              title,
-              { clipPath: "inset(0 100% 0 0)" },
-              {
-                clipPath: "inset(0 0% 0 0)",
-                duration: 0.6,
-                ease: "power3.out",
-                delay: 0.2,
-              }
-            );
-          } else {
-            gsap.fromTo(
-              title,
-              { clipPath: "inset(0 100% 0 0)" },
-              {
-                clipPath: "inset(0 0% 0 0)",
-                duration: 0.6,
-                ease: "power3.out",
-                scrollTrigger: {
-                  trigger: slide,
-                  containerAnimation: horizontalTween,
-                  start: "left 85%",
-                  toggleActions: "play none none none",
-                },
-              }
-            );
-          }
+          gsap.fromTo(
+            title,
+            { clipPath: "inset(0 100% 0 0)" },
+            {
+              clipPath: "inset(0 0% 0 0)",
+              duration: 0.6,
+              ease: "power3.out",
+              scrollTrigger: {
+                trigger: slide,
+                containerAnimation: horizontalTween,
+                start: "left 85%",
+                toggleActions: "play none none none",
+              },
+            }
+          );
         }
       });
     }, section);
@@ -282,10 +298,10 @@ export function Projects() {
     return () => ctx.revert();
   }, [isReduced]);
 
-  if (isReduced) {
-    // Accessible fallback: stacked vertically
+  if (isReduced || isMobile) {
+    // Accessible fallback + mobile: stacked vertically
     return (
-      <section id="projects" className="relative px-5 py-32 bg-black">
+      <section id="projects" className="relative px-5 py-16 md:py-32 bg-black">
         <div className="section-border-line absolute top-0 left-0 right-0 h-[1px] bg-[#E8FF00]" />
         <div className="max-w-7xl mx-auto space-y-24">
           <div className="overflow-hidden mb-16">
@@ -300,13 +316,13 @@ export function Projects() {
                 key={p.index}
                 className="grid grid-cols-12 gap-8 border-b border-white/10 pb-12 items-center"
               >
-                <div className="col-span-12 md:col-span-6 md:col-start-2 flex flex-col gap-6">
+                <div className="col-span-12 md:col-span-6 md:col-start-2 flex flex-col gap-4 md:gap-6">
                   <div className="flex items-center gap-4">
                     <span className="font-mono text-xs text-[#E8FF00]">({p.index})</span>
-                    <span className="font-mono text-xs text-white/50">{p.tags.join(" / ")}</span>
+                    <span className="font-mono text-[10px] md:text-xs text-white/50">{p.tags.join(" / ")}</span>
                   </div>
                   <h3
-                    className="font-display font-bold text-3xl md:text-5xl uppercase text-white leading-none cursor-pointer hover:text-[#E8FF00] transition-colors"
+                    className="font-display font-bold text-2xl sm:text-3xl md:text-5xl uppercase text-white leading-none cursor-pointer hover:text-[#E8FF00] transition-colors"
                     onClick={() => openProjectModal(p, 0)}
                   >
                     {p.title}
@@ -401,6 +417,11 @@ export function Projects() {
         className="section-border-line absolute top-0 left-0 right-0 h-[1px] bg-[#E8FF00] origin-left z-20"
         style={{ transform: "scaleX(0)" }}
       />
+      {/* Horizontal Scroll Progress Bar */}
+      <div
+        className="projects-progress-bar absolute top-[1px] left-0 w-full h-[3px] bg-[#E8FF00] z-30"
+        style={{ transform: "scaleX(0)", transformOrigin: "left center" }}
+      />
 
       <div
         ref={trackRef}
@@ -418,10 +439,14 @@ export function Projects() {
               </div>
             </div>
             {/* Right Column */}
-            <div className="col-span-12 md:col-span-9 overflow-hidden">
+            <div className="col-span-12 md:col-span-9">
               <h2 className="section-title project-title font-display font-black text-[9vw] sm:text-[8vw] md:text-[7vw] tracking-[-0.05em] leading-[0.9] uppercase text-white">
-                FEATURED <br />
-                <span className="text-outline">PROJECTS</span>
+                <div className="overflow-hidden">
+                  <span className="word-reveal inline-block">FEATURED</span>
+                </div>
+                <div className="overflow-hidden">
+                  <span className="word-reveal text-outline inline-block">PROJECTS</span>
+                </div>
               </h2>
               <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#E8FF00] mt-8 flex items-center gap-2">
                 <span>SCROLL TO EXPLORE</span>
@@ -544,7 +569,7 @@ export function Projects() {
       </div>      {/* Brutalist Detail Modal Overlay */}
       {selectedProject && (
         <div data-lenis-prevent className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 p-4 sm:p-6 md:p-10 backdrop-blur-md">
-          <div className="relative w-full max-w-6xl bg-black border-4 border-white p-6 sm:p-8 md:p-10 flex flex-col md:grid md:grid-cols-12 gap-8 text-white max-h-[92vh] overflow-hidden shadow-[8px_8px_0px_#E8FF00]">
+          <div ref={modalInnerRef} className="relative w-full max-w-6xl bg-black border-4 border-white p-6 sm:p-8 md:p-10 flex flex-col md:grid md:grid-cols-12 gap-8 text-white max-h-[92vh] overflow-hidden shadow-[8px_8px_0px_#E8FF00]">
             {/* Close Button */}
             <button
               onClick={() => setSelectedProject(null)}

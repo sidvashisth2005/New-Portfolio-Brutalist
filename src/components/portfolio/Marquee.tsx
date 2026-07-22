@@ -6,12 +6,12 @@ export function Marquee() {
   const trackRef = useRef<HTMLDivElement>(null);
   const items = [
     "HACKNITR 7.0 — RANK 01",
-    "6,200+ PARTICIPANTS",
+    "6,200+ COMPETITORS",
     "30% USER GROWTH",
     "65% COST REDUCTION",
     "JUET GUNA",
-    "CSE / 2026",
-    "AVAILABLE FOR HIRE",
+    "B.TECH / GRADUATING 2027",
+    "OPEN TO OPPORTUNITIES",
   ];
   const row = [...items, ...items, ...items];
 

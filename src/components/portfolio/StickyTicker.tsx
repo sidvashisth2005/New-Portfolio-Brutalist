@@ -1,4 +1,4 @@
-export function StickyTicker() {
+export function StickyTicker({ text = "TECHNICAL & BUSINESS CORE" }: { text?: string }) {
   const items = Array.from({ length: 12 }, (_, i) => i);
 
   return (
@@ -9,7 +9,7 @@ export function StickyTicker() {
             key={i}
             className="font-mono text-[13px] uppercase tracking-[0.15em] text-[#444444] select-none"
           >
-            TECHNICAL & BUSINESS CORE ✶
+            {text} ✶
           </span>
         ))}
       </div>

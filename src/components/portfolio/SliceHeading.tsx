@@ -13,7 +13,7 @@ export function SliceHeading({
   const isReduced = useReducedMotion();
 
   return (
-    <div className="grid grid-cols-12 gap-5 mb-16">
+    <div className="grid grid-cols-12 gap-5 mb-8 md:mb-16">
       <div className="col-span-12 md:col-span-3">
         {/* Step 2 — Section number + label wrapper */}
         <div className="overflow-hidden">
@@ -27,8 +27,8 @@ export function SliceHeading({
         </div>
       </div>
 
-      {/* Step 3 — Section heading */}
-      <div className="col-span-12 md:col-span-9 overflow-hidden">
+      {/* Step 3 — Section heading (overflow-hidden is per-line in children) */}
+      <div className="col-span-12 md:col-span-9">
         <h2
           className="section-title font-display font-black tracking-[-0.05em] text-[9vw] sm:text-[8vw] md:text-[7vw] leading-[0.9] uppercase whitespace-normal break-words text-white"
         >
