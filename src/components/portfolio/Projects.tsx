@@ -147,7 +147,6 @@ export function Projects() {
   const sectionRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const isReduced = useReducedMotion();
-  const [isMobile, setIsMobile] = useState(false);
 
   const [selectedProject, setSelectedProject] = useState<typeof projects[0] | null>(null);
   const [activeImageIdx, setActiveImageIdx] = useState<number>(0);
@@ -155,13 +154,6 @@ export function Projects() {
   const previewContainerRef = useRef<HTMLDivElement>(null);
   const lastWheelTimeRef = useRef<number>(0);
   const modalInnerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
 
   useEffect(() => {
     const nav = document.querySelector(".portfolio-nav") as HTMLElement;
@@ -188,7 +180,7 @@ export function Projects() {
         nav.style.display = "";
       }
     };
-  }, [selectedProject]);
+  }, [selectedProject, isReduced]);
 
   useEffect(() => {
     const container = previewContainerRef.current;
@@ -235,6 +227,9 @@ export function Projects() {
 
   useEffect(() => {
     if (typeof window === "undefined" || isReduced) return;
+
+    // Only set up GSAP horizontal scroll pin on desktop screens (window.innerWidth >= 768)
+    if (window.innerWidth < 768) return;
 
     const section = sectionRef.current;
     const track = trackRef.current;
@@ -298,8 +293,8 @@ export function Projects() {
     return () => ctx.revert();
   }, [isReduced]);
 
-  if (isReduced || isMobile) {
-    // Accessible fallback + mobile: stacked vertically
+  if (isReduced) {
+    // Accessible fallback when reduced motion is preferred
     return (
       <section id="projects" className="relative px-5 py-16 md:py-32 bg-black">
         <div className="section-border-line absolute top-0 left-0 right-0 h-[1px] bg-[#E8FF00]" />
@@ -358,7 +353,6 @@ export function Projects() {
                 </div>
                 <div className="col-span-12 md:col-span-4 flex justify-center md:justify-center mt-8 md:mt-0">
                   <div className="w-[160px] h-[230px] sm:w-[190px] sm:h-[270px] md:w-[210px] md:h-[300px] relative group cursor-pointer">
-                    {/* Card 1 (Bottom) */}
                     <div
                       onClick={() => openProjectModal(p, 0)}
                       className="absolute inset-0 bg-[#0A0A0A] border border-white sm:border-2 p-1 sm:p-1.5 shadow-2xl transition-all duration-500 ease-out origin-bottom rotate-[-12deg] -translate-x-4 sm:-translate-x-6 translate-y-1.5 sm:translate-y-2 z-10 group-hover:rotate-[-24deg] group-hover:-translate-x-8 sm:group-hover:-translate-x-12 group-hover:-translate-y-2 group-hover:border-[#E8FF00] overflow-hidden"
@@ -368,10 +362,9 @@ export function Projects() {
                         alt={`${p.title} preview 1`}
                         className="w-full h-full object-cover filter grayscale contrast-125 group-hover:grayscale-0 group-hover:contrast-100 transition-all duration-500"
                         loading="lazy"
+                        decoding="async"
                       />
                     </div>
-
-                    {/* Card 2 (Middle) */}
                     <div
                       onClick={() => openProjectModal(p, 1)}
                       className="absolute inset-0 bg-[#0A0A0A] border border-white sm:border-2 p-1 sm:p-1.5 shadow-2xl transition-all duration-500 ease-out origin-bottom rotate-0 translate-y-0 z-20 group-hover:-translate-y-4 sm:group-hover:-translate-y-6 group-hover:scale-105 group-hover:border-[#E8FF00] overflow-hidden"
@@ -381,10 +374,9 @@ export function Projects() {
                         alt={`${p.title} preview 2`}
                         className="w-full h-full object-cover filter grayscale contrast-125 group-hover:grayscale-0 group-hover:contrast-100 transition-all duration-500"
                         loading="lazy"
+                        decoding="async"
                       />
                     </div>
-
-                    {/* Card 3 (Top) */}
                     <div
                       onClick={() => openProjectModal(p, 2)}
                       className="absolute inset-0 bg-[#0A0A0A] border border-white sm:border-2 p-1 sm:p-1.5 shadow-2xl transition-all duration-500 ease-out origin-bottom rotate-[12deg] translate-x-4 sm:translate-x-6 translate-y-1.5 sm:translate-y-2 z-30 group-hover:rotate-[24deg] group-hover:translate-x-8 sm:group-hover:translate-x-12 group-hover:-translate-y-2 group-hover:border-[#E8FF00] overflow-hidden"
@@ -394,6 +386,7 @@ export function Projects() {
                         alt={`${p.title} preview 3`}
                         className="w-full h-full object-cover filter grayscale contrast-125 group-hover:grayscale-0 group-hover:contrast-100 transition-all duration-500"
                         loading="lazy"
+                        decoding="async"
                       />
                     </div>
                   </div>
@@ -407,11 +400,115 @@ export function Projects() {
   }
 
   return (
-    <section
-      id="projects"
-      ref={sectionRef}
-      className="relative w-full h-screen bg-black overflow-hidden projects-section"
-    >
+    <>
+      {/* Mobile Stacked View (Pure CSS responsive: visible under md, hidden on md+) */}
+      <section id="projects-mobile" className="block md:hidden relative px-5 py-16 bg-black">
+        <div className="section-border-line absolute top-0 left-0 right-0 h-[1px] bg-[#E8FF00]" />
+        <div className="max-w-7xl mx-auto space-y-16">
+          <div className="overflow-hidden mb-12">
+            <h2 className="font-display font-black text-[9vw] sm:text-[8vw] tracking-[-0.05em] leading-[0.9] uppercase text-white">
+              FEATURED <br /> <span className="text-outline">PROJECTS</span>
+            </h2>
+          </div>
+          
+          <div className="space-y-16">
+            {projects.map((p) => (
+              <div
+                key={p.index}
+                className="grid grid-cols-12 gap-6 border-b border-white/10 pb-12 items-center"
+              >
+                <div className="col-span-12 flex flex-col gap-4">
+                  <div className="flex items-center gap-4">
+                    <span className="font-mono text-xs text-[#E8FF00]">({p.index})</span>
+                    <span className="font-mono text-[10px] text-white/50">{p.tags.join(" / ")}</span>
+                  </div>
+                  <h3
+                    className="font-display font-bold text-2xl sm:text-3xl uppercase text-white leading-none cursor-pointer hover:text-[#E8FF00] transition-colors"
+                    onClick={() => openProjectModal(p, 0)}
+                  >
+                    {p.title}
+                  </h3>
+                  <ul className="space-y-3">
+                    {p.bullets.map((bullet, idx) => (
+                      <li key={idx} className="flex items-start">
+                        <span className="w-1.5 h-1.5 bg-[#E8FF00] mt-[8px] flex-shrink-0" />
+                        <span className="font-display text-xs text-white/70 ml-3 uppercase font-bold">
+                          {bullet}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="flex flex-wrap items-center gap-6 mt-4">
+                    {p.github && (
+                      <a
+                        href={p.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-mono text-xs uppercase tracking-wider text-[#E8FF00] hover:text-white transition-colors"
+                      >
+                        VIEW ON GITHUB &rarr;
+                      </a>
+                    )}
+                    <button
+                      onClick={() => openProjectModal(p, 0)}
+                      className="font-mono text-xs uppercase tracking-wider text-white hover:text-[#E8FF00] transition-colors bg-transparent border-none outline-none cursor-pointer"
+                    >
+                      EXPLORE PROJECT &rarr;
+                    </button>
+                  </div>
+                </div>
+                <div className="col-span-12 flex justify-center mt-6">
+                  <div className="w-[160px] h-[230px] sm:w-[190px] sm:h-[270px] relative group cursor-pointer">
+                    <div
+                      onClick={() => openProjectModal(p, 0)}
+                      className="absolute inset-0 bg-[#0A0A0A] border border-white p-1 shadow-2xl transition-all duration-500 ease-out origin-bottom rotate-[-12deg] -translate-x-4 translate-y-1.5 z-10 group-hover:rotate-[-24deg] group-hover:-translate-x-8 group-hover:-translate-y-2 group-hover:border-[#E8FF00] overflow-hidden"
+                    >
+                      <img
+                        src={PROJECT_CARD_IMAGES[p.index]?.[0]}
+                        alt={`${p.title} preview 1`}
+                        className="w-full h-full object-cover filter grayscale contrast-125 group-hover:grayscale-0 group-hover:contrast-100 transition-all duration-500"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
+                    <div
+                      onClick={() => openProjectModal(p, 1)}
+                      className="absolute inset-0 bg-[#0A0A0A] border border-white p-1 shadow-2xl transition-all duration-500 ease-out origin-bottom rotate-0 translate-y-0 z-20 group-hover:-translate-y-4 group-hover:scale-105 group-hover:border-[#E8FF00] overflow-hidden"
+                    >
+                      <img
+                        src={PROJECT_CARD_IMAGES[p.index]?.[1]}
+                        alt={`${p.title} preview 2`}
+                        className="w-full h-full object-cover filter grayscale contrast-125 group-hover:grayscale-0 group-hover:contrast-100 transition-all duration-500"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
+                    <div
+                      onClick={() => openProjectModal(p, 2)}
+                      className="absolute inset-0 bg-[#0A0A0A] border border-white p-1 shadow-2xl transition-all duration-500 ease-out origin-bottom rotate-[12deg] translate-x-4 translate-y-1.5 z-30 group-hover:rotate-[24deg] group-hover:translate-x-8 group-hover:-translate-y-2 group-hover:border-[#E8FF00] overflow-hidden"
+                    >
+                      <img
+                        src={PROJECT_CARD_IMAGES[p.index]?.[2]}
+                        alt={`${p.title} preview 3`}
+                        className="w-full h-full object-cover filter grayscale contrast-125 group-hover:grayscale-0 group-hover:contrast-100 transition-all duration-500"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Desktop Horizontal Scroll View (Pure CSS responsive: hidden on small, visible on md+) */}
+      <section
+        id="projects"
+        ref={sectionRef}
+        className="hidden md:block relative w-full h-screen bg-black overflow-hidden projects-section"
+      >
       {/* Top Border Line Sweep */}
       <div
         className="section-border-line absolute top-0 left-0 right-0 h-[1px] bg-[#E8FF00] origin-left z-20"
@@ -532,6 +629,7 @@ export function Projects() {
                         alt={`${p.title} preview 1`}
                         className="w-full h-full object-cover filter grayscale contrast-125 group-hover:grayscale-0 group-hover:contrast-100 transition-all duration-500"
                         loading="lazy"
+                        decoding="async"
                       />
                     </div>
 
@@ -545,6 +643,7 @@ export function Projects() {
                         alt={`${p.title} preview 2`}
                         className="w-full h-full object-cover filter grayscale contrast-125 group-hover:grayscale-0 group-hover:contrast-100 transition-all duration-500"
                         loading="lazy"
+                        decoding="async"
                       />
                     </div>
 
@@ -558,6 +657,7 @@ export function Projects() {
                         alt={`${p.title} preview 3`}
                         className="w-full h-full object-cover filter grayscale contrast-125 group-hover:grayscale-0 group-hover:contrast-100 transition-all duration-500"
                         loading="lazy"
+                        decoding="async"
                       />
                     </div>
                   </div>
@@ -765,5 +865,6 @@ export function Projects() {
         </div>
       )}
     </section>
+    </>
   );
 }

@@ -1,5 +1,4 @@
 import { useEffect, useRef } from "react";
-import { motion } from "framer-motion";
 import gsap from "gsap/dist/gsap";
 
 export function Marquee() {
@@ -24,7 +23,7 @@ export function Marquee() {
     // Set initial position
     gsap.set(track, { x: "0%" });
 
-    // Loop from 0% to -33.3333% (since we replicated items 3 times, shifting 1/3 of the total width is exactly 1 loop iteration)
+    // Loop from 0% to -33.3333%
     const loop = gsap.to(track, {
       x: "-33.3333%",
       ease: "none",
@@ -37,12 +36,7 @@ export function Marquee() {
 
     const handleScroll = (inst: any) => {
       const velocity = inst.velocity || 0;
-      
-      // Calculate target timeScale: faster when scrolling.
-      // Base speed is 1. Maximum is 5.
       const speedMultiplier = 1 + Math.min(4, Math.abs(velocity) * 0.4);
-      // Scroll down -> positive velocity -> standard marquee direction (right-to-left, timescale positive)
-      // Scroll up -> negative velocity -> reverse direction (timescale negative)
       const direction = velocity < 0 ? -1 : 1;
       
       gsap.to(loop, {
@@ -61,13 +55,7 @@ export function Marquee() {
   }, []);
 
   return (
-    <motion.section
-      initial={{ clipPath: "inset(50% 0 50% 0)" }}
-      whileInView={{ clipPath: "inset(0% 0 0% 0)" }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.7, ease: [0.85, 0, 0.15, 1] }}
-      className="relative border-y-2 border-white py-4 overflow-hidden bg-[#E8FF00] text-black"
-    >
+    <section className="relative border-y-2 border-white py-4 overflow-hidden bg-[#E8FF00] text-black transition-all duration-700 ease-[cubic-bezier(0.85,0,0.15,1)]">
       <div
         ref={trackRef}
         className="marquee-track flex gap-8 whitespace-nowrap w-max"
@@ -82,6 +70,6 @@ export function Marquee() {
           </span>
         ))}
       </div>
-    </motion.section>
+    </section>
   );
 }

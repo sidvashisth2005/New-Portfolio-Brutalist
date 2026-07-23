@@ -182,7 +182,7 @@ export function Podcast() {
       />
 
       <div className="grid grid-cols-12 gap-6 md:gap-16" data-skew>
-        <audio ref={audioRef} preload="metadata" />
+        <audio ref={audioRef} preload="none" />
 
         {/* Section Header */}
         <div className="col-span-12 flex flex-col gap-1 text-left mb-4">
@@ -250,6 +250,8 @@ export function Podcast() {
                     src="https://img.youtube.com/vi/Im-LBScZpDY/hqdefault.jpg"
                     alt="Video Thumbnail"
                     className="w-full h-full object-cover transition-transform duration-300 ease-out group-hover/yt:scale-103"
+                    loading="lazy"
+                    decoding="async"
                   />
                   <div className="absolute inset-0 flex items-center justify-center bg-black/40">
                     {/* Brutalist play indicator */}
@@ -295,6 +297,8 @@ export function Podcast() {
                     src="https://img.youtube.com/vi/wTi09XnQlsw/hqdefault.jpg"
                     alt="Video Thumbnail"
                     className="w-full h-full object-cover transition-transform duration-300 ease-out group-hover/yt:scale-103"
+                    loading="lazy"
+                    decoding="async"
                   />
                   <div className="absolute inset-0 flex items-center justify-center bg-black/40">
                     {/* Brutalist play indicator */}

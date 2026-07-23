@@ -1,63 +1,71 @@
-import { Suspense, useState, useEffect, useRef } from "react";
-import { Canvas } from "@react-three/fiber";
-import { Stars } from "@react-three/drei";
+import { useEffect, useRef } from "react";
 
 /**
- * 3D Starfield Canvas Component
- * Throttled using IntersectionObserver to only render when visible in the viewport.
+ * 2D Starfield Canvas Component
+ * High-performance 2D canvas starfield that avoids instantiating an extra WebGL context.
  */
 export function StarField() {
-  const [mounted, setMounted] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    setMounted(true);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animId: number;
+    let width = (canvas.width = canvas.parentElement?.clientWidth || window.innerWidth);
+    let height = (canvas.height = canvas.parentElement?.clientHeight || window.innerHeight);
+
+    const handleResize = () => {
+      if (!canvas || !canvas.parentElement) return;
+      width = canvas.width = canvas.parentElement.clientWidth;
+      height = canvas.height = canvas.parentElement.clientHeight;
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    // Create 100 star particles
+    const stars = Array.from({ length: 100 }, () => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      size: Math.random() * 1.5 + 0.5,
+      alpha: Math.random() * 0.7 + 0.3,
+      speed: Math.random() * 0.15 + 0.05,
+    }));
+
+    const render = () => {
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = "#ffffff";
+
+      for (let i = 0; i < stars.length; i++) {
+        const star = stars[i];
+        star.y -= star.speed;
+        if (star.y < 0) {
+          star.y = height;
+          star.x = Math.random() * width;
+        }
+
+        ctx.globalAlpha = star.alpha * (0.6 + Math.sin(Date.now() * 0.002 + i) * 0.4);
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      animId = requestAnimationFrame(render);
+    };
+
+    render();
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      cancelAnimationFrame(animId);
+    };
   }, []);
 
-  useEffect(() => {
-    if (typeof window === "undefined" || !containerRef.current) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsVisible(entry.isIntersecting);
-      },
-      {
-        root: null, // viewport
-        rootMargin: "50px", // pre-render when 50px close to viewport
-        threshold: 0.0,
-      }
-    );
-
-    observer.observe(containerRef.current);
-    return () => {
-      observer.disconnect();
-    };
-  }, [mounted]);
-
-  if (!mounted) {
-    return <div className="w-full h-full pointer-events-none" />;
-  }
-
   return (
-    <div ref={containerRef} className="w-full h-full pointer-events-none relative">
-      {isVisible ? (
-        <Canvas camera={{ position: [0, 0, 5] }} dpr={[1, 1.2]}>
-          <Suspense fallback={null}>
-            <Stars 
-              radius={100} 
-              depth={50} 
-              count={100} 
-              factor={3} 
-              saturation={0} 
-              fade 
-              speed={0.4} 
-            />
-          </Suspense>
-        </Canvas>
-      ) : (
-        <div className="w-full h-full bg-transparent" />
-      )}
+    <div className="w-full h-full pointer-events-none relative">
+      <canvas ref={canvasRef} className="w-full h-full block" />
     </div>
   );
 }

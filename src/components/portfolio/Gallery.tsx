@@ -216,6 +216,7 @@ export function Gallery() {
                         alt={m.caption}
                         className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-[600ms] group-hover:scale-105"
                         loading="lazy"
+                        decoding="async"
                       />
                       <div className="absolute inset-0 bg-[#E8FF00]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                     </div>

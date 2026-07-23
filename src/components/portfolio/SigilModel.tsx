@@ -153,7 +153,11 @@ export function SigilModel({ coordsRef }: { coordsRef?: React.RefObject<HTMLDivE
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setMounted(true);
+    // Defer WebGL Canvas mount slightly so hero text paints immediately
+    const timer = setTimeout(() => {
+      setMounted(true);
+    }, 120);
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -185,7 +189,11 @@ export function SigilModel({ coordsRef }: { coordsRef?: React.RefObject<HTMLDivE
   return (
     <div ref={containerRef} className="w-full h-full relative">
       {isVisible ? (
-        <Canvas camera={{ position: [0, 0, 3.2], fov: 45 }} dpr={[1, 1.5]}>
+        <Canvas
+          camera={{ position: [0, 0, 3.2], fov: 45 }}
+          dpr={[1, 1.5]}
+          gl={{ antialias: true, powerPreference: "high-performance", alpha: true }}
+        >
           {/* Basic WebGL Lighting */}
           <ambientLight intensity={0.5} />
           <directionalLight position={[5, 5, 5]} intensity={1.5} />
