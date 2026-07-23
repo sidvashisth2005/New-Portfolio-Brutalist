@@ -190,7 +190,7 @@ export function SigilModel({ coordsRef }: { coordsRef?: React.RefObject<HTMLDivE
     <div ref={containerRef} className="w-full h-full relative">
       {isVisible ? (
         <Canvas
-          camera={{ position: [0, 0, 3.6], fov: 45 }}
+          camera={{ position: [0, 0, 3.4], fov: 45 }}
           dpr={[1, 1.5]}
           gl={{ antialias: true, powerPreference: "high-performance", alpha: true }}
         >
@@ -202,7 +202,7 @@ export function SigilModel({ coordsRef }: { coordsRef?: React.RefObject<HTMLDivE
           {/* Suspense is required for async environment loading */}
           <Suspense fallback={null}>
             {/* Float adds slow vertical floating movement */}
-            <Float speed={1.2} rotationIntensity={0.15} floatIntensity={0.25}>
+            <Float speed={1.4} rotationIntensity={0.2} floatIntensity={0.3}>
               <SigilScene coordsRef={coordsRef} />
             </Float>
             
@@ -210,8 +210,15 @@ export function SigilModel({ coordsRef }: { coordsRef?: React.RefObject<HTMLDivE
             <Environment preset="city" />
           </Suspense>
 
-          {/* OrbitControls enables dragging to spin the sigil */}
-          <OrbitControls enableZoom={false} enablePan={false} />
+          {/* OrbitControls enables dragging & auto-rotation for smooth 3D experience */}
+          <OrbitControls
+            enableZoom={false}
+            enablePan={false}
+            autoRotate={true}
+            autoRotateSpeed={1.8}
+            enableDamping={true}
+            dampingFactor={0.05}
+          />
         </Canvas>
       ) : (
         <div className="w-full h-full bg-transparent flex items-center justify-center" />
