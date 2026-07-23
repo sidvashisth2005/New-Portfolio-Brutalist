@@ -129,7 +129,7 @@ export function Nav() {
         {/* Top padding to clear the nav bar */}
         <div className="h-[54px] flex-shrink-0" />
 
-        <nav className="flex-1 flex flex-col justify-center px-8 gap-1">
+        <nav className="flex-1 flex flex-col justify-start sm:justify-center px-8 py-4 overflow-y-auto gap-0.5">
           {links.map((l, idx) => {
             const isActive = activeSection === l.href.replace("#", "");
             return (
@@ -137,20 +137,20 @@ export function Nav() {
                 key={l.href}
                 href={l.href}
                 onClick={closeMenu}
-                className={`group flex items-baseline gap-3 py-4 border-b border-white/10 transition-all duration-300 ${
+                className={`group flex items-baseline gap-3 py-2.5 sm:py-3.5 border-b border-white/10 transition-all duration-300 ${
                   menuOpen
                     ? "opacity-100 translate-x-0"
                     : "opacity-0 -translate-x-4"
                 }`}
                 style={{
-                  transitionDelay: menuOpen ? `${idx * 40 + 80}ms` : "0ms",
+                  transitionDelay: menuOpen ? `${idx * 30 + 60}ms` : "0ms",
                 }}
               >
                 <span className={`font-mono text-xs ${isActive ? "text-[#ffff00]" : "text-white/30"}`}>
                   {l.n}
                 </span>
                 <span
-                  className={`font-display font-black text-4xl uppercase tracking-[-0.04em] leading-none ${
+                  className={`font-display font-black text-2xl sm:text-4xl uppercase tracking-[-0.04em] leading-none ${
                     isActive ? "text-[#ffff00]" : "text-white group-hover:text-[#ffff00]"
                   } transition-colors`}
                 >

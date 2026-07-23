@@ -599,3 +599,55 @@
     transition: none !important;
   }
 }
+
+/* ─── MOBILE TOUCH & AUTO-REVEAL ENHANCEMENTS ─── */
+@media (hover: none), (max-width: 768px) {
+  /* Prevent horizontal page sway on mobile screens */
+  html, body, #root, main {
+    overflow-x: hidden !important;
+    max-width: 100vw;
+  }
+
+  /* Disable custom cursor ring on touch devices so native finger taps feel responsive */
+  #cursor-ring,
+  #cursor-dot,
+  .cursor-ring-bg {
+    display: none !important;
+  }
+  
+  html, body, a, button {
+    cursor: auto !important;
+  }
+
+  /* Automatically un-grayscale & highlight gallery cards on mobile scroll */
+  .moment-card img {
+    filter: grayscale(0) !important;
+    opacity: 1 !important;
+  }
+  .moment-card {
+    border-color: rgba(232, 255, 0, 0.4) !important;
+  }
+  .moment-card .pt-3 span:first-child {
+    color: #E8FF00 !important;
+  }
+
+  /* Automatically un-grayscale & highlight project cards on mobile scroll */
+  .project-card img {
+    filter: grayscale(0) contrast(100%) !important;
+  }
+  .project-card {
+    border-color: rgba(232, 255, 0, 0.4) !important;
+  }
+
+  /* Skill pills active glow on mobile */
+  .skill-pill {
+    border-color: rgba(232, 255, 0, 0.5) !important;
+    background-color: rgba(232, 255, 0, 0.08) !important;
+    color: #FFFFFF !important;
+  }
+
+  /* Award rows auto border highlight on mobile */
+  .award-row {
+    border-color: rgba(232, 255, 0, 0.3) !important;
+  }
+}
