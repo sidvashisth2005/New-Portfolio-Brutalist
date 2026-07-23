@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Logo } from "./Logo";
 
 const links = [
   { label: "About", href: "#about", n: "01" },
@@ -66,14 +67,8 @@ export function Nav() {
         className="portfolio-nav fixed top-0 left-0 right-0 z-50 bg-black/80 border-b-2 border-white backdrop-blur-sm"
         style={{ transform: "translateY(-100%)" }}
       >
-        <div className="flex items-center justify-between px-5 py-4">
-          <a
-            href="#top"
-            onClick={closeMenu}
-            className="font-mono text-xs uppercase tracking-[0.15em] text-white hover:text-[#ffff00] transition-colors"
-          >
-            SIDDHANT.V
-          </a>
+        <div className="flex items-center justify-between px-5 py-3.5">
+          <Logo onClick={closeMenu} />
 
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-5 font-mono text-xs uppercase tracking-[0.15em] text-white">
