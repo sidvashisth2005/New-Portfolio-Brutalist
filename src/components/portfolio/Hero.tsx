@@ -183,8 +183,8 @@ export function Hero({ start }: { start: boolean }) {
           <StarField />
         </div>
 
-        {/* 3D Model — hidden on mobile, visible md+ */}
-        <div className="hidden md:block absolute right-5 md:right-10 top-[calc(50%+27px)] -translate-y-1/2 w-[320px] h-[320px] md:w-[450px] md:h-[450px] z-20 pointer-events-auto">
+        {/* 3D Model — visible on all screens (desktop, tablet, mobile) */}
+        <div className="absolute right-0 sm:right-2 md:right-4 lg:right-8 xl:right-12 top-[28%] sm:top-[35%] md:top-[calc(50%+15px)] -translate-y-1/2 w-[180px] h-[180px] xs:w-[220px] xs:h-[220px] sm:w-[280px] sm:h-[280px] md:w-[360px] md:h-[360px] lg:w-[420px] lg:h-[420px] z-10 pointer-events-auto opacity-80 sm:opacity-100">
           <div
             className="hero-model-container w-full h-full"
             style={{
@@ -250,7 +250,7 @@ export function Hero({ start }: { start: boolean }) {
         </div>
 
         {/* Main Name + Divider */}
-        <div className="hero-name-wrapper relative z-10 px-5 w-full">
+        <div className="hero-name-wrapper relative z-20 px-5 w-full">
           <h1
             className="font-display font-black leading-[0.82] tracking-[-0.06em] text-[16vw] sm:text-[14vw] md:text-[13vw] uppercase"
           >

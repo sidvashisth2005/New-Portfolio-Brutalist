@@ -190,7 +190,7 @@ export function SigilModel({ coordsRef }: { coordsRef?: React.RefObject<HTMLDivE
     <div ref={containerRef} className="w-full h-full relative">
       {isVisible ? (
         <Canvas
-          camera={{ position: [0, 0, 3.2], fov: 45 }}
+          camera={{ position: [0, 0, 3.6], fov: 45 }}
           dpr={[1, 1.5]}
           gl={{ antialias: true, powerPreference: "high-performance", alpha: true }}
         >
