@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Link } from "@tanstack/react-router";
 import anime from "animejs";
 import { GUILLOTINE, useReducedMotion } from "@/lib/anime-utils";
 import { profile } from "@/lib/content";
@@ -288,9 +289,17 @@ export function Contact() {
           &copy; MMXXVI &middot; {profile.name} <br />
           COMPOSED IN GUNA, INDIA
         </div>
-        <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/20 text-left sm:text-right leading-relaxed">
-          DIGITAL BRUTALISM &middot; V0.4 <br />
-          ENGINEERED, NOT DECORATED.
+        <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/20 text-left sm:text-right leading-relaxed flex flex-col items-start sm:items-end gap-1">
+          <div>
+            DIGITAL BRUTALISM &middot; V0.4 <br />
+            ENGINEERED, NOT DECORATED.
+          </div>
+          <Link
+            to="/admin"
+            className="text-white/30 hover:text-[#E8FF00] transition-colors font-bold tracking-widest mt-1 block"
+          >
+            [ ADMIN // CMS ]
+          </Link>
         </div>
       </footer>
     </section>
