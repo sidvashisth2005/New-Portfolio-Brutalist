@@ -15,11 +15,11 @@ export function PageLoader({ onComplete }: { onComplete: () => void }) {
       },
     });
 
-    // 1. Counter counts 0 → 100 in 1.4s
+    // 1. Counter counts 0 → 100 in 0.4s
     tl.to(counterObj, {
       value: 100,
-      duration: 1.4,
-      ease: "power1.inOut",
+      duration: 0.4,
+      ease: "power2.inOut",
       onUpdate: () => {
         if (counterRef.current) {
           counterRef.current.textContent = String(Math.round(counterObj.value));
@@ -27,37 +27,36 @@ export function PageLoader({ onComplete }: { onComplete: () => void }) {
       },
     });
 
-    // 2. Counter fades out
-    tl.to(counterRef.current, {
-      opacity: 0,
-      duration: 0.2,
-      ease: "power2.out",
-    });
+    // 2. Counter fades out & halves slide apart
+    tl.to(
+      counterRef.current,
+      {
+        opacity: 0,
+        duration: 0.15,
+        ease: "power2.out",
+      },
+      "-=0.05"
+    );
 
-    // 3. When counter hits 100: Top and Bottom halves slide apart via yPercent (hardware GPU transform)
-    // top half: slides up out of viewport (yPercent: -100)
-    // bottom half: slides down out of viewport (yPercent: 100)
-    // duration: 0.8s, ease: "power4.inOut"
     tl.to(
       topHalfRef.current,
       {
         yPercent: -100,
-        duration: 0.8,
+        duration: 0.5,
         ease: "power4.inOut",
       },
-      "-=0.1"
+      "<"
     );
 
     tl.to(
       bottomHalfRef.current,
       {
         yPercent: 100,
-        duration: 0.8,
+        duration: 0.5,
         ease: "power4.inOut",
       },
-      "<" // Start at the same time as top half
+      "<"
     );
-
   }, [onComplete]);
 
   return (

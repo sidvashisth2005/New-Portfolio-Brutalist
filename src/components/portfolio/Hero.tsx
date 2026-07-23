@@ -15,14 +15,13 @@ export function Hero({ start }: { start: boolean }) {
 
     const tl = gsap.timeline();
 
-    // Step 1 — headline: each character slides up
+    // Step 1 — headline: character slide up
     tl.to(
       ".hero-letter",
       {
         y: "0%",
-        opacity: 1,
-        duration: 0.9,
-        stagger: 0.025,
+        duration: 0.6,
+        stagger: 0.015,
         ease: "power3.out",
       },
       0
@@ -33,11 +32,10 @@ export function Hero({ start }: { start: boolean }) {
       ".hero-tagline",
       {
         y: "0%",
-        opacity: 1,
-        duration: 0.7,
+        duration: 0.5,
         ease: "power3.out",
       },
-      0.4
+      0.15
     );
 
     // Step 3 — Meta grid cards
@@ -45,12 +43,11 @@ export function Hero({ start }: { start: boolean }) {
       ".hero-meta",
       {
         y: 0,
-        opacity: 1,
-        duration: 0.7,
-        stagger: 0.08,
+        duration: 0.5,
+        stagger: 0.04,
         ease: "power3.out",
       },
-      0.7
+      0.25
     );
 
     // Step 4 — Stat counters
@@ -64,13 +61,13 @@ export function Hero({ start }: { start: boolean }) {
         obj,
         {
           val: targetVal,
-          duration: 1.8,
+          duration: 1.2,
           ease: "power2.out",
           onUpdate: () => {
             el.textContent = Math.round(obj.val).toLocaleString() + suffix;
           },
         },
-        0.9
+        0.3
       );
     });
 
@@ -79,55 +76,51 @@ export function Hero({ start }: { start: boolean }) {
       ".portfolio-nav",
       {
         y: "0%",
-        duration: 0.6,
+        duration: 0.4,
         ease: "power2.out",
       },
-      0.2
+      0.1
     );
 
     tl.to(
       ".hero-divider",
       {
         scaleX: 1,
-        opacity: 1,
-        duration: 0.9,
+        duration: 0.6,
         ease: "power3.out",
       },
-      0.5
+      0.2
     );
 
     tl.to(
       ".hero-info-row",
       {
         y: 0,
-        opacity: 1,
-        duration: 0.6,
-        stagger: 0.05,
+        duration: 0.4,
+        stagger: 0.03,
         ease: "power3.out",
       },
-      0.6
+      0.25
     );
 
     tl.to(
       ".hero-model-container",
       {
-        opacity: 1,
         scale: 1,
-        duration: 1.2,
+        duration: 0.8,
         ease: "power3.out",
       },
-      0.8
+      0.3
     );
 
     tl.to(
       ".hero-scroll-indicator",
       {
-        opacity: 1,
         y: 0,
-        duration: 0.6,
+        duration: 0.4,
         ease: "power2.out",
       },
-      1.2
+      0.5
     );
 
     // Scroll-driven parallax
@@ -195,7 +188,6 @@ export function Hero({ start }: { start: boolean }) {
           <div
             className="hero-model-container w-full h-full"
             style={{
-              opacity: isReduced ? 1 : 0,
               transform: isReduced ? "none" : "scale(0.85)",
             }}
           >
@@ -210,7 +202,6 @@ export function Hero({ start }: { start: boolean }) {
             <div
               className="hero-info-row flex items-center gap-2"
               style={{
-                opacity: isReduced ? 1 : 0,
                 transform: isReduced ? "none" : "translateY(-15px)",
               }}
             >
@@ -220,7 +211,6 @@ export function Hero({ start }: { start: boolean }) {
             <div
               className="hero-info-row"
               style={{
-                opacity: isReduced ? 1 : 0,
                 transform: isReduced ? "none" : "translateY(-15px)",
               }}
             >
@@ -233,7 +223,6 @@ export function Hero({ start }: { start: boolean }) {
             <div
               className="hero-info-row col-span-3 flex items-center gap-2"
               style={{
-                opacity: isReduced ? 1 : 0,
                 transform: isReduced ? "none" : "translateY(-15px)",
               }}
             >
@@ -244,7 +233,6 @@ export function Hero({ start }: { start: boolean }) {
               ref={coordsRef}
               className="hero-info-row col-span-3 col-start-7 select-none"
               style={{
-                opacity: isReduced ? 1 : 0,
                 transform: isReduced ? "none" : "translateY(-15px)",
               }}
             >
@@ -253,7 +241,6 @@ export function Hero({ start }: { start: boolean }) {
             <div
               className="hero-info-row col-span-3 col-start-10 text-right"
               style={{
-                opacity: isReduced ? 1 : 0,
                 transform: isReduced ? "none" : "translateY(-15px)",
               }}
             >
@@ -283,7 +270,6 @@ export function Hero({ start }: { start: boolean }) {
                           style={{
                             fontStretch: "100%",
                             transform: isReduced ? "none" : "translateY(110%)",
-                            opacity: isReduced ? 1 : 0,
                           }}
                         >
                           {letter}
@@ -300,7 +286,6 @@ export function Hero({ start }: { start: boolean }) {
             style={{
               transform: isReduced ? "none" : "scaleX(0)",
               transformOrigin: "left center",
-              opacity: isReduced ? 1 : 0,
             }}
           />
         </div>
@@ -313,7 +298,6 @@ export function Hero({ start }: { start: boolean }) {
             className="hero-tagline font-display text-sm md:text-base lg:text-lg font-bold leading-tight uppercase text-white"
             style={{
               transform: isReduced ? "none" : "translateY(100%)",
-              opacity: isReduced ? 1 : 0,
             }}
           >
             {profile.name} — {profile.tagline}{" "}
@@ -333,7 +317,6 @@ export function Hero({ start }: { start: boolean }) {
               className="hero-meta border-l-2 border-white pl-2 md:pl-3"
               style={{
                 transform: isReduced ? "none" : "translateY(20px)",
-                opacity: isReduced ? 1 : 0,
               }}
             >
               <div className="font-mono text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-white/50">{k}</div>
@@ -346,7 +329,6 @@ export function Hero({ start }: { start: boolean }) {
       <div
         className="hero-scroll-indicator absolute bottom-4 md:bottom-5 left-5 font-mono text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-white/60 z-30"
         style={{
-          opacity: isReduced ? 1 : 0,
           transform: isReduced ? "none" : "translateY(10px)",
         }}
       >
