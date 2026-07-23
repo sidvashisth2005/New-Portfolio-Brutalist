@@ -619,19 +619,27 @@
     cursor: auto !important;
   }
 
-  /* Automatically un-grayscale & highlight gallery cards on mobile scroll */
+  /* Mobile scroll focus for Gallery photo cards: un-grayscales in view, returns to grayscale when scrolled past */
+  .moment-card {
+    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.4s ease, filter 0.4s ease !important;
+  }
   .moment-card img {
+    filter: grayscale(1) !important;
+    transition: filter 0.4s ease, transform 0.4s ease !important;
+  }
+  .moment-card.is-in-view {
+    border-color: #E8FF00 !important;
+    transform: scale(1.03) !important;
+  }
+  .moment-card.is-in-view img {
     filter: grayscale(0) !important;
     opacity: 1 !important;
   }
-  .moment-card {
-    border-color: rgba(232, 255, 0, 0.4) !important;
-  }
-  .moment-card .pt-3 span:first-child {
+  .moment-card.is-in-view .pt-3 span:first-child {
     color: #E8FF00 !important;
   }
 
-  /* Automatically un-grayscale & highlight project cards on mobile scroll */
+  /* Automatically highlight project cards on mobile scroll */
   .project-card img {
     filter: grayscale(0) contrast(100%) !important;
   }
@@ -651,22 +659,20 @@
     border-color: rgba(232, 255, 0, 0.3) !important;
   }
 
-  /* Auto-fan stacked project card deck on mobile touch devices */
-  .project-card-fan-left {
+  /* Mobile scroll focus for Project card deck: fans open when in view, folds back when scrolled past */
+  .project-card-deck.is-in-view .project-card-fan-left {
     transform: rotate(-22deg) translateX(-1.6rem) translateY(-0.4rem) !important;
     border-color: #E8FF00 !important;
   }
-  .project-card-fan-center {
+  .project-card-deck.is-in-view .project-card-fan-center {
     transform: translateY(-0.8rem) scale(1.04) !important;
     border-color: #E8FF00 !important;
   }
-  .project-card-fan-right {
+  .project-card-deck.is-in-view .project-card-fan-right {
     transform: rotate(22deg) translateX(1.6rem) translateY(-0.4rem) !important;
     border-color: #E8FF00 !important;
   }
-  .project-card-fan-left img,
-  .project-card-fan-center img,
-  .project-card-fan-right img {
+  .project-card-deck.is-in-view img {
     filter: grayscale(0) contrast(100%) !important;
   }
 }

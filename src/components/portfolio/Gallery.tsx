@@ -67,6 +67,31 @@ export function Gallery() {
     );
   }, [selectedCategory, isReduced]);
 
+  // Mobile scroll focus observer: un-grayscales photo when centered in view, returns to grayscale when scrolled past
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const cards = document.querySelectorAll(".moment-card");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-in-view");
+          } else {
+            entry.target.classList.remove("is-in-view");
+          }
+        });
+      },
+      {
+        threshold: 0.35,
+        rootMargin: "-10% 0px -10% 0px",
+      }
+    );
+
+    cards.forEach((card) => observer.observe(card));
+    return () => observer.disconnect();
+  }, [selectedCategory]);
+
   // Body scroll lock + entrance animation on lightbox open
   useEffect(() => {
     if (selectedMoment) {

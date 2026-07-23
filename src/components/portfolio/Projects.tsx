@@ -182,6 +182,31 @@ export function Projects() {
     };
   }, [selectedProject, isReduced]);
 
+  // Mobile scroll focus observer: fans open cards when in view, closes back when scrolled past
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const decks = document.querySelectorAll(".project-card-deck");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-in-view");
+          } else {
+            entry.target.classList.remove("is-in-view");
+          }
+        });
+      },
+      {
+        threshold: 0.3,
+        rootMargin: "-10% 0px -10% 0px",
+      }
+    );
+
+    decks.forEach((deck) => observer.observe(deck));
+    return () => observer.disconnect();
+  }, []);
+
   useEffect(() => {
     const container = previewContainerRef.current;
     if (!container) return;
