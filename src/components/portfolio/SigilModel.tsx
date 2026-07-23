@@ -190,7 +190,7 @@ export function SigilModel({ coordsRef }: { coordsRef?: React.RefObject<HTMLDivE
     <div ref={containerRef} className="w-full h-full relative">
       {isVisible ? (
         <Canvas
-          camera={{ position: [0, 0, 3.4], fov: 45 }}
+          camera={{ position: [0, 0, 3.1], fov: 45 }}
           dpr={[1, 1.5]}
           gl={{ antialias: true, powerPreference: "high-performance", alpha: true }}
         >
@@ -202,7 +202,7 @@ export function SigilModel({ coordsRef }: { coordsRef?: React.RefObject<HTMLDivE
           {/* Suspense is required for async environment loading */}
           <Suspense fallback={null}>
             {/* Float adds slow vertical floating movement */}
-            <Float speed={1.4} rotationIntensity={0.2} floatIntensity={0.3}>
+            <Float speed={1.6} rotationIntensity={0.25} floatIntensity={0.35}>
               <SigilScene coordsRef={coordsRef} />
             </Float>
             
@@ -215,7 +215,7 @@ export function SigilModel({ coordsRef }: { coordsRef?: React.RefObject<HTMLDivE
             enableZoom={false}
             enablePan={false}
             autoRotate={true}
-            autoRotateSpeed={1.8}
+            autoRotateSpeed={2.2}
             enableDamping={true}
             dampingFactor={0.05}
           />

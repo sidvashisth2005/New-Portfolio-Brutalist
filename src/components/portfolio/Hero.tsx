@@ -183,8 +183,8 @@ export function Hero({ start }: { start: boolean }) {
           <StarField />
         </div>
 
-        {/* 3D Model — Centered & larger on mobile, Right-aligned on desktop */}
-        <div className="absolute left-1/2 -translate-x-1/2 top-[40%] -translate-y-1/2 md:translate-y-0 md:top-auto md:translate-x-0 md:left-auto md:right-4 lg:right-8 xl:right-12 md:top-[calc(50%+15px)] md:-translate-y-1/2 w-[270px] h-[270px] xs:w-[300px] xs:h-[300px] sm:w-[340px] sm:h-[340px] md:w-[380px] md:h-[380px] lg:w-[440px] lg:h-[440px] z-10 pointer-events-auto">
+        {/* 3D Model — Centered, larger & lower on mobile, Right-aligned on desktop */}
+        <div className="absolute left-1/2 -translate-x-1/2 top-[44%] -translate-y-1/2 md:translate-y-0 md:top-auto md:translate-x-0 md:left-auto md:right-4 lg:right-8 xl:right-12 md:top-[calc(50%+15px)] md:-translate-y-1/2 w-[300px] h-[300px] xs:w-[330px] xs:h-[330px] sm:w-[360px] sm:h-[360px] md:w-[400px] md:h-[400px] lg:w-[450px] lg:h-[450px] z-10 pointer-events-auto">
           <div
             className="hero-model-container w-full h-full"
             style={{
