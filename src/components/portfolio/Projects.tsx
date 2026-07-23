@@ -461,7 +461,7 @@ export function Projects() {
                   <div className="w-[160px] h-[230px] sm:w-[190px] sm:h-[270px] relative group cursor-pointer">
                     <div
                       onClick={() => openProjectModal(p, 0)}
-                      className="absolute inset-0 bg-[#0A0A0A] border border-white p-1 shadow-2xl transition-all duration-500 ease-out origin-bottom rotate-[-12deg] -translate-x-4 translate-y-1.5 z-10 group-hover:rotate-[-24deg] group-hover:-translate-x-8 group-hover:-translate-y-2 group-hover:border-[#E8FF00] overflow-hidden"
+                      className="project-card-fan-left absolute inset-0 bg-[#0A0A0A] border border-white p-1 shadow-2xl transition-all duration-500 ease-out origin-bottom rotate-[-12deg] -translate-x-4 translate-y-1.5 z-10 group-hover:rotate-[-24deg] group-hover:-translate-x-8 group-hover:-translate-y-2 group-hover:border-[#E8FF00] overflow-hidden"
                     >
                       <img
                         src={PROJECT_CARD_IMAGES[p.index]?.[0]}
@@ -473,7 +473,7 @@ export function Projects() {
                     </div>
                     <div
                       onClick={() => openProjectModal(p, 1)}
-                      className="absolute inset-0 bg-[#0A0A0A] border border-white p-1 shadow-2xl transition-all duration-500 ease-out origin-bottom rotate-0 translate-y-0 z-20 group-hover:-translate-y-4 group-hover:scale-105 group-hover:border-[#E8FF00] overflow-hidden"
+                      className="project-card-fan-center absolute inset-0 bg-[#0A0A0A] border border-white p-1 shadow-2xl transition-all duration-500 ease-out origin-bottom rotate-0 translate-y-0 z-20 group-hover:-translate-y-4 group-hover:scale-105 group-hover:border-[#E8FF00] overflow-hidden"
                     >
                       <img
                         src={PROJECT_CARD_IMAGES[p.index]?.[1]}
@@ -485,7 +485,7 @@ export function Projects() {
                     </div>
                     <div
                       onClick={() => openProjectModal(p, 2)}
-                      className="absolute inset-0 bg-[#0A0A0A] border border-white p-1 shadow-2xl transition-all duration-500 ease-out origin-bottom rotate-[12deg] translate-x-4 translate-y-1.5 z-30 group-hover:rotate-[24deg] group-hover:translate-x-8 group-hover:-translate-y-2 group-hover:border-[#E8FF00] overflow-hidden"
+                      className="project-card-fan-right absolute inset-0 bg-[#0A0A0A] border border-white p-1 shadow-2xl transition-all duration-500 ease-out origin-bottom rotate-[12deg] translate-x-4 translate-y-1.5 z-30 group-hover:rotate-[24deg] group-hover:translate-x-8 group-hover:-translate-y-2 group-hover:border-[#E8FF00] overflow-hidden"
                     >
                       <img
                         src={PROJECT_CARD_IMAGES[p.index]?.[2]}

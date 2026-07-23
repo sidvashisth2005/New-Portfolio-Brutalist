@@ -650,4 +650,23 @@
   .award-row {
     border-color: rgba(232, 255, 0, 0.3) !important;
   }
+
+  /* Auto-fan stacked project card deck on mobile touch devices */
+  .project-card-fan-left {
+    transform: rotate(-22deg) translateX(-1.6rem) translateY(-0.4rem) !important;
+    border-color: #E8FF00 !important;
+  }
+  .project-card-fan-center {
+    transform: translateY(-0.8rem) scale(1.04) !important;
+    border-color: #E8FF00 !important;
+  }
+  .project-card-fan-right {
+    transform: rotate(22deg) translateX(1.6rem) translateY(-0.4rem) !important;
+    border-color: #E8FF00 !important;
+  }
+  .project-card-fan-left img,
+  .project-card-fan-center img,
+  .project-card-fan-right img {
+    filter: grayscale(0) contrast(100%) !important;
+  }
 }
