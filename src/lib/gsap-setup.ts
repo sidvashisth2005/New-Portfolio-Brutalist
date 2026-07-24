@@ -13,22 +13,22 @@ export function initAnimationStack() {
     scroller: document.body,
   });
 
-  // Initialize Lenis smooth scroll
+  // Initialize Lenis smooth scroll with ultra-smooth 120fps glide settings
   const lenis = new Lenis({
-    duration: 1.4,
-    easing: (t: number) => t === 1 ? 1 : 1 - Math.pow(2, -10 * t),
+    duration: 1.0,
+    easing: (t: number) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t)),
     gestureOrientation: "vertical",
     normalizeWheel: true,
-    wheelMultiplier: 0.9,
-    touchMultiplier: 1.5,
+    wheelMultiplier: 1.0,
+    touchMultiplier: 1.2,
   });
 
   // Velocity-based scroll skew with smooth decay — quickTo animates toward the target value
   // so the tilt breathes in and out instead of snapping
-  const skewTo = gsap.quickTo("[data-skew]", "skewY", { duration: 0.8, ease: "power3.out" });
-  const clamp = gsap.utils.clamp(-3.5, 3.5);
+  const skewTo = gsap.quickTo("[data-skew]", "skewY", { duration: 0.6, ease: "power2.out" });
+  const clamp = gsap.utils.clamp(-2.0, 2.0);
   lenis.on("scroll", (e: any) => {
-    skewTo(clamp(e.velocity * -0.016));
+    skewTo(clamp(e.velocity * -0.012));
   });
 
   // Sync Lenis with GSAP ticker
@@ -37,7 +37,7 @@ export function initAnimationStack() {
   });
 
   // Enable lag smoothing to prevent sudden animation jumps during performance hiccups
-  gsap.ticker.lagSmoothing(1000, 16);
+  gsap.ticker.lagSmoothing(500, 33);
 
   // Expose them globally if needed for debugging or direct use
   (window as any).gsap = gsap;

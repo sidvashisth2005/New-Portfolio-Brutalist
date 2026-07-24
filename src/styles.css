@@ -551,6 +551,33 @@
     }
   }
 
+  /* ─── LENIS ULTRA-SMOOTH SCROLL SYSTEM ─── */
+  html.lenis, html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+
+  /* Hardware Acceleration & GPU Composition for 120fps Smooth Motion */
+  .moment-card,
+  .project-card,
+  .skill-pill,
+  .award-row,
+  .hero-model-container,
+  .gallery-card-wrap,
+  .marquee-track {
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+
   /* ─── GLOBAL SMOOTH TRANSITIONS ─── */
   a, button, [role="button"], .skill-pill, .award-row, .moment-card, .gallery-card-wrap {
     transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1) !important;
