@@ -212,6 +212,7 @@ export function SigilModel({ coordsRef }: { coordsRef?: React.RefObject<HTMLDivE
 
           {/* OrbitControls enables dragging & auto-rotation for smooth 3D experience */}
           <OrbitControls
+            makeDefault={true}
             enableZoom={false}
             enablePan={false}
             autoRotate={true}

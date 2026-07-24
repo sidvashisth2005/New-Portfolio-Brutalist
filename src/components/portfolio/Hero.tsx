@@ -184,9 +184,9 @@ export function Hero({ start }: { start: boolean }) {
         </div>
 
         {/* 3D Model — Centered, larger & lowered on mobile, Right-aligned on desktop */}
-        <div className="absolute left-1/2 -translate-x-1/2 top-[48%] -translate-y-1/2 md:translate-y-0 md:top-auto md:translate-x-0 md:left-auto md:right-4 lg:right-8 xl:right-12 md:top-[calc(50%+15px)] md:-translate-y-1/2 w-[300px] h-[300px] xs:w-[330px] xs:h-[330px] sm:w-[360px] sm:h-[360px] md:w-[400px] md:h-[400px] lg:w-[450px] lg:h-[450px] z-10 pointer-events-auto">
+        <div className="absolute left-1/2 -translate-x-1/2 top-[48%] -translate-y-1/2 md:translate-y-0 md:top-auto md:translate-x-0 md:left-auto md:right-4 lg:right-8 xl:right-12 md:top-[calc(50%+15px)] md:-translate-y-1/2 w-[300px] h-[300px] xs:w-[330px] xs:h-[330px] sm:w-[360px] sm:h-[360px] md:w-[400px] md:h-[400px] lg:w-[450px] lg:h-[450px] z-30 pointer-events-auto">
           <div
-            className="hero-model-container w-full h-full"
+            className="hero-model-container w-full h-full relative"
             style={{
               transform: isReduced ? "none" : "scale(0.85)",
             }}
@@ -196,9 +196,9 @@ export function Hero({ start }: { start: boolean }) {
         </div>
 
         {/* Top crosshair info — simplified on mobile */}
-        <div className="absolute top-20 left-5 right-5 z-10">
+        <div className="absolute top-20 left-5 right-5 z-20 pointer-events-none">
           {/* Mobile: single row with status only */}
-          <div className="flex items-center justify-between md:hidden font-mono text-[9px] uppercase tracking-[0.2em] text-white/60">
+          <div className="flex items-center justify-between md:hidden font-mono text-[9px] uppercase tracking-[0.2em] text-white/60 pointer-events-auto">
             <div
               className="hero-info-row flex items-center gap-2"
               style={{
@@ -218,8 +218,8 @@ export function Hero({ start }: { start: boolean }) {
             </div>
           </div>
 
-          {/* Desktop: original 3-column grid */}
-          <div className="hidden md:grid grid-cols-12 gap-5 font-mono text-[10px] uppercase tracking-[0.2em] text-white/60">
+          {/* Desktop: 12-column grid info row */}
+          <div className="hidden md:grid grid-cols-12 gap-5 font-mono text-xs uppercase tracking-[0.18em] text-white/60 pointer-events-auto">
             <div
               className="hero-info-row col-span-3 flex items-center gap-2"
               style={{
@@ -250,9 +250,9 @@ export function Hero({ start }: { start: boolean }) {
         </div>
 
         {/* Main Name + Divider */}
-        <div className="hero-name-wrapper relative z-20 px-5 w-full">
+        <div className="hero-name-wrapper relative z-20 px-5 w-full pointer-events-none">
           <h1
-            className="font-display font-black leading-[0.82] tracking-[-0.06em] text-[16vw] sm:text-[14vw] md:text-[13vw] uppercase"
+            className="font-display font-black leading-[0.82] tracking-[-0.06em] text-[16vw] sm:text-[14vw] md:text-[13vw] uppercase pointer-events-auto"
           >
             {profile.nameLines.map((line, lineIdx) => {
               let charOffset = 0;
